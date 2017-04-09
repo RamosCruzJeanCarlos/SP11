@@ -1,0 +1,1 @@
+Archivo en el cual se describe como funciona la parte de Gestión en este proyecto
