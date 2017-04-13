@@ -1,0 +1,7 @@
+{
+  "mongodb": {
+    "database": "scaedb",
+    "name": "mongodb",
+    "connector": "mongodb"
+  }
+}
