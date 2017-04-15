@@ -1,0 +1,17 @@
+
+//base
+
+//login
+$login-height : 100%;
+$login-background-color : #BCDCFF;
+$login-background-stripes-width: 25px;
+$login-background-stripes-darking: 5%;
+$login-background: repeating-linear-gradient(
+  45deg,
+  $login-background-color,
+  $login-background-color $login-background-stripes-width,
+  darken($login-background-color,$login-background-stripes-darking) $login-background-stripes-width,
+  darken($login-background-color,$login-background-stripes-darking) 2*$login-background-stripes-width
+);
+$login-form-background-color : white;
+

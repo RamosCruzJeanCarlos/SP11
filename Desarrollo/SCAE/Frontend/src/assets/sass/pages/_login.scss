@@ -1,0 +1,23 @@
+login {
+    &>div{
+        background: $login-background;
+        height: $login-height;
+        &>md-content{
+            border-radius: 5px;
+            background-color: $login-form-background-color; 
+            &>div{
+                .md-display-4{
+                    text-align: center;
+                    font-size: 5em;
+                }
+                .md-subhead{
+                    text-align: center;
+                    font-style: italic;
+                }
+            }            
+            &>form{
+                padding: 5px;                
+            }
+        }
+    }
+}
