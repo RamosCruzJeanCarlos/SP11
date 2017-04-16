@@ -1,8 +1,9 @@
 export default class DashboardController{
-    constructor(constants){
+    constructor(constants,LoadingModalService){
         console.log('Dashboard controller loaded...');
-        this.title = constants.appTitle;
+        this.title = constants.app.title;
+        LoadingModalService.show();
     }
 }
 
-DashboardController.$inject = ['constants'];
+DashboardController.$inject = ['constants','LoadingModalService'];

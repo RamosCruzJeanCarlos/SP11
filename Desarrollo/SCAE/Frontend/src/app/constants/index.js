@@ -1,6 +1,14 @@
 'use strict';
 
 export default {
-    appTitle : 'S.C.A.E',
-    appSubtitle : 'Sistema de control de asistencia de estudiantes'
+    app : {
+        title : 'S.C.A.E',
+        subtitle : 'Sistema de control de asistencia de estudiantes',
+    },
+    resources : {
+        remote : {
+            baseUrl : '/data/',
+            authorizationHeader : 'Authorization'
+        }
+    }
 }

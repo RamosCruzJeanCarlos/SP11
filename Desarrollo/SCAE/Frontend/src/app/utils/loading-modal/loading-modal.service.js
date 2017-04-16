@@ -6,7 +6,9 @@ export default class LoadingModalService{
     }
     show(){
         this.$mdDialog.show({
-            template : '<md-dialog aria-label="Loading"><md-dialog-content><loading-modal/></md-dialog-content></md-dialog>',
+            template : '<md-dialog aria-label="Loading"><md-dialog-content>'
+            +'<div class="md-dialog-content"><loading-indicator/></div>'
+            +'</md-dialog-content></md-dialog>',
             parent : angular.element(document.body),
             clickOutsideToClose : false,
             bindToController: true,

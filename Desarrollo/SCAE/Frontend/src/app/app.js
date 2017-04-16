@@ -6,23 +6,22 @@ import uirouter         from 'angular-ui-router';
 import angularAnimate   from 'angular-animate';
 import angularAria      from 'angular-aria';
 import angularMessages  from 'angular-messages';
+import angularCookies   from 'angular-cookies';
 
-//app 
 import config           from './config';
 import constants        from './constants';
-
-//components
-import login            from './components/login';
-import dashboard        from './components/dashboard';    
-
-//services and utils
-//services ares globally available(No matter what module they are in).
-import loginModal       from './utils/loading-modal';
+import run              from './run';
+import components       from './components';
+import utils            from './utils/';
+import helpers          from './helpers/';
 
 angular.module('app',[
-    uirouter,  
-    login,    
-    dashboard,  
+    uirouter,      
+    angularCookies,//for cookie path configuration
+    utils,
+    helpers,
+    components
 ])
 .config(config)
+.run(run)
 .constant('constants',constants);
