@@ -1,18 +1,28 @@
 'use strict';
 
+//vendor dependencies
 import angular          from 'angular';
 import uirouter         from 'angular-ui-router';
-import configuration    from './app.config';
 import angularAnimate   from 'angular-animate';
 import angularAria      from 'angular-aria';
 import angularMessages  from 'angular-messages';
-import login            from './components/login/';
-import loadingModal     from './utilities/loading-modal/';
 
+//app 
+import config           from './config';
+import constants        from './constants';
 
-angular.module('app-scae',[
+//components
+import login            from './components/login';
+import dashboard        from './components/dashboard';    
+
+//services and utils
+//services ares globally available(No matter what module they are in).
+import loginModal       from './utils/loading-modal';
+
+angular.module('app',[
     uirouter,  
-    loadingModal,
-    login,      
+    login,    
+    dashboard,  
 ])
-.config(configuration);
+.config(config)
+.constant('constants',constants);

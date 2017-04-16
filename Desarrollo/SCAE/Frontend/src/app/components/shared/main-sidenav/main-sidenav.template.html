@@ -1,0 +1,10 @@
+<md-sidenav class="sidenav-left" md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="4">
+    <md-toolbar>
+        <h1>{{$ctrl.title}}</h1>
+    </md-toolbar>
+    <md-content layout-padding>
+        <a ng-repeat="feature in $ctrl.features">
+            {{feature.name}}
+        </a>
+    </md-content>
+</md-sidenav>

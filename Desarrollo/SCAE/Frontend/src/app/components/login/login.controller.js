@@ -1,8 +1,14 @@
 'use strict';
 
 export default class LoginController{
-    constructor(){        
+    constructor(constants,$state){        
+        this.title = constants.appTitle;
+        this.subtitle = constants.appSubtitle
+        this.$state = $state;
+    }
+    login(){
+        this.$state.go('dashboard.home');
     }
 }
 
-LoginController.$inject = [];
+LoginController.$inject = ['constants','$state'];

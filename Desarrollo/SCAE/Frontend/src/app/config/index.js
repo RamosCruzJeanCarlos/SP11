@@ -1,6 +1,6 @@
 'use strict';
 
-import routing from './configuration/routing';
+import routing from './config.routing';
 
 configuration.$inject = ['$urlRouterProvider','$stateProvider']
 

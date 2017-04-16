@@ -1,12 +1,12 @@
 <div layout="row" layout-align="center center">
-    <md-content md-whiteframe="3" layout-gt-xs="row" layout-xs="column" layout-margin layout-padding 
+    <md-content md-whiteframe="4" layout-gt-xs="row" layout-xs="column" layout-margin layout-padding 
     layout-align="center center"
     layout-align-xs="center stretch">
         <div layout="column" flex="auto" layout-align="center stretch">
-            <h1 class="md-display-4">S.C.A.E.</h1>
-            <h6 class="md-subhead">Sistema de control de asistencia estudiantil</h6>
+            <h1 class="md-display-4">{{$ctrl.title}}</h1>
+            <h6 class="md-subhead">{{$ctrl.subtitle}}</h6>
         </div>        
-        <form flex-gt-xs="50" layout="column">
+        <form flex-gt-xs="50" layout="column" ng-submit="$ctrl.login()">
             <div layout="column">
                 <md-input-container>
                     <label>Usuario: </label>
@@ -23,7 +23,7 @@
                 <md-button type="submit" class="md-raised md-primary">
                     Ingresar
                     <md-icon md-font-library="material-icons">chevron_right</md-icon>
-                    </md-button>
+                </md-button>
             </div>
         </form>
     </md-content>

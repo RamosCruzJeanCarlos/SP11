@@ -79143,25 +79143,7 @@ module.exports = angular;
 },{"./angular":10}],12:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = configuration;
-
-var _routing = require('./configuration/routing');
-
-var _routing2 = _interopRequireDefault(_routing);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-configuration.$inject = ['$urlRouterProvider', '$stateProvider'];
-
-function configuration($urlRouterProvider, $stateProvider) {
-    (0, _routing2.default)($urlRouterProvider, $stateProvider);
-}
-
-},{"./configuration/routing":18}],13:[function(require,module,exports){
-'use strict';
+//vendor dependencies
 
 var _angular = require('angular');
 
@@ -79170,10 +79152,6 @@ var _angular2 = _interopRequireDefault(_angular);
 var _angularUiRouter = require('angular-ui-router');
 
 var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
-
-var _app = require('./app.config');
-
-var _app2 = _interopRequireDefault(_app);
 
 var _angularAnimate = require('angular-animate');
 
@@ -79187,19 +79165,209 @@ var _angularMessages = require('angular-messages');
 
 var _angularMessages2 = _interopRequireDefault(_angularMessages);
 
-var _login = require('./components/login/');
+var _config = require('./config');
+
+var _config2 = _interopRequireDefault(_config);
+
+var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _login = require('./components/login');
 
 var _login2 = _interopRequireDefault(_login);
 
-var _loadingModal = require('./utilities/loading-modal/');
+var _dashboard = require('./components/dashboard');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _loadingModal = require('./utils/loading-modal');
 
 var _loadingModal2 = _interopRequireDefault(_loadingModal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_angular2.default.module('app-scae', [_angularUiRouter2.default, _loadingModal2.default, _login2.default]).config(_app2.default);
+_angular2.default.module('app', [_angularUiRouter2.default, _login2.default, _dashboard2.default]).config(_config2.default).constant('constants', _constants2.default);
 
-},{"./app.config":12,"./components/login/":14,"./utilities/loading-modal/":19,"angular":11,"angular-animate":2,"angular-aria":4,"angular-messages":8,"angular-ui-router":9}],14:[function(require,module,exports){
+//services and utils
+//services ares globally available(No matter what module they are in).
+
+
+//components
+
+
+//app
+
+},{"./components/dashboard":21,"./components/login":22,"./config":27,"./constants":28,"./utils/loading-modal":29,"angular":11,"angular-animate":2,"angular-aria":4,"angular-messages":8,"angular-ui-router":9}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboard = require('./dashboard.controller');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _dashboardTemplate = require('./dashboard.template.html');
+
+var _dashboardTemplate2 = _interopRequireDefault(_dashboardTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardTemplate2.default,
+    controller: _dashboard2.default
+};
+
+},{"./dashboard.controller":15,"./dashboard.template.html":16}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = config;
+function config($urlRouterProvider, $stateProvider) {
+
+    $stateProvider.state('dashboard.home', {
+        url: '',
+        template: '<home></home>'
+    }).state('dashboard.studentsManagement', {
+        url: 'alumnos',
+        //template:'<students-management></students-management>'
+        template: '<h1>Alumnos!</h1>'
+    }).state('dashboard.teachersManagement', {
+        url: 'profesores',
+        //template:'<teachers-management></teachers-management>'
+        template: '<h1>Profesores!</h1>'
+    }).state('dashboard.subjectsManagement', {
+        url: 'cursos',
+        //template:'<subjects-management></subjects-management>'
+        template: '<h1>Cursos!</h1>'
+    });
+}
+
+config.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+},{}],15:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardController = function DashboardController(constants) {
+    _classCallCheck(this, DashboardController);
+
+    console.log('Dashboard controller loaded...');
+    this.title = constants.appTitle;
+};
+
+exports.default = DashboardController;
+
+
+DashboardController.$inject = ['constants'];
+
+},{}],16:[function(require,module,exports){
+module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        <span>{{$ctrl.title}}</span>\r\n    </div>\r\n    <div layout=\"row\">        \r\n        <main-sidenav></main-sidenav>\r\n        <ui-view></ui-view>\r\n    </div>\r\n</div>";
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _home = require('./home.controller');
+
+var _home2 = _interopRequireDefault(_home);
+
+var _homeTemplate = require('./home.template.html');
+
+var _homeTemplate2 = _interopRequireDefault(_homeTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _homeTemplate2.default,
+    controller: _home2.default.name
+};
+
+},{"./home.controller":18,"./home.template.html":19}],18:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HomeController = function HomeController() {
+    _classCallCheck(this, HomeController);
+};
+
+exports.default = HomeController;
+
+},{}],19:[function(require,module,exports){
+module.exports = "<h1>Hello Homeworld!!</h1>";
+
+},{}],20:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _home = require('./home.controller');
+
+var _home2 = _interopRequireDefault(_home);
+
+var _home3 = require('./home.component');
+
+var _home4 = _interopRequireDefault(_home3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('components.dashboard.home', []).controller(_home2.default.name, _home2.default).component('home', _home4.default).name;
+
+},{"./home.component":17,"./home.controller":18,"angular":11}],21:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _dashboard = require('./dashboard.config');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _dashboard3 = require('./dashboard.component');
+
+var _dashboard4 = _interopRequireDefault(_dashboard3);
+
+var _dashboard5 = require('./dashboard.controller');
+
+var _dashboard6 = _interopRequireDefault(_dashboard5);
+
+var _home = require('./home/');
+
+var _home2 = _interopRequireDefault(_home);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('components.dashboard', [_home2.default]).config(_dashboard2.default).controller(_dashboard6.default.name, _dashboard6.default).component('dashboard', _dashboard4.default).name;
+
+},{"./dashboard.component":13,"./dashboard.config":14,"./dashboard.controller":15,"./home/":20,"angular":11}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79218,13 +79386,17 @@ var _login3 = require('./login.component');
 
 var _login4 = _interopRequireDefault(_login3);
 
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var angularMaterial = require('angular-material');
 
-exports.default = _angular2.default.module('components.login', [angularMaterial]).controller(_login2.default.name, _login2.default).component('login', _login4.default).name;
+exports.default = _angular2.default.module('components.login', [angularMaterial, _angularUiRouter2.default]).controller(_login2.default.name, _login2.default).component('login', _login4.default).name;
 
-},{"./login.component":15,"./login.controller":16,"angular":11,"angular-material":6}],15:[function(require,module,exports){
+},{"./login.component":23,"./login.controller":24,"angular":11,"angular-material":6,"angular-ui-router":9}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79246,28 +79418,45 @@ exports.default = {
     controller: _login2.default.name
 };
 
-},{"./login.controller":16,"./login.template.html":17}],16:[function(require,module,exports){
+},{"./login.controller":24,"./login.template.html":25}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var LoginController = function LoginController() {
-    _classCallCheck(this, LoginController);
-};
+var LoginController = function () {
+    function LoginController(constants, $state) {
+        _classCallCheck(this, LoginController);
+
+        this.title = constants.appTitle;
+        this.subtitle = constants.appSubtitle;
+        this.$state = $state;
+    }
+
+    _createClass(LoginController, [{
+        key: 'login',
+        value: function login() {
+            this.$state.go('dashboard.home');
+        }
+    }]);
+
+    return LoginController;
+}();
 
 exports.default = LoginController;
 
 
-LoginController.$inject = [];
+LoginController.$inject = ['constants', '$state'];
 
-},{}],17:[function(require,module,exports){
-module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"3\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">S.C.A.E.</h1>\r\n            <h6 class=\"md-subhead\">Sistema de control de asistencia estudiantil</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                    </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
+},{}],25:[function(require,module,exports){
+module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
 
-},{}],18:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79276,15 +79465,53 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = routing;
 function routing($urlRouterProvider, $stateProvider) {
 
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider.state('login', {
         url: '/login',
         template: '<login></login>'
+    }).state('dashboard', {
+        abstract: true,
+        url: '/',
+        template: '<dashboard></dashboard>'
+    }).state('not-found', {
+        url: '/not_found',
+        template: '<h1>404: NOT FOUND</h1>'
     });
 }
 
-},{}],19:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = configuration;
+
+var _config = require('./config.routing');
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+configuration.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+function configuration($urlRouterProvider, $stateProvider) {
+    (0, _config2.default)($urlRouterProvider, $stateProvider);
+}
+
+},{"./config.routing":26}],28:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    appTitle: 'S.C.A.E',
+    appSubtitle: 'Sistema de control de asistencia de estudiantes'
+};
+
+},{}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79313,7 +79540,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('utilities.loading-modal', [angularMaterial]).controller(_loadingModal4.default.name, _loadingModal4.default).component('loadingModal', _loadingModal2.default).service('loadingModalService', _loadingModal6.default).name;
 
-},{"./loading-modal.component":20,"./loading-modal.controller":21,"./loading-modal.service":22,"angular":11,"angular-material":6}],20:[function(require,module,exports){
+},{"./loading-modal.component":30,"./loading-modal.controller":31,"./loading-modal.service":32,"angular":11,"angular-material":6}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79335,7 +79562,7 @@ exports.default = {
     controller: _loadingModal2.default.name
 };
 
-},{"./loading-modal.controller":21,"./loading-modal.template.html":23}],21:[function(require,module,exports){
+},{"./loading-modal.controller":31,"./loading-modal.template.html":33}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79353,7 +79580,7 @@ exports.default = LoadingModalController;
 
 LoadingModalController.$inject = [];
 
-},{}],22:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79397,7 +79624,7 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}],23:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = "<div class=\"md-dialog-content\" layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\" flex=\"50\"></md-progress-circular>   \r\n    <h1 flex=\"50\">Espere...</h1>       \r\n</div>";
 
-},{}]},{},[13]);
+},{}]},{},[12]);

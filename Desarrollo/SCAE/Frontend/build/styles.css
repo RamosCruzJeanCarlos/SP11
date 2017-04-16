@@ -17809,3 +17809,6 @@ login > div {
       font-style: italic; }
     login > div > md-content > form {
       padding: 5px; }
+
+dashboard > div {
+  height: 100%; }
