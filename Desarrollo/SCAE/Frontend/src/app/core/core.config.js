@@ -19,3 +19,5 @@ export default function routing($urlRouterProvider,$stateProvider){
         template:'<h1>404: NOT FOUND</h1>'
     })    
 }
+
+routing.$inject = ['$urlRouterProvider','$stateProvider'];

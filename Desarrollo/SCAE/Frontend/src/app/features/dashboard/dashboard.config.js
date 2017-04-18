@@ -7,19 +7,20 @@ export default function config($urlRouterProvider,$stateProvider){
         url:'',
         template:'<home></home>'
     })
-    .state('dashboard.studentsManagement',{
-        url:'alumnos',
-        //template:'<students-management></students-management>'
+    .state('dashboard.maintenance',{
+        url:'mantenimiento',
+        template:'<h1>Mantenimiento</h1><ui-view class="shuffle-animation"/>'
+    })
+    .state('dashboard.maintenance.students',{
+        url:'/alumnos',
         template:'<h1>Alumnos!</h1>'
     })
-    .state('dashboard.teachersManagement',{
-        url:'profesores',
-        //template:'<teachers-management></teachers-management>'
+    .state('dashboard.maintenance.teachers',{
+        url:'/profesores',
         template:'<h1>Profesores!</h1>'
     })
-    .state('dashboard.subjectsManagement',{
-        url:'cursos',
-        //template:'<subjects-management></subjects-management>'
+    .state('dashboard.maintenance.subjects',{
+        url:'/cursos',
         template:'<h1>Cursos!</h1>'
     });    
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-export default class AppResourceService{
+export default class ResourceWithAuthorizationService{
     constructor($resource,AppCookiesService,constants){
         this.resourceService = $resource;
         this.baseUrl = constants.resources.remote.baseUrl;
@@ -20,4 +20,4 @@ export default class AppResourceService{
     }
 }
 
-AppResourceService.$inject = ['$resource','AppCookiesService','constants'];
+ResourceWithAuthorizationService.$inject = ['$resource','AppCookiesService','constants'];

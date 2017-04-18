@@ -1,9 +1,9 @@
 'use strict';
 
 import angular from 'angular';
-import dashboard from './dashboard';
 import login from './login';
+import dashboard from './dashboard';
 
 export default angular
-    .module('components',[dashboard,login])
+    .module('app.features',[dashboard,login])
     .name;

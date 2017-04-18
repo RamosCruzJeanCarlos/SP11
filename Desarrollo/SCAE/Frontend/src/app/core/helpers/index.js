@@ -1,7 +1,6 @@
 import angular from 'angular';
-import appCookies from './app-cookies';
-import appResource from './app-resource';
+import cookieManager from './cookie-manager';
 
 export default angular
-    .module('helpers',[appCookies,appResource])
+    .module('app.core.helpers',[cookieManager])    
     .name;

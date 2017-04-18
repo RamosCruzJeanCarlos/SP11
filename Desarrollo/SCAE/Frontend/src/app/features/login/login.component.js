@@ -1,3 +1,5 @@
+'use strict';
+
 import LoginController from './login.controller';
 import LoginTemplate from './login.template.html';
 
