@@ -8,7 +8,11 @@ var streamify   = require('gulp-streamify');
 var flatten     = require('gulp-flatten');
 var gls         = require('gulp-live-server');
 var stringify   = require('stringify');
+try{
 var sass        = require('gulp-sass');
+}catch(exception){
+    console.log(exception.message);
+}
 var rename      = require('gulp-rename');
 
 var config = {
@@ -83,5 +87,9 @@ gulp.task('watch',['build'],function(){
     gulp.watch('./build/styles.css',function(file){
         server.notify.apply(server,[file]);
     })
+});
 
+gulp.task('serve',[],function(){
+    var server = gls.static('./',4000);
+    server.start();
 });
