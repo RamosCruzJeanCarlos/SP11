@@ -2,8 +2,11 @@
     <div hide-gt-xs>
         <span>{{$ctrl.title}}</span>
     </div>
-    <div layout="row">        
+    <div layout="row">    
         <main-sidenav></main-sidenav>
-        <ui-view></ui-view>
+        <div layout="column" flex>
+            <main-toolbar></main-toolbar>            
+            <ui-view></ui-view>
+        </div>        
     </div>
 </div>

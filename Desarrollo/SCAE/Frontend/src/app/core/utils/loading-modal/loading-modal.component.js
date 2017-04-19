@@ -1,9 +1,9 @@
 'use strict';
 
-import loadingModalController from './loading-indicator.controller';
-import loadingModalTemplate from './loading-indicator.template.html';
+import loadingModalController from './loading-modal.controller';
+import loadingModalTemplate from './loading-modal.template.html';
 
 export default {
     template : loadingModalTemplate,
-    controller : loadingModalController.name
+    controller : loadingModalController
 }

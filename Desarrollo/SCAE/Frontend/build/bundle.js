@@ -40669,753 +40669,7 @@ require('./angular-material');
 // Export namespace
 module.exports = 'ngMaterial';
 
-},{"./angular-material":7,"angular":15,"angular-animate":2,"angular-aria":4}],9:[function(require,module,exports){
-/**
- * @license AngularJS v1.6.4
- * (c) 2010-2017 Google, Inc. http://angularjs.org
- * License: MIT
- */
-(function(window, angular) {'use strict';
-
-var forEach;
-var isArray;
-var isString;
-var jqLite;
-
-/**
- * @ngdoc module
- * @name ngMessages
- * @description
- *
- * The `ngMessages` module provides enhanced support for displaying messages within templates
- * (typically within forms or when rendering message objects that return key/value data).
- * Instead of relying on JavaScript code and/or complex ng-if statements within your form template to
- * show and hide error messages specific to the state of an input field, the `ngMessages` and
- * `ngMessage` directives are designed to handle the complexity, inheritance and priority
- * sequencing based on the order of how the messages are defined in the template.
- *
- * Currently, the ngMessages module only contains the code for the `ngMessages`, `ngMessagesInclude`
- * `ngMessage` and `ngMessageExp` directives.
- *
- * # Usage
- * The `ngMessages` directive allows keys in a key/value collection to be associated with a child element
- * (or 'message') that will show or hide based on the truthiness of that key's value in the collection. A common use
- * case for `ngMessages` is to display error messages for inputs using the `$error` object exposed by the
- * {@link ngModel ngModel} directive.
- *
- * The child elements of the `ngMessages` directive are matched to the collection keys by a `ngMessage` or
- * `ngMessageExp` directive. The value of these attributes must match a key in the collection that is provided by
- * the `ngMessages` directive.
- *
- * Consider the following example, which illustrates a typical use case of `ngMessages`. Within the form `myForm` we
- * have a text input named `myField` which is bound to the scope variable `field` using the {@link ngModel ngModel}
- * directive.
- *
- * The `myField` field is a required input of type `email` with a maximum length of 15 characters.
- *
- * ```html
- * <form name="myForm">
- *   <label>
- *     Enter text:
- *     <input type="email" ng-model="field" name="myField" required maxlength="15" />
- *   </label>
- *   <div ng-messages="myForm.myField.$error" role="alert">
- *     <div ng-message="required">Please enter a value for this field.</div>
- *     <div ng-message="email">This field must be a valid email address.</div>
- *     <div ng-message="maxlength">This field can be at most 15 characters long.</div>
- *   </div>
- * </form>
- * ```
- *
- * In order to show error messages corresponding to `myField` we first create an element with an `ngMessages` attribute
- * set to the `$error` object owned by the `myField` input in our `myForm` form.
- *
- * Within this element we then create separate elements for each of the possible errors that `myField` could have.
- * The `ngMessage` attribute is used to declare which element(s) will appear for which error - for example,
- * setting `ng-message="required"` specifies that this particular element should be displayed when there
- * is no value present for the required field `myField` (because the key `required` will be `true` in the object
- * `myForm.myField.$error`).
- *
- * ### Message order
- *
- * By default, `ngMessages` will only display one message for a particular key/value collection at any time. If more
- * than one message (or error) key is currently true, then which message is shown is determined by the order of messages
- * in the HTML template code (messages declared first are prioritised). This mechanism means the developer does not have
- * to prioritize messages using custom JavaScript code.
- *
- * Given the following error object for our example (which informs us that the field `myField` currently has both the
- * `required` and `email` errors):
- *
- * ```javascript
- * <!-- keep in mind that ngModel automatically sets these error flags -->
- * myField.$error = { required : true, email: true, maxlength: false };
- * ```
- * The `required` message will be displayed to the user since it appears before the `email` message in the DOM.
- * Once the user types a single character, the `required` message will disappear (since the field now has a value)
- * but the `email` message will be visible because it is still applicable.
- *
- * ### Displaying multiple messages at the same time
- *
- * While `ngMessages` will by default only display one error element at a time, the `ng-messages-multiple` attribute can
- * be applied to the `ngMessages` container element to cause it to display all applicable error messages at once:
- *
- * ```html
- * <!-- attribute-style usage -->
- * <div ng-messages="myForm.myField.$error" ng-messages-multiple>...</div>
- *
- * <!-- element-style usage -->
- * <ng-messages for="myForm.myField.$error" multiple>...</ng-messages>
- * ```
- *
- * ## Reusing and Overriding Messages
- * In addition to prioritization, ngMessages also allows for including messages from a remote or an inline
- * template. This allows for generic collection of messages to be reused across multiple parts of an
- * application.
- *
- * ```html
- * <script type="text/ng-template" id="error-messages">
- *   <div ng-message="required">This field is required</div>
- *   <div ng-message="minlength">This field is too short</div>
- * </script>
- *
- * <div ng-messages="myForm.myField.$error" role="alert">
- *   <div ng-messages-include="error-messages"></div>
- * </div>
- * ```
- *
- * However, including generic messages may not be useful enough to match all input fields, therefore,
- * `ngMessages` provides the ability to override messages defined in the remote template by redefining
- * them within the directive container.
- *
- * ```html
- * <!-- a generic template of error messages known as "my-custom-messages" -->
- * <script type="text/ng-template" id="my-custom-messages">
- *   <div ng-message="required">This field is required</div>
- *   <div ng-message="minlength">This field is too short</div>
- * </script>
- *
- * <form name="myForm">
- *   <label>
- *     Email address
- *     <input type="email"
- *            id="email"
- *            name="myEmail"
- *            ng-model="email"
- *            minlength="5"
- *            required />
- *   </label>
- *   <!-- any ng-message elements that appear BEFORE the ng-messages-include will
- *        override the messages present in the ng-messages-include template -->
- *   <div ng-messages="myForm.myEmail.$error" role="alert">
- *     <!-- this required message has overridden the template message -->
- *     <div ng-message="required">You did not enter your email address</div>
- *
- *     <!-- this is a brand new message and will appear last in the prioritization -->
- *     <div ng-message="email">Your email address is invalid</div>
- *
- *     <!-- and here are the generic error messages -->
- *     <div ng-messages-include="my-custom-messages"></div>
- *   </div>
- * </form>
- * ```
- *
- * In the example HTML code above the message that is set on required will override the corresponding
- * required message defined within the remote template. Therefore, with particular input fields (such
- * email addresses, date fields, autocomplete inputs, etc...), specialized error messages can be applied
- * while more generic messages can be used to handle other, more general input errors.
- *
- * ## Dynamic Messaging
- * ngMessages also supports using expressions to dynamically change key values. Using arrays and
- * repeaters to list messages is also supported. This means that the code below will be able to
- * fully adapt itself and display the appropriate message when any of the expression data changes:
- *
- * ```html
- * <form name="myForm">
- *   <label>
- *     Email address
- *     <input type="email"
- *            name="myEmail"
- *            ng-model="email"
- *            minlength="5"
- *            required />
- *   </label>
- *   <div ng-messages="myForm.myEmail.$error" role="alert">
- *     <div ng-message="required">You did not enter your email address</div>
- *     <div ng-repeat="errorMessage in errorMessages">
- *       <!-- use ng-message-exp for a message whose key is given by an expression -->
- *       <div ng-message-exp="errorMessage.type">{{ errorMessage.text }}</div>
- *     </div>
- *   </div>
- * </form>
- * ```
- *
- * The `errorMessage.type` expression can be a string value or it can be an array so
- * that multiple errors can be associated with a single error message:
- *
- * ```html
- *   <label>
- *     Email address
- *     <input type="email"
- *            ng-model="data.email"
- *            name="myEmail"
- *            ng-minlength="5"
- *            ng-maxlength="100"
- *            required />
- *   </label>
- *   <div ng-messages="myForm.myEmail.$error" role="alert">
- *     <div ng-message-exp="'required'">You did not enter your email address</div>
- *     <div ng-message-exp="['minlength', 'maxlength']">
- *       Your email must be between 5 and 100 characters long
- *     </div>
- *   </div>
- * ```
- *
- * Feel free to use other structural directives such as ng-if and ng-switch to further control
- * what messages are active and when. Be careful, if you place ng-message on the same element
- * as these structural directives, Angular may not be able to determine if a message is active
- * or not. Therefore it is best to place the ng-message on a child element of the structural
- * directive.
- *
- * ```html
- * <div ng-messages="myForm.myEmail.$error" role="alert">
- *   <div ng-if="showRequiredError">
- *     <div ng-message="required">Please enter something</div>
- *   </div>
- * </div>
- * ```
- *
- * ## Animations
- * If the `ngAnimate` module is active within the application then the `ngMessages`, `ngMessage` and
- * `ngMessageExp` directives will trigger animations whenever any messages are added and removed from
- * the DOM by the `ngMessages` directive.
- *
- * Whenever the `ngMessages` directive contains one or more visible messages then the `.ng-active` CSS
- * class will be added to the element. The `.ng-inactive` CSS class will be applied when there are no
- * messages present. Therefore, CSS transitions and keyframes as well as JavaScript animations can
- * hook into the animations whenever these classes are added/removed.
- *
- * Let's say that our HTML code for our messages container looks like so:
- *
- * ```html
- * <div ng-messages="myMessages" class="my-messages" role="alert">
- *   <div ng-message="alert" class="some-message">...</div>
- *   <div ng-message="fail" class="some-message">...</div>
- * </div>
- * ```
- *
- * Then the CSS animation code for the message container looks like so:
- *
- * ```css
- * .my-messages {
- *   transition:1s linear all;
- * }
- * .my-messages.ng-active {
- *   // messages are visible
- * }
- * .my-messages.ng-inactive {
- *   // messages are hidden
- * }
- * ```
- *
- * Whenever an inner message is attached (becomes visible) or removed (becomes hidden) then the enter
- * and leave animation is triggered for each particular element bound to the `ngMessage` directive.
- *
- * Therefore, the CSS code for the inner messages looks like so:
- *
- * ```css
- * .some-message {
- *   transition:1s linear all;
- * }
- *
- * .some-message.ng-enter {}
- * .some-message.ng-enter.ng-enter-active {}
- *
- * .some-message.ng-leave {}
- * .some-message.ng-leave.ng-leave-active {}
- * ```
- *
- * {@link ngAnimate Click here} to learn how to use JavaScript animations or to learn more about ngAnimate.
- */
-angular.module('ngMessages', [], function initAngularHelpers() {
-  // Access helpers from angular core.
-  // Do it inside a `config` block to ensure `window.angular` is available.
-  forEach = angular.forEach;
-  isArray = angular.isArray;
-  isString = angular.isString;
-  jqLite = angular.element;
-})
-  .info({ angularVersion: '1.6.4' })
-
-  /**
-   * @ngdoc directive
-   * @module ngMessages
-   * @name ngMessages
-   * @restrict AE
-   *
-   * @description
-   * `ngMessages` is a directive that is designed to show and hide messages based on the state
-   * of a key/value object that it listens on. The directive itself complements error message
-   * reporting with the `ngModel` $error object (which stores a key/value state of validation errors).
-   *
-   * `ngMessages` manages the state of internal messages within its container element. The internal
-   * messages use the `ngMessage` directive and will be inserted/removed from the page depending
-   * on if they're present within the key/value object. By default, only one message will be displayed
-   * at a time and this depends on the prioritization of the messages within the template. (This can
-   * be changed by using the `ng-messages-multiple` or `multiple` attribute on the directive container.)
-   *
-   * A remote template can also be used to promote message reusability and messages can also be
-   * overridden.
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-message="stringValue">...</ANY>
-   *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-   *   <ANY ng-message-exp="expressionValue">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-message when="stringValue">...</ng-message>
-   *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-   *   <ng-message when-exp="expressionValue">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * @param {string} ngMessages an angular expression evaluating to a key/value object
-   *                 (this is typically the $error object on an ngModel instance).
-   * @param {string=} ngMessagesMultiple|multiple when set, all messages will be displayed with true
-   *
-   * @example
-   * <example name="ngMessages-directive" module="ngMessagesExample"
-   *          deps="angular-messages.js"
-   *          animations="true" fixBase="true">
-   *   <file name="index.html">
-   *     <form name="myForm">
-   *       <label>
-   *         Enter your name:
-   *         <input type="text"
-   *                name="myName"
-   *                ng-model="name"
-   *                ng-minlength="5"
-   *                ng-maxlength="20"
-   *                required />
-   *       </label>
-   *       <pre>myForm.myName.$error = {{ myForm.myName.$error | json }}</pre>
-   *
-   *       <div ng-messages="myForm.myName.$error" style="color:maroon" role="alert">
-   *         <div ng-message="required">You did not enter a field</div>
-   *         <div ng-message="minlength">Your field is too short</div>
-   *         <div ng-message="maxlength">Your field is too long</div>
-   *       </div>
-   *     </form>
-   *   </file>
-   *   <file name="script.js">
-   *     angular.module('ngMessagesExample', ['ngMessages']);
-   *   </file>
-   * </example>
-   */
-  .directive('ngMessages', ['$animate', function($animate) {
-    var ACTIVE_CLASS = 'ng-active';
-    var INACTIVE_CLASS = 'ng-inactive';
-
-    return {
-      require: 'ngMessages',
-      restrict: 'AE',
-      controller: ['$element', '$scope', '$attrs', function NgMessagesCtrl($element, $scope, $attrs) {
-        var ctrl = this;
-        var latestKey = 0;
-        var nextAttachId = 0;
-
-        this.getAttachId = function getAttachId() { return nextAttachId++; };
-
-        var messages = this.messages = {};
-        var renderLater, cachedCollection;
-
-        this.render = function(collection) {
-          collection = collection || {};
-
-          renderLater = false;
-          cachedCollection = collection;
-
-          // this is true if the attribute is empty or if the attribute value is truthy
-          var multiple = isAttrTruthy($scope, $attrs.ngMessagesMultiple) ||
-                         isAttrTruthy($scope, $attrs.multiple);
-
-          var unmatchedMessages = [];
-          var matchedKeys = {};
-          var messageItem = ctrl.head;
-          var messageFound = false;
-          var totalMessages = 0;
-
-          // we use != instead of !== to allow for both undefined and null values
-          while (messageItem != null) {
-            totalMessages++;
-            var messageCtrl = messageItem.message;
-
-            var messageUsed = false;
-            if (!messageFound) {
-              forEach(collection, function(value, key) {
-                if (!messageUsed && truthy(value) && messageCtrl.test(key)) {
-                  // this is to prevent the same error name from showing up twice
-                  if (matchedKeys[key]) return;
-                  matchedKeys[key] = true;
-
-                  messageUsed = true;
-                  messageCtrl.attach();
-                }
-              });
-            }
-
-            if (messageUsed) {
-              // unless we want to display multiple messages then we should
-              // set a flag here to avoid displaying the next message in the list
-              messageFound = !multiple;
-            } else {
-              unmatchedMessages.push(messageCtrl);
-            }
-
-            messageItem = messageItem.next;
-          }
-
-          forEach(unmatchedMessages, function(messageCtrl) {
-            messageCtrl.detach();
-          });
-
-          if (unmatchedMessages.length !== totalMessages) {
-            $animate.setClass($element, ACTIVE_CLASS, INACTIVE_CLASS);
-          } else {
-            $animate.setClass($element, INACTIVE_CLASS, ACTIVE_CLASS);
-          }
-        };
-
-        $scope.$watchCollection($attrs.ngMessages || $attrs['for'], ctrl.render);
-
-        // If the element is destroyed, proactively destroy all the currently visible messages
-        $element.on('$destroy', function() {
-          forEach(messages, function(item) {
-            item.message.detach();
-          });
-        });
-
-        this.reRender = function() {
-          if (!renderLater) {
-            renderLater = true;
-            $scope.$evalAsync(function() {
-              if (renderLater && cachedCollection) {
-                ctrl.render(cachedCollection);
-              }
-            });
-          }
-        };
-
-        this.register = function(comment, messageCtrl) {
-          var nextKey = latestKey.toString();
-          messages[nextKey] = {
-            message: messageCtrl
-          };
-          insertMessageNode($element[0], comment, nextKey);
-          comment.$$ngMessageNode = nextKey;
-          latestKey++;
-
-          ctrl.reRender();
-        };
-
-        this.deregister = function(comment) {
-          var key = comment.$$ngMessageNode;
-          delete comment.$$ngMessageNode;
-          removeMessageNode($element[0], comment, key);
-          delete messages[key];
-          ctrl.reRender();
-        };
-
-        function findPreviousMessage(parent, comment) {
-          var prevNode = comment;
-          var parentLookup = [];
-
-          while (prevNode && prevNode !== parent) {
-            var prevKey = prevNode.$$ngMessageNode;
-            if (prevKey && prevKey.length) {
-              return messages[prevKey];
-            }
-
-            // dive deeper into the DOM and examine its children for any ngMessage
-            // comments that may be in an element that appears deeper in the list
-            if (prevNode.childNodes.length && parentLookup.indexOf(prevNode) === -1) {
-              parentLookup.push(prevNode);
-              prevNode = prevNode.childNodes[prevNode.childNodes.length - 1];
-            } else if (prevNode.previousSibling) {
-              prevNode = prevNode.previousSibling;
-            } else {
-              prevNode = prevNode.parentNode;
-              parentLookup.push(prevNode);
-            }
-          }
-        }
-
-        function insertMessageNode(parent, comment, key) {
-          var messageNode = messages[key];
-          if (!ctrl.head) {
-            ctrl.head = messageNode;
-          } else {
-            var match = findPreviousMessage(parent, comment);
-            if (match) {
-              messageNode.next = match.next;
-              match.next = messageNode;
-            } else {
-              messageNode.next = ctrl.head;
-              ctrl.head = messageNode;
-            }
-          }
-        }
-
-        function removeMessageNode(parent, comment, key) {
-          var messageNode = messages[key];
-
-          var match = findPreviousMessage(parent, comment);
-          if (match) {
-            match.next = messageNode.next;
-          } else {
-            ctrl.head = messageNode.next;
-          }
-        }
-      }]
-    };
-
-    function isAttrTruthy(scope, attr) {
-     return (isString(attr) && attr.length === 0) || //empty attribute
-            truthy(scope.$eval(attr));
-    }
-
-    function truthy(val) {
-      return isString(val) ? val.length : !!val;
-    }
-  }])
-
-  /**
-   * @ngdoc directive
-   * @name ngMessagesInclude
-   * @restrict AE
-   * @scope
-   *
-   * @description
-   * `ngMessagesInclude` is a directive with the purpose to import existing ngMessage template
-   * code from a remote template and place the downloaded template code into the exact spot
-   * that the ngMessagesInclude directive is placed within the ngMessages container. This allows
-   * for a series of pre-defined messages to be reused and also allows for the developer to
-   * determine what messages are overridden due to the placement of the ngMessagesInclude directive.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-messages-include="remoteTplString">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-messages-include src="expressionValue1">...</ng-messages-include>
-   * </ng-messages>
-   * ```
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @param {string} ngMessagesInclude|src a string value corresponding to the remote template.
-   */
-  .directive('ngMessagesInclude',
-    ['$templateRequest', '$document', '$compile', function($templateRequest, $document, $compile) {
-
-    return {
-      restrict: 'AE',
-      require: '^^ngMessages', // we only require this for validation sake
-      link: function($scope, element, attrs) {
-        var src = attrs.ngMessagesInclude || attrs.src;
-        $templateRequest(src).then(function(html) {
-          if ($scope.$$destroyed) return;
-
-          if (isString(html) && !html.trim()) {
-            // Empty template - nothing to compile
-            replaceElementWithMarker(element, src);
-          } else {
-            // Non-empty template - compile and link
-            $compile(html)($scope, function(contents) {
-              element.after(contents);
-              replaceElementWithMarker(element, src);
-            });
-          }
-        });
-      }
-    };
-
-    // Helpers
-    function replaceElementWithMarker(element, src) {
-      // A comment marker is placed for debugging purposes
-      var comment = $compile.$$createComment ?
-          $compile.$$createComment('ngMessagesInclude', src) :
-          $document[0].createComment(' ngMessagesInclude: ' + src + ' ');
-      var marker = jqLite(comment);
-      element.after(marker);
-
-      // Don't pollute the DOM anymore by keeping an empty directive element
-      element.remove();
-    }
-  }])
-
-  /**
-   * @ngdoc directive
-   * @name ngMessage
-   * @restrict AE
-   * @scope
-   *
-   * @description
-   * `ngMessage` is a directive with the purpose to show and hide a particular message.
-   * For `ngMessage` to operate, a parent `ngMessages` directive on a parent DOM element
-   * must be situated since it determines which messages are visible based on the state
-   * of the provided key/value map that `ngMessages` listens on.
-   *
-   * More information about using `ngMessage` can be found in the
-   * {@link module:ngMessages `ngMessages` module documentation}.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-message="stringValue">...</ANY>
-   *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-message when="stringValue">...</ng-message>
-   *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * @param {expression} ngMessage|when a string value corresponding to the message key.
-   */
-  .directive('ngMessage', ngMessageDirectiveFactory())
-
-
-  /**
-   * @ngdoc directive
-   * @name ngMessageExp
-   * @restrict AE
-   * @priority 1
-   * @scope
-   *
-   * @description
-   * `ngMessageExp` is the same as {@link directive:ngMessage `ngMessage`}, but instead of a static
-   * value, it accepts an expression to be evaluated for the message key.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression">
-   *   <ANY ng-message-exp="expressionValue">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression">
-   *   <ng-message when-exp="expressionValue">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @param {expression} ngMessageExp|whenExp an expression value corresponding to the message key.
-   */
-  .directive('ngMessageExp', ngMessageDirectiveFactory());
-
-function ngMessageDirectiveFactory() {
-  return ['$animate', function($animate) {
-    return {
-      restrict: 'AE',
-      transclude: 'element',
-      priority: 1, // must run before ngBind, otherwise the text is set on the comment
-      terminal: true,
-      require: '^^ngMessages',
-      link: function(scope, element, attrs, ngMessagesCtrl, $transclude) {
-        var commentNode = element[0];
-
-        var records;
-        var staticExp = attrs.ngMessage || attrs.when;
-        var dynamicExp = attrs.ngMessageExp || attrs.whenExp;
-        var assignRecords = function(items) {
-          records = items
-              ? (isArray(items)
-                  ? items
-                  : items.split(/[\s,]+/))
-              : null;
-          ngMessagesCtrl.reRender();
-        };
-
-        if (dynamicExp) {
-          assignRecords(scope.$eval(dynamicExp));
-          scope.$watchCollection(dynamicExp, assignRecords);
-        } else {
-          assignRecords(staticExp);
-        }
-
-        var currentElement, messageCtrl;
-        ngMessagesCtrl.register(commentNode, messageCtrl = {
-          test: function(name) {
-            return contains(records, name);
-          },
-          attach: function() {
-            if (!currentElement) {
-              $transclude(function(elm, newScope) {
-                $animate.enter(elm, null, element);
-                currentElement = elm;
-
-                // Each time we attach this node to a message we get a new id that we can match
-                // when we are destroying the node later.
-                var $$attachId = currentElement.$$attachId = ngMessagesCtrl.getAttachId();
-
-                // in the event that the element or a parent element is destroyed
-                // by another structural directive then it's time
-                // to deregister the message from the controller
-                currentElement.on('$destroy', function() {
-                  if (currentElement && currentElement.$$attachId === $$attachId) {
-                    ngMessagesCtrl.deregister(commentNode);
-                    messageCtrl.detach();
-                  }
-                  newScope.$destroy();
-                });
-              });
-            }
-          },
-          detach: function() {
-            if (currentElement) {
-              var elm = currentElement;
-              currentElement = null;
-              $animate.leave(elm);
-            }
-          }
-        });
-      }
-    };
-  }];
-
-  function contains(collection, key) {
-    if (collection) {
-      return isArray(collection)
-          ? collection.indexOf(key) >= 0
-          : collection.hasOwnProperty(key);
-    }
-  }
-}
-
-
-})(window, window.angular);
-
-},{}],10:[function(require,module,exports){
-require('./angular-messages');
-module.exports = 'ngMessages';
-
-},{"./angular-messages":9}],11:[function(require,module,exports){
+},{"./angular-material":7,"angular":13,"angular-animate":2,"angular-aria":4}],9:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -42275,11 +41529,11 @@ angular.module('ngResource', ['ng']).
 
 })(window, window.angular);
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 require('./angular-resource');
 module.exports = 'ngResource';
 
-},{"./angular-resource":11}],13:[function(require,module,exports){
+},{"./angular-resource":9}],11:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.4.2
@@ -46964,7 +46218,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -80337,11 +79591,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],15:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":14}],16:[function(require,module,exports){
+},{"./angular":12}],14:[function(require,module,exports){
 'use strict';
 
 //vendor dependencies
@@ -80350,300 +79604,166 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _angularUiRouter = require('angular-ui-router');
+var _core = require('./core');
 
-var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+var _core2 = _interopRequireDefault(_core);
 
-var _angularAnimate = require('angular-animate');
+var _features = require('./features');
 
-var _angularAnimate2 = _interopRequireDefault(_angularAnimate);
-
-var _angularAria = require('angular-aria');
-
-var _angularAria2 = _interopRequireDefault(_angularAria);
-
-var _angularMessages = require('angular-messages');
-
-var _angularMessages2 = _interopRequireDefault(_angularMessages);
-
-var _angularCookies = require('angular-cookies');
-
-var _angularCookies2 = _interopRequireDefault(_angularCookies);
-
-var _config = require('./config');
-
-var _config2 = _interopRequireDefault(_config);
-
-var _constants = require('./constants');
-
-var _constants2 = _interopRequireDefault(_constants);
-
-var _run = require('./run');
-
-var _run2 = _interopRequireDefault(_run);
+var _features2 = _interopRequireDefault(_features);
 
 var _components = require('./components');
 
 var _components2 = _interopRequireDefault(_components);
 
-var _utils = require('./utils/');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _helpers = require('./helpers/');
-
-var _helpers2 = _interopRequireDefault(_helpers);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_angular2.default.module('app', [_angularUiRouter2.default, _angularCookies2.default, //for cookie path configuration
-_utils2.default, _helpers2.default, _components2.default]).config(_config2.default).run(_run2.default).constant('constants', _constants2.default);
+_angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
 
-},{"./components":26,"./config":37,"./constants":38,"./helpers/":43,"./run":44,"./utils/":46,"angular":15,"angular-animate":2,"angular-aria":4,"angular-cookies":6,"angular-messages":10,"angular-ui-router":13}],17:[function(require,module,exports){
+},{"./components":15,"./core":31,"./features":47,"angular":13}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _dashboard = require('./dashboard.controller');
+var _angular = require('angular');
 
-var _dashboard2 = _interopRequireDefault(_dashboard);
+var _angular2 = _interopRequireDefault(_angular);
 
-var _dashboardTemplate = require('./dashboard.template.html');
+var _mainToolbar = require('./main-toolbar');
 
-var _dashboardTemplate2 = _interopRequireDefault(_dashboardTemplate);
+var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
+
+var _mainSidenav = require('./main-sidenav');
+
+var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//components
+exports.default = _angular2.default.module('app.components', [_mainToolbar2.default, _mainSidenav2.default]).name;
+
+},{"./main-sidenav":16,"./main-toolbar":20,"angular":13}],16:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _mainSidenav = require('./main-sidenav.component');
+
+var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.main-sidenav', [_angularMaterial2.default]).component('mainSidenav', _mainSidenav2.default).name;
+
+},{"./main-sidenav.component":17,"angular":13,"angular-material":8}],17:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mainSidenavTemplate = require('./main-sidenav.template.html');
+
+var _mainSidenavTemplate2 = _interopRequireDefault(_mainSidenavTemplate);
+
+var _mainSidenav = require('./main-sidenav.controller');
+
+var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    template: _dashboardTemplate2.default,
-    controller: _dashboard2.default
+    template: _mainSidenavTemplate2.default,
+    controller: _mainSidenav2.default
 };
 
-},{"./dashboard.controller":19,"./dashboard.template.html":20}],18:[function(require,module,exports){
+},{"./main-sidenav.controller":18,"./main-sidenav.template.html":19}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = config;
-function config($urlRouterProvider, $stateProvider) {
 
-    $stateProvider.state('dashboard.home', {
-        url: '',
-        template: '<home></home>'
-    }).state('dashboard.studentsManagement', {
-        url: 'alumnos',
-        //template:'<students-management></students-management>'
-        template: '<h1>Alumnos!</h1>'
-    }).state('dashboard.teachersManagement', {
-        url: 'profesores',
-        //template:'<teachers-management></teachers-management>'
-        template: '<h1>Profesores!</h1>'
-    }).state('dashboard.subjectsManagement', {
-        url: 'cursos',
-        //template:'<subjects-management></subjects-management>'
-        template: '<h1>Cursos!</h1>'
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MainSidenavController = function MainSidenavController($scope, constants) {
+    var _this = this;
+
+    _classCallCheck(this, MainSidenavController);
+
+    this.open = true;
+    this.title = constants.app.title;
+    $scope.$on('closeMainSidenav', function (event, data) {
+        _this.open = !_this.open;
     });
-}
+};
 
-config.$inject = ['$urlRouterProvider', '$stateProvider'];
+exports.default = MainSidenavController;
+
+
+MainSidenavController.$inject = ['$scope', 'constants'];
 
 },{}],19:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var DashboardController = function DashboardController(constants, LoadingModalService) {
-    _classCallCheck(this, DashboardController);
-
-    console.log('Dashboard controller loaded...');
-    this.title = constants.app.title;
-    LoadingModalService.show();
-};
-
-exports.default = DashboardController;
-
-
-DashboardController.$inject = ['constants', 'LoadingModalService'];
+module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-is-locked-open=\"$ctrl.open\" \r\n    md-whiteframe=\"6\"\r\n    layout=\"column\">\r\n    <md-toolbar>\r\n        <h1>{{$ctrl.title}}</h1>\r\n    </md-toolbar>\r\n    <md-content layout=\"column\" flex>\r\n        <h1>User Profile</h1>\r\n        <md-content flex>\r\n            <ul>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n            </ul>\r\n        </md-content>\r\n    </md-content>    \r\n</md-sidenav>";
 
 },{}],20:[function(require,module,exports){
-module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        <span>{{$ctrl.title}}</span>\r\n    </div>\r\n    <div layout=\"row\">        \r\n        <main-sidenav></main-sidenav>\r\n        <ui-view></ui-view>\r\n    </div>\r\n</div>";
-
-},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _home = require('./home.controller');
+var _angular = require('angular');
 
-var _home2 = _interopRequireDefault(_home);
+var _angular2 = _interopRequireDefault(_angular);
 
-var _homeTemplate = require('./home.template.html');
+var _mainToolbar = require('./main-toolbar.component');
 
-var _homeTemplate2 = _interopRequireDefault(_homeTemplate);
+var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.main-toolbar', [_angularMaterial2.default]).component('mainToolbar', _mainToolbar2.default).name;
+
+},{"./main-toolbar.component":21,"angular":13,"angular-material":8}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mainToolbarTemplate = require('./main-toolbar.template.html');
+
+var _mainToolbarTemplate2 = _interopRequireDefault(_mainToolbarTemplate);
+
+var _mainToolbar = require('./main-toolbar.controller');
+
+var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    template: _homeTemplate2.default,
-    controller: _home2.default.name
+    template: _mainToolbarTemplate2.default,
+    controller: _mainToolbar2.default
 };
 
-},{"./home.controller":22,"./home.template.html":23}],22:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var HomeController = function HomeController() {
-    _classCallCheck(this, HomeController);
-};
-
-exports.default = HomeController;
-
-},{}],23:[function(require,module,exports){
-module.exports = "<h1>Hello Homeworld!!</h1>";
-
-},{}],24:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _home = require('./home.controller');
-
-var _home2 = _interopRequireDefault(_home);
-
-var _home3 = require('./home.component');
-
-var _home4 = _interopRequireDefault(_home3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _angular2.default.module('components.dashboard.home', []).controller(_home2.default.name, _home2.default).component('home', _home4.default).name;
-
-},{"./home.component":21,"./home.controller":22,"angular":15}],25:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _dashboard = require('./dashboard.config');
-
-var _dashboard2 = _interopRequireDefault(_dashboard);
-
-var _dashboard3 = require('./dashboard.component');
-
-var _dashboard4 = _interopRequireDefault(_dashboard3);
-
-var _dashboard5 = require('./dashboard.controller');
-
-var _dashboard6 = _interopRequireDefault(_dashboard5);
-
-var _home = require('./home/');
-
-var _home2 = _interopRequireDefault(_home);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _angular2.default.module('components.dashboard', [_home2.default]).config(_dashboard2.default).controller(_dashboard6.default.name, _dashboard6.default).component('dashboard', _dashboard4.default).name;
-
-},{"./dashboard.component":17,"./dashboard.config":18,"./dashboard.controller":19,"./home/":24,"angular":15}],26:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _dashboard = require('./dashboard');
-
-var _dashboard2 = _interopRequireDefault(_dashboard);
-
-var _login = require('./login');
-
-var _login2 = _interopRequireDefault(_login);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _angular2.default.module('components', [_dashboard2.default, _login2.default]).name;
-
-},{"./dashboard":25,"./login":27,"angular":15}],27:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _login = require('./login.controller');
-
-var _login2 = _interopRequireDefault(_login);
-
-var _login3 = require('./login.component');
-
-var _login4 = _interopRequireDefault(_login3);
-
-var _angularUiRouter = require('angular-ui-router');
-
-var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var angularMaterial = require('angular-material');
-
-exports.default = _angular2.default.module('components.login', [angularMaterial, _angularUiRouter2.default]).controller(_login2.default.name, _login2.default).component('login', _login4.default).name;
-
-},{"./login.component":28,"./login.controller":29,"angular":15,"angular-material":8,"angular-ui-router":13}],28:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _login = require('./login.controller');
-
-var _login2 = _interopRequireDefault(_login);
-
-var _loginTemplate = require('./login.template.html');
-
-var _loginTemplate2 = _interopRequireDefault(_loginTemplate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    template: _loginTemplate2.default,
-    controller: _login2.default.name
-};
-
-},{"./login.controller":29,"./login.template.html":30}],29:[function(require,module,exports){
+},{"./main-toolbar.controller":22,"./main-toolbar.template.html":23}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80654,34 +79774,54 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var LoginController = function () {
-    function LoginController(constants, $state) {
-        _classCallCheck(this, LoginController);
+var MainToolbarController = function () {
+    function MainToolbarController($rootScope) {
+        _classCallCheck(this, MainToolbarController);
 
-        this.title = constants.app.title;
-        this.subtitle = constants.app.subtitle;
-        this.$state = $state;
+        this.$rootScope = $rootScope;
     }
 
-    _createClass(LoginController, [{
-        key: 'login',
-        value: function login() {
-            this.$state.go('dashboard.home');
+    _createClass(MainToolbarController, [{
+        key: 'closeMainSidenav',
+        value: function closeMainSidenav() {
+            this.$rootScope.$broadcast("closeMainSidenav", {});
         }
     }]);
 
-    return LoginController;
+    return MainToolbarController;
 }();
 
-exports.default = LoginController;
+exports.default = MainToolbarController;
 
 
-LoginController.$inject = ['constants', '$state'];
+MainToolbarController.$inject = ['$rootScope'];
 
-},{}],30:[function(require,module,exports){
-module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
+},{}],23:[function(require,module,exports){
+module.exports = "<md-toolbar layout=\"row\">\r\n    <md-button ng-click=\"$ctrl.closeMainSidenav();\">\r\n        <md-icon md-font-library=\"material-icons\" >view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <md-button>\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>\r\n</md-toolbar>";
 
-},{}],31:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    app: {
+        title: 'S.C.A.E',
+        subtitle: 'Sistema de control de asistencia de estudiantes',
+        home: {
+            content: 'Bienvenido a SCAE!!'
+        }
+    },
+    resources: {
+        remote: {
+            baseUrl: '/data/',
+            authorizationHeader: 'Authorization'
+        }
+    }
+};
+
+},{}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80692,76 +79832,15 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _loadingIndicator = require('./loading-indicator.component');
+var _constants = require('./constants');
 
-var _loadingIndicator2 = _interopRequireDefault(_loadingIndicator);
-
-var _loadingIndicator3 = require('./loading-indicator.controller');
-
-var _loadingIndicator4 = _interopRequireDefault(_loadingIndicator3);
+var _constants2 = _interopRequireDefault(_constants);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var angularMaterial = require('angular-material');
+exports.default = _angular2.default.module('app.core.constants', []).constant('constants', _constants2.default).name;
 
-exports.default = _angular2.default.module('components.shared.loading-indicator', [angularMaterial]).controller(_loadingIndicator4.default.name, _loadingIndicator4.default).component('loadingIndicator', _loadingIndicator2.default).name;
-
-},{"./loading-indicator.component":32,"./loading-indicator.controller":33,"angular":15,"angular-material":8}],32:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _loadingIndicator = require('./loading-indicator.controller');
-
-var _loadingIndicator2 = _interopRequireDefault(_loadingIndicator);
-
-var _loadingIndicatorTemplate = require('./loading-indicator.template.html');
-
-var _loadingIndicatorTemplate2 = _interopRequireDefault(_loadingIndicatorTemplate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    template: _loadingIndicatorTemplate2.default,
-    controller: _loadingIndicator2.default.name
-};
-
-},{"./loading-indicator.controller":33,"./loading-indicator.template.html":34}],33:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var LoadingIndicatorController = function LoadingIndicatorController() {
-    _classCallCheck(this, LoadingIndicatorController);
-};
-
-exports.default = LoadingIndicatorController;
-
-
-LoadingIndicatorController.$inject = [];
-
-},{}],34:[function(require,module,exports){
-module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
-
-},{}],35:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = routing;
-function routing($cookiesProvider) {
-
-    $cookiesProvider.defaults.path = '/';
-}
-
-},{}],36:[function(require,module,exports){
+},{"./constants":24,"angular":13}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80785,52 +79864,23 @@ function routing($urlRouterProvider, $stateProvider) {
     });
 }
 
-},{}],37:[function(require,module,exports){
+routing.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+},{}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = configuration;
+exports.default = CookieManagerConfiguration;
+function CookieManagerConfiguration($cookiesProvider) {
 
-var _config = require('./config.routing');
-
-var _config2 = _interopRequireDefault(_config);
-
-var _config3 = require('./config.cookies');
-
-var _config4 = _interopRequireDefault(_config3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-configuration.$inject = ['$urlRouterProvider', '$stateProvider', '$cookiesProvider'];
-
-function configuration($urlRouterProvider, $stateProvider, $cookiesProvider) {
-    (0, _config2.default)($urlRouterProvider, $stateProvider);
-    (0, _config4.default)($cookiesProvider);
-    console.log('App was configred successfully');
+    $cookiesProvider.defaults.path = '/';
 }
 
-},{"./config.cookies":35,"./config.routing":36}],38:[function(require,module,exports){
-'use strict';
+CookieManagerConfiguration.$inject = ['$cookiesProvider'];
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    app: {
-        title: 'S.C.A.E',
-        subtitle: 'Sistema de control de asistencia de estudiantes'
-    },
-    resources: {
-        remote: {
-            baseUrl: '/data/',
-            authorizationHeader: 'Authorization'
-        }
-    }
-};
-
-},{}],39:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80896,7 +79946,7 @@ exports.default = AppCookiesService;
 
 AppCookiesService.$inject = ['$cookies', '$resource', 'constants'];
 
-},{}],40:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80907,9 +79957,13 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _appCookies = require('./app-cookies.service');
+var _cookieManager = require('./cookie-manager.config');
 
-var _appCookies2 = _interopRequireDefault(_appCookies);
+var _cookieManager2 = _interopRequireDefault(_cookieManager);
+
+var _cookieManager3 = require('./cookie-manager.service');
+
+var _cookieManager4 = _interopRequireDefault(_cookieManager3);
 
 var _angularCookies = require('angular-cookies');
 
@@ -80921,57 +79975,9 @@ var _angularResource2 = _interopRequireDefault(_angularResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('helpers.app-cookies', [_angularCookies2.default, _angularResource2.default]).service(_appCookies2.default.name, _appCookies2.default).name;
+exports.default = _angular2.default.module('app.core.helpers.cookie-manager', [_angularCookies2.default, _angularResource2.default]).config(_cookieManager2.default).service(_cookieManager4.default.name, _cookieManager4.default).name;
 
-},{"./app-cookies.service":39,"angular":15,"angular-cookies":6,"angular-resource":12}],41:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var AppResourceService = function () {
-    function AppResourceService($resource, AppCookiesService, constants) {
-        _classCallCheck(this, AppResourceService);
-
-        this.resourceService = $resource;
-        this.baseUrl = constants.resources.remote.baseUrl;
-        this.authorizationHeader = constants.resources.remote.authorizationHeader;
-    }
-
-    _createClass(AppResourceService, [{
-        key: "$resource",
-        value: function $resource(pathToResource, pathValues, methods) {
-            var _this = this;
-
-            methods.forEach(function (m) {
-                if (!m["headers"]) {
-                    m["headers"] = {};
-                }
-                m.headers[_this.authorizationHeader] = _this.getAuthorizationToken;
-            });
-            return this.resourceService(this.baseUrl + pathToResource, pathValues, methods);
-        }
-    }, {
-        key: "getAuthorizationToken",
-        value: function getAuthorizationToken() {
-            return "Token " + AppCookiesService.get('token');
-        }
-    }]);
-
-    return AppResourceService;
-}();
-
-exports.default = AppResourceService;
-
-
-AppResourceService.$inject = ['$resource', 'AppCookiesService', 'constants'];
-
-},{}],42:[function(require,module,exports){
+},{"./cookie-manager.config":27,"./cookie-manager.service":28,"angular":13,"angular-cookies":6,"angular-resource":10}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80982,15 +79988,15 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _appResource = require('./app-resource.service');
+var _cookieManager = require('./cookie-manager');
 
-var _appResource2 = _interopRequireDefault(_appResource);
+var _cookieManager2 = _interopRequireDefault(_cookieManager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('helpers.angular-resource', []).service(_appResource2.default.name, _appResource2.default).name;
+exports.default = _angular2.default.module('app.core.helpers', [_cookieManager2.default]).name;
 
-},{"./app-resource.service":41,"angular":15}],43:[function(require,module,exports){
+},{"./cookie-manager":29,"angular":13}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81001,50 +80007,31 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _appCookies = require('./app-cookies');
+var _core = require('./core.config');
 
-var _appCookies2 = _interopRequireDefault(_appCookies);
+var _core2 = _interopRequireDefault(_core);
 
-var _appResource = require('./app-resource');
+var _constants = require('./constants');
 
-var _appResource2 = _interopRequireDefault(_appResource);
+var _constants2 = _interopRequireDefault(_constants);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _helpers = require('./helpers');
 
-exports.default = _angular2.default.module('helpers', [_appCookies2.default, _appResource2.default]).name;
+var _helpers2 = _interopRequireDefault(_helpers);
 
-},{"./app-cookies":40,"./app-resource":42,"angular":15}],44:[function(require,module,exports){
-'use strict';
+var _utils = require('./utils');
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = run;
+var _utils2 = _interopRequireDefault(_utils);
 
-var _run = require('./run.load-cookie-name');
+var _angularUiRouter = require('angular-ui-router');
 
-var _run2 = _interopRequireDefault(_run);
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function run(AppCookiesService) {
-    (0, _run2.default)(AppCookiesService);
-}
+exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _constants2.default, _helpers2.default, _utils2.default]).config(_core2.default).name;
 
-run.$inject = ['AppCookiesService'];
-
-},{"./run.load-cookie-name":45}],45:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = loadCookieName;
-function loadCookieName(AppCookiesService) {
-    AppCookiesService.load();
-}
-
-},{}],46:[function(require,module,exports){
+},{"./constants":25,"./core.config":26,"./helpers":30,"./utils":32,"angular":13,"angular-ui-router":11}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81059,84 +80046,11 @@ var _loadingModal = require('./loading-modal');
 
 var _loadingModal2 = _interopRequireDefault(_loadingModal);
 
-var _loadingModalAnother = require('./loading-modal-another');
-
-var _loadingModalAnother2 = _interopRequireDefault(_loadingModalAnother);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('utils', [_loadingModal2.default, _loadingModalAnother2.default]).name;
+exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default]).name;
 
-},{"./loading-modal":49,"./loading-modal-another":47,"angular":15}],47:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _angular = require('angular');
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _loadingModalAnother = require('./loading-modal-another.service');
-
-var _loadingModalAnother2 = _interopRequireDefault(_loadingModalAnother);
-
-var _loadingIndicator = require('../../components/shared/loading-indicator');
-
-var _loadingIndicator2 = _interopRequireDefault(_loadingIndicator);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var angularMaterial = require('angular-material');
-
-exports.default = _angular2.default.module('utils.loading-modal-another', [_loadingIndicator2.default]).service(_loadingModalAnother2.default.name, _loadingModalAnother2.default).name;
-
-},{"../../components/shared/loading-indicator":31,"./loading-modal-another.service":48,"angular":15,"angular-material":8}],48:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var LoadingModalAnotherService = function () {
-    function LoadingModalAnotherService($mdDialog) {
-        _classCallCheck(this, LoadingModalAnotherService);
-
-        this.$mdDialog = $mdDialog;
-    }
-
-    _createClass(LoadingModalAnotherService, [{
-        key: 'show',
-        value: function show() {
-            this.$mdDialog.show({
-                template: '<md-dialog aria-label="Loading"><md-dialog-content>' + '<div class="md-dialog-content"><h1>Hehe!</h1><loading-indicator/></div>' + '</md-dialog-content></md-dialog>',
-                parent: angular.element(document.body),
-                clickOutsideToClose: false,
-                bindToController: true,
-                hasBackDrop: true
-            });
-        }
-    }, {
-        key: 'close',
-        value: function close() {
-            this.$mdDialog.hide();
-        }
-    }]);
-
-    return LoadingModalAnotherService;
-}();
-
-exports.default = LoadingModalAnotherService;
-
-
-LoadingModalAnotherService.$inject = ['$mdDialog'];
-
-},{}],49:[function(require,module,exports){
+},{"./loading-modal":33,"angular":13}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81151,17 +80065,57 @@ var _loadingModal = require('./loading-modal.service');
 
 var _loadingModal2 = _interopRequireDefault(_loadingModal);
 
-var _loadingIndicator = require('../../components/shared/loading-indicator');
+var _loadingModal3 = require('./loading-modal.component');
 
-var _loadingIndicator2 = _interopRequireDefault(_loadingIndicator);
+var _loadingModal4 = _interopRequireDefault(_loadingModal3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var angularMaterial = require('angular-material');
 
-exports.default = _angular2.default.module('utils.loading-modal', [_loadingIndicator2.default]).service(_loadingModal2.default.name, _loadingModal2.default).name;
+exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service(_loadingModal2.default.name, _loadingModal2.default).name;
 
-},{"../../components/shared/loading-indicator":31,"./loading-modal.service":50,"angular":15,"angular-material":8}],50:[function(require,module,exports){
+},{"./loading-modal.component":34,"./loading-modal.service":36,"angular":13,"angular-material":8}],34:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _loadingModal = require('./loading-modal.controller');
+
+var _loadingModal2 = _interopRequireDefault(_loadingModal);
+
+var _loadingModalTemplate = require('./loading-modal.template.html');
+
+var _loadingModalTemplate2 = _interopRequireDefault(_loadingModalTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _loadingModalTemplate2.default,
+    controller: _loadingModal2.default
+};
+
+},{"./loading-modal.controller":35,"./loading-modal.template.html":37}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LoadingModalController = function LoadingModalController() {
+    _classCallCheck(this, LoadingModalController);
+};
+
+exports.default = LoadingModalController;
+
+
+LoadingModalController.$inject = [];
+
+},{}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81183,7 +80137,7 @@ var LoadingModalService = function () {
         key: 'show',
         value: function show() {
             this.$mdDialog.show({
-                template: '<md-dialog aria-label="Loading"><md-dialog-content>' + '<div class="md-dialog-content"><loading-indicator/></div>' + '</md-dialog-content></md-dialog>',
+                template: '<md-dialog aria-label="Loading"><md-dialog-content>' + '<div class="md-dialog-content"><loading-modal/></div>' + '</md-dialog-content></md-dialog>',
                 parent: angular.element(document.body),
                 clickOutsideToClose: false,
                 bindToController: true,
@@ -81205,4 +80159,307 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}]},{},[16]);
+},{}],37:[function(require,module,exports){
+module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
+
+},{}],38:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboardHome = require('./dashboard-home.controller');
+
+var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
+
+var _dashboardHomeTemplate = require('./dashboard-home.template.html');
+
+var _dashboardHomeTemplate2 = _interopRequireDefault(_dashboardHomeTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardHomeTemplate2.default,
+    controller: _dashboardHome2.default
+};
+
+},{"./dashboard-home.controller":39,"./dashboard-home.template.html":40}],39:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardHomeController = function DashboardHomeController(constants) {
+    _classCallCheck(this, DashboardHomeController);
+
+    this.content = constants.app.home.content;
+};
+
+exports.default = DashboardHomeController;
+
+
+DashboardHomeController.$inject = ['constants'];
+
+},{}],40:[function(require,module,exports){
+module.exports = "<h1>{{$ctrl.content}}</h1>";
+
+},{}],41:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _dashboardHome = require('./dashboard-home.component');
+
+var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('home', _dashboardHome2.default).name;
+
+},{"../../core":31,"./dashboard-home.component":38,"angular":13}],42:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboard = require('./dashboard.controller');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _dashboardTemplate = require('./dashboard.template.html');
+
+var _dashboardTemplate2 = _interopRequireDefault(_dashboardTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardTemplate2.default,
+    controller: _dashboard2.default
+};
+
+},{"./dashboard.controller":44,"./dashboard.template.html":45}],43:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = config;
+function config($urlRouterProvider, $stateProvider) {
+
+    $stateProvider.state('dashboard.home', {
+        url: '',
+        template: '<home></home>'
+    }).state('dashboard.maintenance', {
+        url: 'mantenimiento',
+        template: '<h1>Mantenimiento</h1><ui-view class="shuffle-animation"/>'
+    }).state('dashboard.maintenance.students', {
+        url: '/alumnos',
+        template: '<h1>Alumnos!</h1>'
+    }).state('dashboard.maintenance.teachers', {
+        url: '/profesores',
+        template: '<h1>Profesores!</h1>'
+    }).state('dashboard.maintenance.subjects', {
+        url: '/cursos',
+        template: '<h1>Cursos!</h1>'
+    });
+}
+
+config.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+},{}],44:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardController = function DashboardController(constants) {
+    _classCallCheck(this, DashboardController);
+
+    this.title = constants.app.title;
+};
+
+exports.default = DashboardController;
+
+
+DashboardController.$inject = ['constants'];
+
+},{}],45:[function(require,module,exports){
+module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        <span>{{$ctrl.title}}</span>\r\n    </div>\r\n    <div layout=\"row\">    \r\n        <main-sidenav></main-sidenav>\r\n        <div layout=\"column\" flex>\r\n            <main-toolbar></main-toolbar>            \r\n            <ui-view></ui-view>\r\n        </div>        \r\n    </div>\r\n</div>";
+
+},{}],46:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _components = require('../../components');
+
+var _components2 = _interopRequireDefault(_components);
+
+var _dashboard = require('./dashboard.config');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _dashboard3 = require('./dashboard.component');
+
+var _dashboard4 = _interopRequireDefault(_dashboard3);
+
+var _dashboardHome = require('../dashboard-home');
+
+var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//import dashboardMaintenance from '../dashboard-maintenance';
+//import dashboardReports from '../dashboard-reports';
+
+exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default]).config(_dashboard2.default).component('dashboard', _dashboard4.default).name;
+
+},{"../../components":15,"../../core":31,"../dashboard-home":41,"./dashboard.component":42,"./dashboard.config":43,"angular":13}],47:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _components = require('../components');
+
+var _components2 = _interopRequireDefault(_components);
+
+var _login = require('./login');
+
+var _login2 = _interopRequireDefault(_login);
+
+var _dashboard = require('./dashboard');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
+
+},{"../components":15,"../core":31,"./dashboard":46,"./login":48,"angular":13}],48:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _login = require('./login.component');
+
+var _login2 = _interopRequireDefault(_login);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var angularMaterial = require('angular-material');
+
+exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
+
+},{"../../core":31,"./login.component":49,"angular":13,"angular-material":8,"angular-ui-router":11}],49:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _login = require('./login.controller');
+
+var _login2 = _interopRequireDefault(_login);
+
+var _loginTemplate = require('./login.template.html');
+
+var _loginTemplate2 = _interopRequireDefault(_loginTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _loginTemplate2.default,
+    controller: _login2.default
+};
+
+},{"./login.controller":50,"./login.template.html":51}],50:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LoginController = function () {
+    function LoginController(constants, $state) {
+        _classCallCheck(this, LoginController);
+
+        this.title = constants.app.title;
+        this.subtitle = constants.app.subtitle;
+        this.$state = $state;
+    }
+
+    _createClass(LoginController, [{
+        key: 'login',
+        value: function login() {
+            this.$state.go('dashboard.home');
+        }
+    }]);
+
+    return LoginController;
+}();
+
+exports.default = LoginController;
+
+
+LoginController.$inject = ['constants', '$state'];
+
+},{}],51:[function(require,module,exports){
+module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
+
+},{}]},{},[14]);

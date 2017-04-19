@@ -5,5 +5,5 @@ import dashboardHomeTemplate from './dashboard-home.template.html'
 
 export default {
     template : dashboardHomeTemplate,
-    controller : dashboardHomeController.name
+    controller : dashboardHomeController
 }

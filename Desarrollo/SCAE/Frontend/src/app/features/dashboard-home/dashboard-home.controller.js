@@ -2,7 +2,7 @@
 
 export default class DashboardHomeController{
     constructor(constants){
-        this.content = constants.home.content
+        this.content = constants.app.home.content
     }
 }
 

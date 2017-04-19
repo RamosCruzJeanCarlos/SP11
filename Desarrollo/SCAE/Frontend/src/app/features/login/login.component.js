@@ -5,5 +5,5 @@ import LoginTemplate from './login.template.html';
 
 export default {
     template : LoginTemplate,
-    controller : LoginController.name
+    controller : LoginController
 }

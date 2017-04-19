@@ -17795,6 +17795,9 @@ md-toast {
   .hide-print:not(.show-print):not(.show) {
     display: none !important; } }
 
+main-sidenav > md-sidenav {
+  height: 100%; }
+
 login > div {
   background: repeating-linear-gradient(45deg, #BCDCFF, #BCDCFF 25px, #a3cfff 25px, #a3cfff 50px);
   height: 100%; }

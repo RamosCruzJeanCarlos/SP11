@@ -1,10 +1,26 @@
-<md-sidenav class="sidenav-left" md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="4">
+<md-sidenav 
+    class="md-sidenav-left" 
+    md-is-locked-open="$ctrl.open" 
+    md-whiteframe="6"
+    layout="column">
     <md-toolbar>
         <h1>{{$ctrl.title}}</h1>
     </md-toolbar>
-    <md-content layout-padding>
-        <a ng-repeat="feature in $ctrl.features">
-            {{feature.name}}
-        </a>
-    </md-content>
+    <md-content layout="column" flex>
+        <h1>User Profile</h1>
+        <md-content flex>
+            <ul>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+                <li><a href="#">Item</a></li>
+            </ul>
+        </md-content>
+    </md-content>    
 </md-sidenav>
