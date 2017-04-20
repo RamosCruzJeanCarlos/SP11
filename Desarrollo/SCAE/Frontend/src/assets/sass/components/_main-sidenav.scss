@@ -1,5 +1,8 @@
 main-sidenav{
     &>md-sidenav{
-        height: 100%;
+        height: 100%;        
+    }
+    md-list{
+        padding: 0px;
     }
 }

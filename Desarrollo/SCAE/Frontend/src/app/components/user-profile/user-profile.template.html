@@ -1,0 +1,15 @@
+<div layout="column">
+    <div layout-padding>
+        <img src="{{$ctrl.userInfo.profilePicture}}" alt="profile picture" class="md-avatar"/>
+    </div>
+    <div layout="column" layout-padding>
+        <span class="md-subtitle">{{$ctrl.userInfo.username}}</span>
+        <span class="md-caption">{{$ctrl.userInfo.email}}</span>        
+    </div>
+    <br>
+</div>
+<md-list class="md-dense">
+    <md-list-item ng-click="$ctrl.logout()" >
+        <span>Cerrar Sesión</span>
+    </md-list-item>
+</md-list>

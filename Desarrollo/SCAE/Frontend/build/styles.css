@@ -17798,6 +17798,35 @@ md-toast {
 main-sidenav > md-sidenav {
   height: 100%; }
 
+main-sidenav md-list {
+  padding: 0px; }
+
+user-profile > div {
+  background-image: url("/build/profile_background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; }
+  user-profile > div img {
+    border-radius: 50%;
+    width: 22%;
+    height: auto; }
+  user-profile > div .md-subtitle, user-profile > div .md-caption {
+    color: white; }
+
+user-profile > md-list {
+  color: gray; }
+
+main-menu {
+  overflow: auto; }
+  main-menu a {
+    text-decoration: none;
+    color: gray; }
+  main-menu a.active md-list-item {
+    -webkit-transition: all linear 0.3s;
+    transition: all linear 0.3s;
+    font-style: italic;
+    color: white;
+    background-color: #BDBDBD; }
+
 login > div {
   background: repeating-linear-gradient(45deg, #BCDCFF, #BCDCFF 25px, #a3cfff 25px, #a3cfff 50px);
   height: 100%; }
@@ -17815,3 +17844,6 @@ login > div {
 
 dashboard > div {
   height: 100%; }
+
+dashboard main-sidenav + div > md-toolbar {
+  padding: 0px; }

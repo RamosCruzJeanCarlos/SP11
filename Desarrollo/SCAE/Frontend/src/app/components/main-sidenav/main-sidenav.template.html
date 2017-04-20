@@ -1,26 +1,12 @@
 <md-sidenav 
     class="md-sidenav-left" 
-    md-is-locked-open="$ctrl.open" 
-    md-whiteframe="6"
-    layout="column">
-    <md-toolbar>
-        <h1>{{$ctrl.title}}</h1>
-    </md-toolbar>
-    <md-content layout="column" flex>
-        <h1>User Profile</h1>
-        <md-content flex>
-            <ul>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-                <li><a href="#">Item</a></li>
-            </ul>
-        </md-content>
+    md-component-id="main_side_nav"
+    md-is-locked-open="$mdMedia('gt-xs')&&$ctrl.open" 
+    layout="column"
+    md-whiteframe="2">
+    <md-content layout="column">
+        <user-profile user-info="$ctrl.userInfo"></user-profile>
+        <md-subheader class="md-no-sticky">Navegación</md-subheader>
+        <main-menu menu="$ctrl.menu"></main-menu>
     </md-content>    
 </md-sidenav>

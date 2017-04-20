@@ -5,5 +5,9 @@ import mainSidenavController from './main-sidenav.controller';
 
 export default {
     template : mainSidenavTemplate,
-    controller : mainSidenavController
+    controller : mainSidenavController,
+    bindings : {
+        userInfo : '<',
+        menu : '<'
+    }
 }

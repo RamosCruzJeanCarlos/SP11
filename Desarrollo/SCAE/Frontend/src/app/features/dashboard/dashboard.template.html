@@ -1,10 +1,13 @@
 <div layout="column">
     <div hide-gt-xs>
-        <span>{{$ctrl.title}}</span>
+        
     </div>
     <div layout="row">    
-        <main-sidenav></main-sidenav>
-        <div layout="column" flex>
+        <main-sidenav user-info="$ctrl.userInfo" menu="$ctrl.menu"></main-sidenav>
+        <div layout="column" flex>            
+            <md-toolbar hide-gt-xs layout="row" layout-align="center center">
+                <span>{{$ctrl.subtitle}}<span>
+            </md-toolbar>
             <main-toolbar></main-toolbar>            
             <ui-view></ui-view>
         </div>        

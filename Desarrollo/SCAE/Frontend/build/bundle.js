@@ -79620,7 +79620,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
 
-},{"./components":15,"./core":31,"./features":47,"angular":13}],15:[function(require,module,exports){
+},{"./components":15,"./core":39,"./features":59,"angular":13}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79639,12 +79639,95 @@ var _mainSidenav = require('./main-sidenav');
 
 var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
 
+var _userProfile = require('./user-profile');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
+var _mainMenu = require('./main-menu');
+
+var _mainMenu2 = _interopRequireDefault(_mainMenu);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //components
-exports.default = _angular2.default.module('app.components', [_mainToolbar2.default, _mainSidenav2.default]).name;
+exports.default = _angular2.default.module('app.components', [_mainToolbar2.default, _mainSidenav2.default, _userProfile2.default, _mainMenu2.default]).name;
 
-},{"./main-sidenav":16,"./main-toolbar":20,"angular":13}],16:[function(require,module,exports){
+},{"./main-menu":16,"./main-sidenav":20,"./main-toolbar":24,"./user-profile":28,"angular":13}],16:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+var _mainMenu = require('./main-menu.component');
+
+var _mainMenu2 = _interopRequireDefault(_mainMenu);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.main-menu', [_angularMaterial2.default]).component('mainMenu', _mainMenu2.default).name;
+
+},{"./main-menu.component":17,"angular":13,"angular-material":8,"angular-ui-router":11}],17:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mainMenuTemplate = require('./main-menu.template.html');
+
+var _mainMenuTemplate2 = _interopRequireDefault(_mainMenuTemplate);
+
+var _mainMenu = require('./main-menu.controller');
+
+var _mainMenu2 = _interopRequireDefault(_mainMenu);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _mainMenuTemplate2.default,
+    controller: _mainMenu2.default,
+    bindings: {
+        menu: "<"
+    }
+};
+
+},{"./main-menu.controller":18,"./main-menu.template.html":19}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MainMenuController = function MainMenuController($state) {
+    _classCallCheck(this, MainMenuController);
+
+    this.$state = $state;
+};
+
+exports.default = MainMenuController;
+
+
+MainMenuController.$inject = ['$state'];
+
+},{}],19:[function(require,module,exports){
+module.exports = "<md-content layout=\"column\">    \r\n    <md-list class=\"md-dense\">\r\n        <div ng-repeat=\"item in $ctrl.menu\">\r\n            <a ui-sref=\"{{item.state}}\" ng-class=\"{'active': $ctrl.$state.is(item.state)}\">            \r\n                <md-list-item ng-click=\"null\">                    \r\n                    <span>{{item.name}}</span>\r\n                </md-list-item>            \r\n            </a>\r\n            <a ui-sref=\"{{subitem.state}}\" ng-repeat=\"subitem in item.items\" ng-class=\"{'active': $ctrl.$state.is(subitem.state)}\">\r\n                <md-list-item ng-click=\"null\">\r\n                    <span><md-icon md-font-library=\"material-icons\">{{subitem.icon}}</md-icon>\r\n                    {{subitem.name}}</span>\r\n                </md-list-item>\r\n            </a>\r\n            <md-divider></md-divider>\r\n        </div>\r\n    </md-list>\r\n</md-content>";
+
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79667,7 +79750,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.main-sidenav', [_angularMaterial2.default]).component('mainSidenav', _mainSidenav2.default).name;
 
-},{"./main-sidenav.component":17,"angular":13,"angular-material":8}],17:[function(require,module,exports){
+},{"./main-sidenav.component":21,"angular":13,"angular-material":8}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79686,39 +79769,77 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
     template: _mainSidenavTemplate2.default,
-    controller: _mainSidenav2.default
+    controller: _mainSidenav2.default,
+    bindings: {
+        userInfo: '<',
+        menu: '<'
+    }
 };
 
-},{"./main-sidenav.controller":18,"./main-sidenav.template.html":19}],18:[function(require,module,exports){
+},{"./main-sidenav.controller":22,"./main-sidenav.template.html":23}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MainSidenavController = function MainSidenavController($scope, constants) {
-    var _this = this;
+var MainSidenavController = function () {
+    function MainSidenavController($scope, $mdMedia, $mdSidenav, constants) {
+        _classCallCheck(this, MainSidenavController);
 
-    _classCallCheck(this, MainSidenavController);
+        this.open = true;
+        this.title = constants.app.title;
+        this.InitWatchWindowResizing($scope, $mdMedia, $mdSidenav);
+        this.InitListenCloseAndOpenEvent($scope, $mdMedia, $mdSidenav);
+    }
 
-    this.open = true;
-    this.title = constants.app.title;
-    $scope.$on('closeMainSidenav', function (event, data) {
-        _this.open = !_this.open;
-    });
-};
+    _createClass(MainSidenavController, [{
+        key: 'InitWatchWindowResizing',
+        value: function InitWatchWindowResizing($scope, $mdMedia, $mdSidenav) {
+            var _this = this;
+
+            $scope.$watch(function () {
+                return $mdMedia('gt-xs');
+            }, function (big) {
+                if (big) {
+                    if ($mdSidenav('main_side_nav').isOpen()) {
+                        $mdSidenav('main_side_nav').toggle();
+                    }
+                    _this.open = true;
+                }
+            });
+        }
+    }, {
+        key: 'InitListenCloseAndOpenEvent',
+        value: function InitListenCloseAndOpenEvent($scope, $mdMedia, $mdSidenav) {
+            var _this2 = this;
+
+            $scope.$on('closeMainSidenav', function (event, data) {
+                if (!$mdMedia('gt-xs')) {
+                    $mdSidenav('main_side_nav').toggle();
+                } else {
+                    _this2.open = !_this2.open;
+                }
+            });
+        }
+    }]);
+
+    return MainSidenavController;
+}();
 
 exports.default = MainSidenavController;
 
 
-MainSidenavController.$inject = ['$scope', 'constants'];
+MainSidenavController.$inject = ['$scope', '$mdMedia', '$mdSidenav', 'constants'];
 
-},{}],19:[function(require,module,exports){
-module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-is-locked-open=\"$ctrl.open\" \r\n    md-whiteframe=\"6\"\r\n    layout=\"column\">\r\n    <md-toolbar>\r\n        <h1>{{$ctrl.title}}</h1>\r\n    </md-toolbar>\r\n    <md-content layout=\"column\" flex>\r\n        <h1>User Profile</h1>\r\n        <md-content flex>\r\n            <ul>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n                <li><a href=\"#\">Item</a></li>\r\n            </ul>\r\n        </md-content>\r\n    </md-content>    \r\n</md-sidenav>";
+},{}],23:[function(require,module,exports){
+module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-component-id=\"main_side_nav\"\r\n    md-is-locked-open=\"$mdMedia('gt-xs')&&$ctrl.open\" \r\n    layout=\"column\"\r\n    md-whiteframe=\"2\">\r\n    <md-content layout=\"column\">\r\n        <user-profile user-info=\"$ctrl.userInfo\"></user-profile>\r\n        <md-subheader class=\"md-no-sticky\">Navegación</md-subheader>\r\n        <main-menu menu=\"$ctrl.menu\"></main-menu>\r\n    </md-content>    \r\n</md-sidenav>";
 
-},{}],20:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79741,7 +79862,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.main-toolbar', [_angularMaterial2.default]).component('mainToolbar', _mainToolbar2.default).name;
 
-},{"./main-toolbar.component":21,"angular":13,"angular-material":8}],21:[function(require,module,exports){
+},{"./main-toolbar.component":25,"angular":13,"angular-material":8}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79763,7 +79884,7 @@ exports.default = {
     controller: _mainToolbar2.default
 };
 
-},{"./main-toolbar.controller":22,"./main-toolbar.template.html":23}],22:[function(require,module,exports){
+},{"./main-toolbar.controller":26,"./main-toolbar.template.html":27}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79796,10 +79917,98 @@ exports.default = MainToolbarController;
 
 MainToolbarController.$inject = ['$rootScope'];
 
-},{}],23:[function(require,module,exports){
-module.exports = "<md-toolbar layout=\"row\">\r\n    <md-button ng-click=\"$ctrl.closeMainSidenav();\">\r\n        <md-icon md-font-library=\"material-icons\" >view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <md-button>\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>\r\n</md-toolbar>";
+},{}],27:[function(require,module,exports){
+module.exports = "<md-toolbar layout=\"row\">\r\n    <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n        <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <!--<md-button class=\"md-no-focus\">\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>-->\r\n</md-toolbar>";
 
-},{}],24:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+var _userProfile = require('./user-profile.component');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.user-profile', [_angularMaterial2.default, _angularUiRouter2.default]).component('userProfile', _userProfile2.default).name;
+
+},{"./user-profile.component":29,"angular":13,"angular-material":8,"angular-ui-router":11}],29:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _userProfileTemplate = require('./user-profile.template.html');
+
+var _userProfileTemplate2 = _interopRequireDefault(_userProfileTemplate);
+
+var _userProfile = require('./user-profile.controller');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _userProfileTemplate2.default,
+    controller: _userProfile2.default,
+    bindings: {
+        userInfo: "<"
+    }
+};
+
+},{"./user-profile.controller":30,"./user-profile.template.html":31}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var UserProfileController = function () {
+    function UserProfileController($state) {
+        _classCallCheck(this, UserProfileController);
+
+        this.$state = $state;
+    }
+
+    _createClass(UserProfileController, [{
+        key: 'logout',
+        value: function logout() {
+            this.$state.go('login');
+        }
+    }]);
+
+    return UserProfileController;
+}();
+
+exports.default = UserProfileController;
+
+
+UserProfileController.$inject = ['$state'];
+
+},{}],31:[function(require,module,exports){
+module.exports = "<div layout=\"column\">\r\n    <div layout-padding>\r\n        <img src=\"{{$ctrl.userInfo.profilePicture}}\" alt=\"profile picture\" class=\"md-avatar\"/>\r\n    </div>\r\n    <div layout=\"column\" layout-padding>\r\n        <span class=\"md-subtitle\">{{$ctrl.userInfo.username}}</span>\r\n        <span class=\"md-caption\">{{$ctrl.userInfo.email}}</span>        \r\n    </div>\r\n    <br>\r\n</div>\r\n<md-list class=\"md-dense\">\r\n    <md-list-item ng-click=\"$ctrl.logout()\" >\r\n        <span>Cerrar Sesión</span>\r\n    </md-list-item>\r\n</md-list>";
+
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79821,7 +80030,7 @@ exports.default = {
     }
 };
 
-},{}],25:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79840,7 +80049,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.constants', []).constant('constants', _constants2.default).name;
 
-},{"./constants":24,"angular":13}],26:[function(require,module,exports){
+},{"./constants":32,"angular":13}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79866,7 +80075,7 @@ function routing($urlRouterProvider, $stateProvider) {
 
 routing.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],27:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79880,7 +80089,7 @@ function CookieManagerConfiguration($cookiesProvider) {
 
 CookieManagerConfiguration.$inject = ['$cookiesProvider'];
 
-},{}],28:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79946,7 +80155,7 @@ exports.default = AppCookiesService;
 
 AppCookiesService.$inject = ['$cookies', '$resource', 'constants'];
 
-},{}],29:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79977,7 +80186,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.helpers.cookie-manager', [_angularCookies2.default, _angularResource2.default]).config(_cookieManager2.default).service(_cookieManager4.default.name, _cookieManager4.default).name;
 
-},{"./cookie-manager.config":27,"./cookie-manager.service":28,"angular":13,"angular-cookies":6,"angular-resource":10}],30:[function(require,module,exports){
+},{"./cookie-manager.config":35,"./cookie-manager.service":36,"angular":13,"angular-cookies":6,"angular-resource":10}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79996,7 +80205,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.helpers', [_cookieManager2.default]).name;
 
-},{"./cookie-manager":29,"angular":13}],31:[function(require,module,exports){
+},{"./cookie-manager":37,"angular":13}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80023,15 +80232,116 @@ var _utils = require('./utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
+var _resources = require('./resources');
+
+var _resources2 = _interopRequireDefault(_resources);
+
 var _angularUiRouter = require('angular-ui-router');
 
 var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _constants2.default, _helpers2.default, _utils2.default]).config(_core2.default).name;
+exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _constants2.default, _helpers2.default, _utils2.default, _resources2.default]).config(_core2.default).name;
 
-},{"./constants":25,"./core.config":26,"./helpers":30,"./utils":32,"angular":13,"angular-ui-router":11}],32:[function(require,module,exports){
+},{"./constants":33,"./core.config":34,"./helpers":38,"./resources":40,"./utils":44,"angular":13,"angular-ui-router":11}],40:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _test = require('./test');
+
+var _test2 = _interopRequireDefault(_test);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.resources', [_test2.default]).name;
+
+},{"./test":41,"angular":13}],41:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _testUserResource = require('./test-user-resource');
+
+var _testUserResource2 = _interopRequireDefault(_testUserResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.resources.test', [_testUserResource2.default]).name;
+
+},{"./test-user-resource":42,"angular":13}],42:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularResource = require('angular-resource');
+
+var _angularResource2 = _interopRequireDefault(_angularResource);
+
+var _testUserResource = require('./test-user-resource.service');
+
+var _testUserResource2 = _interopRequireDefault(_testUserResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.resources.test.test-user-resource', [_angularResource2.default]).service('TestUserResourceService', _testUserResource2.default).name;
+
+},{"./test-user-resource.service":43,"angular":13,"angular-resource":10}],43:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TestUserResourceService = function () {
+    function TestUserResourceService($resource, constants) {
+        _classCallCheck(this, TestUserResourceService);
+
+        this.resources = {
+            crud: $resource(constants.resources.remote.baseUrl + 'user.json', {}, {
+                "get": {
+                    method: "GET"
+                }
+            })
+        };
+    }
+
+    _createClass(TestUserResourceService, [{
+        key: 'get',
+        value: function get(sucessCallback, errorCallback) {
+            this.resources.crud.get({}, {}, sucessCallback, errorCallback);
+        }
+    }]);
+
+    return TestUserResourceService;
+}();
+
+exports.default = TestUserResourceService;
+
+},{}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80050,7 +80360,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default]).name;
 
-},{"./loading-modal":33,"angular":13}],33:[function(require,module,exports){
+},{"./loading-modal":45,"angular":13}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80075,7 +80385,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service(_loadingModal2.default.name, _loadingModal2.default).name;
 
-},{"./loading-modal.component":34,"./loading-modal.service":36,"angular":13,"angular-material":8}],34:[function(require,module,exports){
+},{"./loading-modal.component":46,"./loading-modal.service":48,"angular":13,"angular-material":8}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80097,7 +80407,7 @@ exports.default = {
     controller: _loadingModal2.default
 };
 
-},{"./loading-modal.controller":35,"./loading-modal.template.html":37}],35:[function(require,module,exports){
+},{"./loading-modal.controller":47,"./loading-modal.template.html":49}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80115,7 +80425,7 @@ exports.default = LoadingModalController;
 
 LoadingModalController.$inject = [];
 
-},{}],36:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80159,10 +80469,10 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}],37:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
 
-},{}],38:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80184,7 +80494,7 @@ exports.default = {
     controller: _dashboardHome2.default
 };
 
-},{"./dashboard-home.controller":39,"./dashboard-home.template.html":40}],39:[function(require,module,exports){
+},{"./dashboard-home.controller":51,"./dashboard-home.template.html":52}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80204,10 +80514,10 @@ exports.default = DashboardHomeController;
 
 DashboardHomeController.$inject = ['constants'];
 
-},{}],40:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = "<h1>{{$ctrl.content}}</h1>";
 
-},{}],41:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80230,7 +80540,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('home', _dashboardHome2.default).name;
 
-},{"../../core":31,"./dashboard-home.component":38,"angular":13}],42:[function(require,module,exports){
+},{"../../core":39,"./dashboard-home.component":50,"angular":13}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80252,7 +80562,7 @@ exports.default = {
     controller: _dashboard2.default
 };
 
-},{"./dashboard.controller":44,"./dashboard.template.html":45}],43:[function(require,module,exports){
+},{"./dashboard.controller":56,"./dashboard.template.html":57}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80266,7 +80576,7 @@ function config($urlRouterProvider, $stateProvider) {
         template: '<home></home>'
     }).state('dashboard.maintenance', {
         url: 'mantenimiento',
-        template: '<h1>Mantenimiento</h1><ui-view class="shuffle-animation"/>'
+        template: '<h1>Mantenimiento</h1><ui-view/>'
     }).state('dashboard.maintenance.students', {
         url: '/alumnos',
         template: '<h1>Alumnos!</h1>'
@@ -80276,12 +80586,27 @@ function config($urlRouterProvider, $stateProvider) {
     }).state('dashboard.maintenance.subjects', {
         url: '/cursos',
         template: '<h1>Cursos!</h1>'
+    }).state('dashboard.reports', {
+        url: 'reportes',
+        template: '<h1>Reportes!</h1><ui-view/>'
+    }).state('dashboard.reports.generate', {
+        url: '/generar',
+        template: '<h1>Genera reporte!</h1>'
+    }).state('dashboard.security', {
+        url: 'seguridad',
+        template: '<h1>seguridad!</h1><ui-view/>'
+    }).state('dashboard.security.users', {
+        url: '/usuarios',
+        template: '<h1>Usuarios!</h1>'
+    }).state('dashboard.security.profiles', {
+        url: '/perfiles',
+        template: '<h1>Perfiles!</h1>'
     });
 }
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],44:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80290,21 +80615,30 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DashboardController = function DashboardController(constants) {
+var DashboardController = function DashboardController(constants, UserResourceService) {
+    var _this = this;
+
     _classCallCheck(this, DashboardController);
 
     this.title = constants.app.title;
+    this.subtitle = constants.app.subtitle;
+    UserResourceService.get(function (data) {
+        _this.userInfo = data.info;
+        _this.menu = data.menu;
+    }, function (err) {
+        console.log(err);
+    });
 };
 
 exports.default = DashboardController;
 
 
-DashboardController.$inject = ['constants'];
+DashboardController.$inject = ['constants', 'TestUserResourceService'];
 
-},{}],45:[function(require,module,exports){
-module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        <span>{{$ctrl.title}}</span>\r\n    </div>\r\n    <div layout=\"row\">    \r\n        <main-sidenav></main-sidenav>\r\n        <div layout=\"column\" flex>\r\n            <main-toolbar></main-toolbar>            \r\n            <ui-view></ui-view>\r\n        </div>        \r\n    </div>\r\n</div>";
+},{}],57:[function(require,module,exports){
+module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        \r\n    </div>\r\n    <div layout=\"row\">    \r\n        <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n        <div layout=\"column\" flex>            \r\n            <md-toolbar hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n                <span>{{$ctrl.subtitle}}<span>\r\n            </md-toolbar>\r\n            <main-toolbar></main-toolbar>            \r\n            <ui-view></ui-view>\r\n        </div>        \r\n    </div>\r\n</div>";
 
-},{}],46:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80342,7 +80676,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default]).config(_dashboard2.default).component('dashboard', _dashboard4.default).name;
 
-},{"../../components":15,"../../core":31,"../dashboard-home":41,"./dashboard.component":42,"./dashboard.config":43,"angular":13}],47:[function(require,module,exports){
+},{"../../components":15,"../../core":39,"../dashboard-home":53,"./dashboard.component":54,"./dashboard.config":55,"angular":13}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80373,7 +80707,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
 
-},{"../components":15,"../core":31,"./dashboard":46,"./login":48,"angular":13}],48:[function(require,module,exports){
+},{"../components":15,"../core":39,"./dashboard":58,"./login":60,"angular":13}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80402,7 +80736,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
 
-},{"../../core":31,"./login.component":49,"angular":13,"angular-material":8,"angular-ui-router":11}],49:[function(require,module,exports){
+},{"../../core":39,"./login.component":61,"angular":13,"angular-material":8,"angular-ui-router":11}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80424,7 +80758,7 @@ exports.default = {
     controller: _login2.default
 };
 
-},{"./login.controller":50,"./login.template.html":51}],50:[function(require,module,exports){
+},{"./login.controller":62,"./login.template.html":63}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80459,7 +80793,7 @@ exports.default = LoginController;
 
 LoginController.$inject = ['constants', '$state'];
 
-},{}],51:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
 
 },{}]},{},[14]);

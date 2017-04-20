@@ -1,0 +1,18 @@
+<md-content layout="column">    
+    <md-list class="md-dense">
+        <div ng-repeat="item in $ctrl.menu">
+            <a ui-sref="{{item.state}}" ng-class="{'active': $ctrl.$state.is(item.state)}">            
+                <md-list-item ng-click="null">                    
+                    <span>{{item.name}}</span>
+                </md-list-item>            
+            </a>
+            <a ui-sref="{{subitem.state}}" ng-repeat="subitem in item.items" ng-class="{'active': $ctrl.$state.is(subitem.state)}">
+                <md-list-item ng-click="null">
+                    <span><md-icon md-font-library="material-icons">{{subitem.icon}}</md-icon>
+                    {{subitem.name}}</span>
+                </md-list-item>
+            </a>
+            <md-divider></md-divider>
+        </div>
+    </md-list>
+</md-content>

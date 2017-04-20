@@ -1,5 +1,8 @@
 dashboard{
     &>div{
-        height: $dashboard-height;
+        height: 100%;
+    }
+    main-sidenav+div>md-toolbar{
+        padding: 0px; 
     }
 }
