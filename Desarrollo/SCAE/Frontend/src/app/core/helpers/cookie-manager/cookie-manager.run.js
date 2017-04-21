@@ -1,7 +1,7 @@
 'use strict';
 
-export default function CookieManagerRun(CookieManagerService){
-    CookieManagerRun.load();
+export default function CookieManagerRun(CookieManager){
+    CookieManager.loadName();
 }
 
-CookieManagerRun.$inject = ['CookieManagerService'];
+CookieManagerRun.$inject = ['CookieManager'];

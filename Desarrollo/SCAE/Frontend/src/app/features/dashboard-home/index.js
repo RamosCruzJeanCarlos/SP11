@@ -6,5 +6,5 @@ import HomeComponent from './dashboard-home.component';
 
 export default angular
     .module('app.features.dashboard-home',[appCore])
-    .component('home',HomeComponent)
+    .component('dashboardHome',HomeComponent)
     .name;

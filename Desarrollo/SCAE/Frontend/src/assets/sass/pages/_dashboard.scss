@@ -2,7 +2,9 @@ dashboard{
     &>div{
         height: 100%;
     }
-    main-sidenav+div>md-toolbar{
-        padding: 0px; 
+    main-sidenav+div{
+        &>md-toolbar{
+            text-align: center; 
+        }
     }
 }

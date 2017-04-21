@@ -17827,6 +17827,18 @@ main-menu {
     color: white;
     background-color: #BDBDBD; }
 
+md-toast.toast-info .md-toast-content {
+  background-color: #239ed0; }
+
+md-toast.toast-success .md-toast-content {
+  background-color: green; }
+
+md-toast.toast-warning .md-toast-content {
+  background-color: #f2a10d; }
+
+md-toast.toast-error .md-toast-content {
+  background-color: #cc3333; }
+
 login > div {
   background: repeating-linear-gradient(45deg, #BCDCFF, #BCDCFF 25px, #a3cfff 25px, #a3cfff 50px);
   height: 100%; }
@@ -17846,4 +17858,4 @@ dashboard > div {
   height: 100%; }
 
 dashboard main-sidenav + div > md-toolbar {
-  padding: 0px; }
+  text-align: center; }

@@ -5,7 +5,7 @@ export default function config($urlRouterProvider,$stateProvider){
     $stateProvider
     .state('dashboard.home',{
         url:'',
-        template:'<home></home>'
+        template:'<dashboard-home flex layout="column"/>'
     })
     .state('dashboard.maintenance',{
         url:'mantenimiento',

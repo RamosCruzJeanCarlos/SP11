@@ -1,7 +1,10 @@
 'use strict';
 
-export default function routing($urlRouterProvider,$stateProvider){
+export default function routing($urlRouterProvider,$stateProvider,$mdThemingProvider){
     
+    $mdThemingProvider.theme('default')
+    .primaryPalette('blue-grey');
+
     $urlRouterProvider.otherwise('/');
 
     $stateProvider
@@ -20,4 +23,4 @@ export default function routing($urlRouterProvider,$stateProvider){
     })    
 }
 
-routing.$inject = ['$urlRouterProvider','$stateProvider'];
+routing.$inject = ['$urlRouterProvider','$stateProvider','$mdThemingProvider'];

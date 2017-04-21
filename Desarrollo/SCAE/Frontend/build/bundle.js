@@ -79620,7 +79620,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
 
-},{"./components":15,"./core":39,"./features":59,"angular":13}],15:[function(require,module,exports){
+},{"./components":15,"./core":42,"./features":64,"angular":13}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80056,7 +80056,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = routing;
-function routing($urlRouterProvider, $stateProvider) {
+function routing($urlRouterProvider, $stateProvider, $mdThemingProvider) {
+
+    $mdThemingProvider.theme('default').primaryPalette('blue-grey');
 
     $urlRouterProvider.otherwise('/');
 
@@ -80073,7 +80075,7 @@ function routing($urlRouterProvider, $stateProvider) {
     });
 }
 
-routing.$inject = ['$urlRouterProvider', '$stateProvider'];
+routing.$inject = ['$urlRouterProvider', '$stateProvider', '$mdThemingProvider'];
 
 },{}],35:[function(require,module,exports){
 'use strict';
@@ -80095,30 +80097,43 @@ CookieManagerConfiguration.$inject = ['$cookiesProvider'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.default = CookieManagerRun;
+function CookieManagerRun(CookieManager) {
+    CookieManager.loadName();
+}
+
+CookieManagerRun.$inject = ['CookieManager'];
+
+},{}],37:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var AppCookiesService = function () {
-    function AppCookiesService($cookies, $resource, constants) {
-        _classCallCheck(this, AppCookiesService);
+var CookieManagerService = function () {
+    function CookieManagerService($cookies, $resource, constants) {
+        _classCallCheck(this, CookieManagerService);
 
         this.$cookies = $cookies;
         this.$resource = $resource;
         this.baseUrl = constants.resources.remote.baseUrl;
     }
 
-    _createClass(AppCookiesService, [{
-        key: 'load',
-        value: function load() {
+    _createClass(CookieManagerService, [{
+        key: 'loadName',
+        value: function loadName() {
             var _this = this;
 
             var successCallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
             var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
 
             this.$resource(this.baseUrl + 'cookie.json', {}, {}).get({}, function (cookie) {
-                console.log('Loaded cookie name => ' + cookie.name);
+                console.debug('Loaded cookie name => ' + cookie.name);
                 _this.cookieName = cookie.name;
                 successCallback();
             }, function (err) {
@@ -80147,15 +80162,15 @@ var AppCookiesService = function () {
         }
     }]);
 
-    return AppCookiesService;
+    return CookieManagerService;
 }();
 
-exports.default = AppCookiesService;
+exports.default = CookieManagerService;
 
 
-AppCookiesService.$inject = ['$cookies', '$resource', 'constants'];
+CookieManagerService.$inject = ['$cookies', '$resource', 'constants'];
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80174,6 +80189,10 @@ var _cookieManager3 = require('./cookie-manager.service');
 
 var _cookieManager4 = _interopRequireDefault(_cookieManager3);
 
+var _cookieManager5 = require('./cookie-manager.run');
+
+var _cookieManager6 = _interopRequireDefault(_cookieManager5);
+
 var _angularCookies = require('angular-cookies');
 
 var _angularCookies2 = _interopRequireDefault(_angularCookies);
@@ -80184,9 +80203,86 @@ var _angularResource2 = _interopRequireDefault(_angularResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.helpers.cookie-manager', [_angularCookies2.default, _angularResource2.default]).config(_cookieManager2.default).service(_cookieManager4.default.name, _cookieManager4.default).name;
+exports.default = _angular2.default.module('app.core.helpers.cookie-manager', [_angularCookies2.default, _angularResource2.default]).run(_cookieManager6.default).config(_cookieManager2.default).service('CookieManager', _cookieManager4.default).name;
 
-},{"./cookie-manager.config":35,"./cookie-manager.service":36,"angular":13,"angular-cookies":6,"angular-resource":10}],38:[function(require,module,exports){
+},{"./cookie-manager.config":35,"./cookie-manager.run":36,"./cookie-manager.service":37,"angular":13,"angular-cookies":6,"angular-resource":10}],39:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CustomizedToast = function () {
+    function CustomizedToast($mdToast) {
+        _classCallCheck(this, CustomizedToast);
+
+        this.$mdToast = $mdToast;
+    }
+
+    _createClass(CustomizedToast, [{
+        key: 'show',
+        value: function show(message, type) {
+            this.$mdToast.show(this.$mdToast.simple().textContent(message).position('bottom right').toastClass('toast-' + type).hideDelay(3000));
+            console.log(this.$mdToast.simple());
+        }
+    }, {
+        key: 'info',
+        value: function info(message) {
+            this.show(message, 'info');
+        }
+    }, {
+        key: 'success',
+        value: function success(message) {
+            this.show(message, 'success');
+        }
+    }, {
+        key: 'warning',
+        value: function warning(message) {
+            this.show(message, 'warning');
+        }
+    }, {
+        key: 'error',
+        value: function error(message) {
+            this.show(message, 'error');
+        }
+    }]);
+
+    return CustomizedToast;
+}();
+
+exports.default = CustomizedToast;
+
+
+CustomizedToast.$inject = ['$mdToast'];
+
+},{}],40:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _customizedToast = require('./customized-toast.service');
+
+var _customizedToast2 = _interopRequireDefault(_customizedToast);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.helpers.positioned-toast', [_angularMaterial2.default]).service('CustomizedToast', _customizedToast2.default).name;
+
+},{"./customized-toast.service":39,"angular":13,"angular-material":8}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80201,11 +80297,15 @@ var _cookieManager = require('./cookie-manager');
 
 var _cookieManager2 = _interopRequireDefault(_cookieManager);
 
+var _customizedToast = require('./customized-toast');
+
+var _customizedToast2 = _interopRequireDefault(_customizedToast);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.helpers', [_cookieManager2.default]).name;
+exports.default = _angular2.default.module('app.core.helpers', [_cookieManager2.default, _customizedToast2.default]).name;
 
-},{"./cookie-manager":37,"angular":13}],39:[function(require,module,exports){
+},{"./cookie-manager":38,"./customized-toast":40,"angular":13}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80215,6 +80315,14 @@ Object.defineProperty(exports, "__esModule", {
 var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
 
 var _core = require('./core.config');
 
@@ -80236,15 +80344,11 @@ var _resources = require('./resources');
 
 var _resources2 = _interopRequireDefault(_resources);
 
-var _angularUiRouter = require('angular-ui-router');
-
-var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _constants2.default, _helpers2.default, _utils2.default, _resources2.default]).config(_core2.default).name;
+exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _angularMaterial2.default, _constants2.default, _helpers2.default, _utils2.default, _resources2.default]).config(_core2.default).name;
 
-},{"./constants":33,"./core.config":34,"./helpers":38,"./resources":40,"./utils":44,"angular":13,"angular-ui-router":11}],40:[function(require,module,exports){
+},{"./constants":33,"./core.config":34,"./helpers":41,"./resources":43,"./utils":49,"angular":13,"angular-material":8,"angular-ui-router":11}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80263,7 +80367,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.resources', [_test2.default]).name;
 
-},{"./test":41,"angular":13}],41:[function(require,module,exports){
+},{"./test":44,"angular":13}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80274,15 +80378,19 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _testUserResource = require('./test-user-resource');
+var _testUsersResource = require('./test-users-resource');
 
-var _testUserResource2 = _interopRequireDefault(_testUserResource);
+var _testUsersResource2 = _interopRequireDefault(_testUsersResource);
+
+var _testStudentsResource = require('./test-students-resource');
+
+var _testStudentsResource2 = _interopRequireDefault(_testStudentsResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.resources.test', [_testUserResource2.default]).name;
+exports.default = _angular2.default.module('app.core.resources.test', [_testUsersResource2.default, _testStudentsResource2.default]).name;
 
-},{"./test-user-resource":42,"angular":13}],42:[function(require,module,exports){
+},{"./test-students-resource":45,"./test-users-resource":47,"angular":13}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80297,15 +80405,19 @@ var _angularResource = require('angular-resource');
 
 var _angularResource2 = _interopRequireDefault(_angularResource);
 
-var _testUserResource = require('./test-user-resource.service');
+var _constants = require('../../../constants');
 
-var _testUserResource2 = _interopRequireDefault(_testUserResource);
+var _constants2 = _interopRequireDefault(_constants);
+
+var _testStudentsResource = require('./test-students-resource.service');
+
+var _testStudentsResource2 = _interopRequireDefault(_testStudentsResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.resources.test.test-user-resource', [_angularResource2.default]).service('TestUserResourceService', _testUserResource2.default).name;
+exports.default = _angular2.default.module('app.core.resources.test.test-students-resource', [_angularResource2.default, _constants2.default]).service('TestStudentsResource', _testStudentsResource2.default).name;
 
-},{"./test-user-resource.service":43,"angular":13,"angular-resource":10}],43:[function(require,module,exports){
+},{"../../../constants":33,"./test-students-resource.service":46,"angular":13,"angular-resource":10}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80316,9 +80428,76 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var TestUserResourceService = function () {
-    function TestUserResourceService($resource, constants) {
-        _classCallCheck(this, TestUserResourceService);
+var TestStudentsResourceService = function () {
+    function TestStudentsResourceService($resource, constants) {
+        _classCallCheck(this, TestStudentsResourceService);
+
+        this.resources = {
+            crud: $resource(constants.resources.remote.baseUrl + 'students.json', {}, {
+                "get": {
+                    isArray: true,
+                    method: "GET"
+                }
+            })
+        };
+    }
+
+    _createClass(TestStudentsResourceService, [{
+        key: 'get',
+        value: function get(successCallback, errorCallback) {
+            this.resources.crud.get({}, {}, sucessCallback, errorCallback);
+        }
+    }, {
+        key: 'get',
+        value: function get(filter, successCallback, errorCallback) {}
+    }]);
+
+    return TestStudentsResourceService;
+}();
+
+exports.default = TestStudentsResourceService;
+
+},{}],47:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularResource = require('angular-resource');
+
+var _angularResource2 = _interopRequireDefault(_angularResource);
+
+var _constants = require('../../../constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _testUsersResource = require('./test-users-resource.service');
+
+var _testUsersResource2 = _interopRequireDefault(_testUsersResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.resources.test.test-users-resource', [_angularResource2.default, _constants2.default]).service('TestUsersResource', _testUsersResource2.default).name;
+
+},{"../../../constants":33,"./test-users-resource.service":48,"angular":13,"angular-resource":10}],48:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TestUsersResourceService = function () {
+    function TestUsersResourceService($resource, constants) {
+        _classCallCheck(this, TestUsersResourceService);
 
         this.resources = {
             crud: $resource(constants.resources.remote.baseUrl + 'user.json', {}, {
@@ -80329,19 +80508,22 @@ var TestUserResourceService = function () {
         };
     }
 
-    _createClass(TestUserResourceService, [{
+    _createClass(TestUsersResourceService, [{
         key: 'get',
         value: function get(sucessCallback, errorCallback) {
             this.resources.crud.get({}, {}, sucessCallback, errorCallback);
         }
     }]);
 
-    return TestUserResourceService;
+    return TestUsersResourceService;
 }();
 
-exports.default = TestUserResourceService;
+exports.default = TestUsersResourceService;
 
-},{}],44:[function(require,module,exports){
+
+TestUsersResourceService.$inject = ['$resource', 'constants'];
+
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80360,7 +80542,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default]).name;
 
-},{"./loading-modal":45,"angular":13}],45:[function(require,module,exports){
+},{"./loading-modal":50,"angular":13}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80383,9 +80565,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var angularMaterial = require('angular-material');
 
-exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service(_loadingModal2.default.name, _loadingModal2.default).name;
+exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service('LoadingModal', _loadingModal2.default).name;
 
-},{"./loading-modal.component":46,"./loading-modal.service":48,"angular":13,"angular-material":8}],46:[function(require,module,exports){
+},{"./loading-modal.component":51,"./loading-modal.service":53,"angular":13,"angular-material":8}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80407,7 +80589,7 @@ exports.default = {
     controller: _loadingModal2.default
 };
 
-},{"./loading-modal.controller":47,"./loading-modal.template.html":49}],47:[function(require,module,exports){
+},{"./loading-modal.controller":52,"./loading-modal.template.html":54}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80425,7 +80607,7 @@ exports.default = LoadingModalController;
 
 LoadingModalController.$inject = [];
 
-},{}],48:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80469,10 +80651,10 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}],49:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
 
-},{}],50:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80494,7 +80676,7 @@ exports.default = {
     controller: _dashboardHome2.default
 };
 
-},{"./dashboard-home.controller":51,"./dashboard-home.template.html":52}],51:[function(require,module,exports){
+},{"./dashboard-home.controller":56,"./dashboard-home.template.html":57}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80514,10 +80696,10 @@ exports.default = DashboardHomeController;
 
 DashboardHomeController.$inject = ['constants'];
 
-},{}],52:[function(require,module,exports){
-module.exports = "<h1>{{$ctrl.content}}</h1>";
+},{}],57:[function(require,module,exports){
+module.exports = "<md-content layout-padding layout=\"row\" layout-align=\"center center\" flex>\r\n    <h1>{{$ctrl.content}}</h1>\r\n</md-content>\r\n";
 
-},{}],53:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80538,9 +80720,9 @@ var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('home', _dashboardHome2.default).name;
+exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('dashboardHome', _dashboardHome2.default).name;
 
-},{"../../core":39,"./dashboard-home.component":50,"angular":13}],54:[function(require,module,exports){
+},{"../../core":42,"./dashboard-home.component":55,"angular":13}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80562,7 +80744,7 @@ exports.default = {
     controller: _dashboard2.default
 };
 
-},{"./dashboard.controller":56,"./dashboard.template.html":57}],55:[function(require,module,exports){
+},{"./dashboard.controller":61,"./dashboard.template.html":62}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80573,7 +80755,7 @@ function config($urlRouterProvider, $stateProvider) {
 
     $stateProvider.state('dashboard.home', {
         url: '',
-        template: '<home></home>'
+        template: '<dashboard-home flex layout="column"/>'
     }).state('dashboard.maintenance', {
         url: 'mantenimiento',
         template: '<h1>Mantenimiento</h1><ui-view/>'
@@ -80606,7 +80788,7 @@ function config($urlRouterProvider, $stateProvider) {
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],56:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80615,17 +80797,18 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DashboardController = function DashboardController(constants, UserResourceService) {
+var DashboardController = function DashboardController(constants, UsersResourceService, CustomizedToast) {
     var _this = this;
 
     _classCallCheck(this, DashboardController);
 
     this.title = constants.app.title;
     this.subtitle = constants.app.subtitle;
-    UserResourceService.get(function (data) {
+    UsersResourceService.get(function (data) {
         _this.userInfo = data.info;
         _this.menu = data.menu;
     }, function (err) {
+        CustomizedToast.error('No se pudo cargar la información del usuario');
         console.log(err);
     });
 };
@@ -80633,12 +80816,12 @@ var DashboardController = function DashboardController(constants, UserResourceSe
 exports.default = DashboardController;
 
 
-DashboardController.$inject = ['constants', 'TestUserResourceService'];
+DashboardController.$inject = ['constants', 'TestUsersResource', 'CustomizedToast'];
 
-},{}],57:[function(require,module,exports){
-module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        \r\n    </div>\r\n    <div layout=\"row\">    \r\n        <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n        <div layout=\"column\" flex>            \r\n            <md-toolbar hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n                <span>{{$ctrl.subtitle}}<span>\r\n            </md-toolbar>\r\n            <main-toolbar></main-toolbar>            \r\n            <ui-view></ui-view>\r\n        </div>        \r\n    </div>\r\n</div>";
+},{}],62:[function(require,module,exports){
+module.exports = "<div layout=\"column\">\r\n    <div hide-gt-xs>\r\n        \r\n    </div>\r\n    <div layout=\"row\">    \r\n        <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n        <div layout=\"column\" flex>            \r\n            <md-toolbar hide-gt-xs layout=\"row\" layout-align=\"center center\" flex=\"nogrow\">\r\n                <span>{{$ctrl.title}}<span>\r\n            </md-toolbar>\r\n            <main-toolbar></main-toolbar>            \r\n            <ui-view flex layout=\"column\"></ui-view>\r\n        </div>        \r\n    </div>\r\n</div>";
 
-},{}],58:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80671,12 +80854,9 @@ var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//import dashboardMaintenance from '../dashboard-maintenance';
-//import dashboardReports from '../dashboard-reports';
-
 exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default]).config(_dashboard2.default).component('dashboard', _dashboard4.default).name;
 
-},{"../../components":15,"../../core":39,"../dashboard-home":53,"./dashboard.component":54,"./dashboard.config":55,"angular":13}],59:[function(require,module,exports){
+},{"../../components":15,"../../core":42,"../dashboard-home":58,"./dashboard.component":59,"./dashboard.config":60,"angular":13}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80707,7 +80887,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
 
-},{"../components":15,"../core":39,"./dashboard":58,"./login":60,"angular":13}],60:[function(require,module,exports){
+},{"../components":15,"../core":42,"./dashboard":63,"./login":65,"angular":13}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80736,7 +80916,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
 
-},{"../../core":39,"./login.component":61,"angular":13,"angular-material":8,"angular-ui-router":11}],61:[function(require,module,exports){
+},{"../../core":42,"./login.component":66,"angular":13,"angular-material":8,"angular-ui-router":11}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80758,7 +80938,7 @@ exports.default = {
     controller: _login2.default
 };
 
-},{"./login.controller":62,"./login.template.html":63}],62:[function(require,module,exports){
+},{"./login.controller":67,"./login.template.html":68}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80793,7 +80973,7 @@ exports.default = LoginController;
 
 LoginController.$inject = ['constants', '$state'];
 
-},{}],63:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
 
 },{}]},{},[14]);

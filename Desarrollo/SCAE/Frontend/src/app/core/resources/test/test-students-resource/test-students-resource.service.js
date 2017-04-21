@@ -1,16 +1,20 @@
 'use strict';
 
-export default class TestUserResourceService{
+export default class TestStudentsResourceService{
     constructor($resource,constants){
         this.resources = {
-            crud : $resource(constants.resources.remote.baseUrl+'user.json',{},{
+            crud : $resource(constants.resources.remote.baseUrl+'students.json',{},{
                 "get" : {
+                    isArray : true,
                     method : "GET"
                 }
             }) 
         }
     }
-    get(sucessCallback,errorCallback){
+    get(successCallback,errorCallback){
         this.resources.crud.get({},{},sucessCallback,errorCallback);
+    }
+    get(filter,successCallback,errorCallback){
+
     }
 }

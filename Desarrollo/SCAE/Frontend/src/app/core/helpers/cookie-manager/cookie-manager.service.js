@@ -1,15 +1,15 @@
 'use strict';
 
-export default class AppCookiesService{
+export default class CookieManagerService{
     constructor($cookies,$resource,constants){
         this.$cookies = $cookies;
         this.$resource = $resource;        
         this.baseUrl = constants.resources.remote.baseUrl;
     }
-    load(successCallback = ()=>{} ,errorCallback= ()=>{}){        
+    loadName(successCallback = ()=>{} ,errorCallback= ()=>{}){        
         this.$resource( this.baseUrl +'cookie.json',{},{}).get({},
         (cookie) => {
-            console.log('Loaded cookie name => '+cookie.name)
+            console.debug('Loaded cookie name => '+cookie.name)
             this.cookieName = cookie.name;
             successCallback();
         },(err) =>{
@@ -34,4 +34,4 @@ export default class AppCookiesService{
     }
 }
 
-AppCookiesService.$inject = ['$cookies','$resource','constants'];
+CookieManagerService.$inject = ['$cookies','$resource','constants'];
