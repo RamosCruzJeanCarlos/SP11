@@ -1,7 +1,8 @@
 export default class DashboardController{
-    constructor(constants,UsersResourceService,CustomizedToast){
+    constructor($rootScope,constants,UsersResourceService,CustomizedToast){
         this.title = constants.app.title;
         this.subtitle = constants.app.subtitle;
+        this.$rootScope = $rootScope;
         UsersResourceService.get(
             (data)=>{
                 this.userInfo = data.info;
@@ -13,6 +14,9 @@ export default class DashboardController{
             }
         )
     }
+    OnSwipeView(){
+        this.$rootScope.$broadcast("toogleMainSidenavBySwipe",{});
+    }
 }
 
-DashboardController.$inject = ['constants','TestUsersResource','CustomizedToast'];
+DashboardController.$inject = ['$rootScope','constants','TestUsersResource','CustomizedToast'];

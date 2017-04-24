@@ -5,7 +5,7 @@ export default class MainToolbarController{
         this.$rootScope = $rootScope;
     }
     closeMainSidenav(){
-        this.$rootScope.$broadcast("closeMainSidenav",{});
+        this.$rootScope.$broadcast("toogleMainSidenavByButton",{});
     }
 }
 

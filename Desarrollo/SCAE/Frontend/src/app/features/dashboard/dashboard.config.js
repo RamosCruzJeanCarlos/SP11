@@ -10,7 +10,7 @@ export default function config($urlRouterProvider,$stateProvider){
     .state('dashboard.maintenance',{
         url:'mantenimiento',
         abstract: true,
-        template:'<h1>Mantenimiento</h1><ui-view/>'
+        template:'<dashboard-maintenance/>'
     })
     .state('dashboard.maintenance.students',{
         url:'/alumnos',

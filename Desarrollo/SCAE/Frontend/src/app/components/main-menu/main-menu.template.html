@@ -1,10 +1,5 @@
 <md-content layout="column">    
-    <md-list class="md-dense">
-        <md-subheader ng-click="$ctrl.logout()" >Cuenta</md-subheader>
-        <md-list-item ng-click="$ctrl.logout()" >
-                <span><md-icon md-font-library="material-icons">power_settings_new</md-icon>Cerrar Sesión</span>
-        </md-list-item>
-        <md-divider></md-divider>
+    <md-list class="md-dense">        
         <div ng-repeat="item in $ctrl.menu">
             <a ng-if="item.state" ui-sref="{{item.state}}" ng-class="{'active': $ctrl.$state.is(item.state)}">            
                 <md-list-item ng-click="null">                    
@@ -22,5 +17,10 @@
             </a>
             <md-divider></md-divider>
         </div>
+        <md-subheader ng-click="$ctrl.logout()">Cuenta</md-subheader>
+        <md-list-item ng-click="$ctrl.logout()">
+                <span><md-icon md-font-library="material-icons">power_settings_new</md-icon>Cerrar Sesión</span>
+        </md-list-item>
+        <md-divider></md-divider>
     </md-list>
 </md-content>
