@@ -7,5 +7,5 @@ import testUsersResourceService from './test-users-resource.service';
 
 export default angular
     .module('app.core.resources.test.test-users-resource',[angularResource,constants])
-    .service('TestUsersResource',testUsersResourceService)
+    .service('UsersResource',testUsersResourceService)
     .name;

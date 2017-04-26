@@ -11,10 +11,7 @@ export default class TestStudentsResourceService{
             }) 
         }
     }
-    get(successCallback,errorCallback){
-        this.resources.crud.get({},{},sucessCallback,errorCallback);
-    }
-    get(filter,successCallback,errorCallback){
-
+    get(paginator,successCallback,errorCallback){
+        this.resources.crud.get({},{},successCallback,errorCallback);
     }
 }

@@ -79620,7 +79620,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
 
-},{"./components":15,"./core":42,"./features":69,"angular":13}],15:[function(require,module,exports){
+},{"./components":15,"./core":42,"./features":74,"angular":13}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80063,7 +80063,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = routing;
 function routing($urlRouterProvider, $stateProvider, $mdThemingProvider) {
 
-    $mdThemingProvider.theme('default').primaryPalette('blue-grey');
+    $mdThemingProvider.theme('default').primaryPalette('cyan', {
+        'default': '700'
+    }).accentPalette('green', {
+        'default': '600'
+    }).warnPalette('red', {
+        'default': '400'
+    });
 
     $urlRouterProvider.otherwise('/');
 
@@ -80420,7 +80426,7 @@ var _testStudentsResource2 = _interopRequireDefault(_testStudentsResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.resources.test.test-students-resource', [_angularResource2.default, _constants2.default]).service('TestStudentsResource', _testStudentsResource2.default).name;
+exports.default = _angular2.default.module('app.core.resources.test.test-students-resource', [_angularResource2.default, _constants2.default]).service('StudentsResource', _testStudentsResource2.default).name;
 
 },{"../../../constants":33,"./test-students-resource.service":46,"angular":13,"angular-resource":10}],46:[function(require,module,exports){
 'use strict';
@@ -80449,12 +80455,9 @@ var TestStudentsResourceService = function () {
 
     _createClass(TestStudentsResourceService, [{
         key: 'get',
-        value: function get(successCallback, errorCallback) {
-            this.resources.crud.get({}, {}, sucessCallback, errorCallback);
+        value: function get(paginator, successCallback, errorCallback) {
+            this.resources.crud.get({}, {}, successCallback, errorCallback);
         }
-    }, {
-        key: 'get',
-        value: function get(filter, successCallback, errorCallback) {}
     }]);
 
     return TestStudentsResourceService;
@@ -80487,7 +80490,7 @@ var _testUsersResource2 = _interopRequireDefault(_testUsersResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.resources.test.test-users-resource', [_angularResource2.default, _constants2.default]).service('TestUsersResource', _testUsersResource2.default).name;
+exports.default = _angular2.default.module('app.core.resources.test.test-users-resource', [_angularResource2.default, _constants2.default]).service('UsersResource', _testUsersResource2.default).name;
 
 },{"../../../constants":33,"./test-users-resource.service":48,"angular":13,"angular-resource":10}],48:[function(require,module,exports){
 'use strict';
@@ -80734,6 +80737,104 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _dashboardMaintenanceStudentsTemplate = require('./dashboard-maintenance-students.template.html');
+
+var _dashboardMaintenanceStudentsTemplate2 = _interopRequireDefault(_dashboardMaintenanceStudentsTemplate);
+
+var _dashboardMaintenanceStudents = require('./dashboard-maintenance-students.controller');
+
+var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanceStudents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardMaintenanceStudentsTemplate2.default,
+    controller: _dashboardMaintenanceStudents2.default
+};
+
+},{"./dashboard-maintenance-students.controller":60,"./dashboard-maintenance-students.template.html":61}],60:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardMaintenanceStudentsController = function () {
+    function DashboardMaintenanceStudentsController(CustomizedToast, StudentsResource) {
+        _classCallCheck(this, DashboardMaintenanceStudentsController);
+
+        this.dinjoTable = {
+            config: {},
+            model: {}
+        };
+        this.students = {};
+        this.studentsResource = StudentsResource;
+        this.customizedToast = CustomizedToast;
+        this.InitStudents();
+    }
+
+    _createClass(DashboardMaintenanceStudentsController, [{
+        key: 'InitStudents',
+        value: function InitStudents() {
+            var _this = this;
+
+            this.studentsResource.get(null, function (data) {
+                _this.students = data;
+            }, function (err) {
+                _this.customizedToast.error(err.message);
+            });
+        }
+    }]);
+
+    return DashboardMaintenanceStudentsController;
+}();
+
+exports.default = DashboardMaintenanceStudentsController;
+
+
+DashboardMaintenanceStudentsController.$inject = ['CustomizedToast', 'StudentsResource'];
+
+},{}],61:[function(require,module,exports){
+module.exports = "<md-content layout=\"column\" layout-margin>\r\n    <h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <dinjo-table \r\n        configuration=\"$ctrl.dinjoTable.config\"\r\n        model=\"$ctrl.dinjoTable.model\"\r\n        data=\"$ctrl.students\"/>\r\n    <md-content layout=\"row\" layout-wrap>\r\n        <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n        <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n        <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n        <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n    </md-content>\r\n</md-content>";
+
+},{}],62:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _dashboardMaintenanceStudents = require('./dashboard-maintenance-students.component');
+
+var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanceStudents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features.dashboard-maintenance-students', [_angularMaterial2.default]).component('dashboardMaintenanceStudents', _dashboardMaintenanceStudents2.default).name;
+
+},{"../../core":42,"./dashboard-maintenance-students.component":59,"angular":13,"angular-material":8}],63:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _dashboardMaintenanceTemplate = require('./dashboard-maintenance.template.html');
 
 var _dashboardMaintenanceTemplate2 = _interopRequireDefault(_dashboardMaintenanceTemplate);
@@ -80749,7 +80850,29 @@ exports.default = {
     controller: _dashboardMaintenance2.default
 };
 
-},{"./dashboard-maintenance.controller":60,"./dashboard-maintenance.template.html":61}],60:[function(require,module,exports){
+},{"./dashboard-maintenance.controller":65,"./dashboard-maintenance.template.html":66}],64:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = config;
+function config($urlRouterProvider, $stateProvider) {
+    $stateProvider.state('dashboard.maintenance.students', {
+        url: '/alumnos',
+        template: '<dashboard-maintenance-students/>'
+    }).state('dashboard.maintenance.teachers', {
+        url: '/profesores',
+        template: '<h1>Profesores!</h1>'
+    }).state('dashboard.maintenance.subjects', {
+        url: '/cursos',
+        template: '<h1>Cursos!</h1>'
+    });
+}
+
+config.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+},{}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80767,10 +80890,10 @@ exports.default = DashboardMaintenanceController;
 
 DashboardMaintenanceController.$inject = [];
 
-},{}],61:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports = "<ui-view></ui-view>";
 
-},{}],62:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80785,15 +80908,23 @@ var _angularUiRouter = require('angular-ui-router');
 
 var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-var _dashboardMaintenance = require('./dashboard-maintenance.component');
+var _dashboardMaintenance = require('./dashboard-maintenance.config');
 
 var _dashboardMaintenance2 = _interopRequireDefault(_dashboardMaintenance);
 
+var _dashboardMaintenance3 = require('./dashboard-maintenance.component');
+
+var _dashboardMaintenance4 = _interopRequireDefault(_dashboardMaintenance3);
+
+var _dashboardMaintenanceStudents = require('../dashboard-maintenance-students');
+
+var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanceStudents);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.features.dashboard-maintenance', [_angularUiRouter2.default]).component('dashboardMaintenance', _dashboardMaintenance2.default).name;
+exports.default = _angular2.default.module('app.features.dashboard-maintenance', [_angularUiRouter2.default, _dashboardMaintenanceStudents2.default]).config(_dashboardMaintenance2.default).component('dashboardMaintenance', _dashboardMaintenance4.default).name;
 
-},{"./dashboard-maintenance.component":59,"angular":13,"angular-ui-router":11}],63:[function(require,module,exports){
+},{"../dashboard-maintenance-students":62,"./dashboard-maintenance.component":63,"./dashboard-maintenance.config":64,"angular":13,"angular-ui-router":11}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80815,7 +80946,7 @@ exports.default = {
     controller: _dashboard2.default
 };
 
-},{"./dashboard.controller":65,"./dashboard.template.html":67}],64:[function(require,module,exports){
+},{"./dashboard.controller":70,"./dashboard.template.html":72}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80831,15 +80962,6 @@ function config($urlRouterProvider, $stateProvider) {
         url: 'mantenimiento',
         abstract: true,
         template: '<dashboard-maintenance/>'
-    }).state('dashboard.maintenance.students', {
-        url: '/alumnos',
-        template: '<h1>Alumnos!</h1>'
-    }).state('dashboard.maintenance.teachers', {
-        url: '/profesores',
-        template: '<h1>Profesores!</h1>'
-    }).state('dashboard.maintenance.subjects', {
-        url: '/cursos',
-        template: '<h1>Cursos!</h1>'
     }).state('dashboard.reports', {
         url: 'reportes',
         abstract: true,
@@ -80862,7 +80984,7 @@ function config($urlRouterProvider, $stateProvider) {
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],65:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80904,9 +81026,9 @@ var DashboardController = function () {
 exports.default = DashboardController;
 
 
-DashboardController.$inject = ['$rootScope', 'constants', 'TestUsersResource', 'CustomizedToast'];
+DashboardController.$inject = ['$rootScope', 'constants', 'UsersResource', 'CustomizedToast'];
 
-},{}],66:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80921,10 +81043,10 @@ function run($rootScope) {
 
 run.$inject = ['$rootScope'];
 
-},{}],67:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = "<div layout=\"row\">    \r\n    <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n    <div layout=\"column\" flex  md-swipe-right=\"$ctrl.OnSwipeView()\">            \r\n        <md-toolbar hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n            <span>{{$ctrl.title}}<span>\r\n        </md-toolbar>\r\n        <main-toolbar></main-toolbar>            \r\n        <ui-view layout=\"column\" flex=\"grow\"></ui-view>\r\n    </div>        \r\n</div>";
 
-},{}],68:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80967,7 +81089,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default, _dashboardMaintenance2.default]).config(_dashboard4.default).run(_dashboard2.default).component('dashboard', _dashboard6.default).name;
 
-},{"../../components":15,"../../core":42,"../dashboard-home":58,"../dashboard-maintenance":62,"./dashboard.component":63,"./dashboard.config":64,"./dashboard.run":66,"angular":13}],69:[function(require,module,exports){
+},{"../../components":15,"../../core":42,"../dashboard-home":58,"../dashboard-maintenance":67,"./dashboard.component":68,"./dashboard.config":69,"./dashboard.run":71,"angular":13}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80998,7 +81120,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
 
-},{"../components":15,"../core":42,"./dashboard":68,"./login":70,"angular":13}],70:[function(require,module,exports){
+},{"../components":15,"../core":42,"./dashboard":73,"./login":75,"angular":13}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81027,7 +81149,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
 
-},{"../../core":42,"./login.component":71,"angular":13,"angular-material":8,"angular-ui-router":11}],71:[function(require,module,exports){
+},{"../../core":42,"./login.component":76,"angular":13,"angular-material":8,"angular-ui-router":11}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81049,7 +81171,7 @@ exports.default = {
     controller: _login2.default
 };
 
-},{"./login.controller":72,"./login.template.html":73}],72:[function(require,module,exports){
+},{"./login.controller":77,"./login.template.html":78}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81084,7 +81206,7 @@ exports.default = LoginController;
 
 LoginController.$inject = ['constants', '$state'];
 
-},{}],73:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus tabindex=\"1\">\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\" tabindex=\"1\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
 
 },{}]},{},[14]);

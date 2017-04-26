@@ -11,19 +11,7 @@ export default function config($urlRouterProvider,$stateProvider){
         url:'mantenimiento',
         abstract: true,
         template:'<dashboard-maintenance/>'
-    })
-    .state('dashboard.maintenance.students',{
-        url:'/alumnos',
-        template:'<h1>Alumnos!</h1>'
-    })
-    .state('dashboard.maintenance.teachers',{
-        url:'/profesores',
-        template:'<h1>Profesores!</h1>'
-    })
-    .state('dashboard.maintenance.subjects',{
-        url:'/cursos',
-        template:'<h1>Cursos!</h1>'
-    })
+    })    
     .state('dashboard.reports',{
         url:'reportes',
         abstract: true,

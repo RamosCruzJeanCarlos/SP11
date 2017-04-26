@@ -19,4 +19,4 @@ export default class DashboardController{
     }
 }
 
-DashboardController.$inject = ['$rootScope','constants','TestUsersResource','CustomizedToast'];
+DashboardController.$inject = ['$rootScope','constants','UsersResource','CustomizedToast'];

@@ -3,7 +3,15 @@
 export default function routing($urlRouterProvider,$stateProvider,$mdThemingProvider){
     
     $mdThemingProvider.theme('default')
-    .primaryPalette('blue-grey');
+    .primaryPalette('cyan',{
+        'default' : '700'
+    })
+    .accentPalette('green',{
+        'default' : '600'
+    })
+    .warnPalette('red',{
+        'default' : '400'
+    });
 
     $urlRouterProvider.otherwise('/');
 

@@ -1,0 +1,13 @@
+<md-content layout="column" layout-margin>
+    <h1 class="md-title">Mantenimiento Estudiantes</h1>
+    <dinjo-table 
+        configuration="$ctrl.dinjoTable.config"
+        model="$ctrl.dinjoTable.model"
+        data="$ctrl.students"/>
+    <md-content layout="row" layout-wrap>
+        <md-button class="md-raised md-primary">Añadir</md-button>
+        <md-button class="md-raised md-accent">Editar</md-button>
+        <md-button class="md-raised md-warn md-hue-2">Eliminar</md-button>
+        <md-button class="md-raised md-warn">Cursos Inscritos</md-button>
+    </md-content>
+</md-content>
