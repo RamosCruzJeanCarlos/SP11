@@ -1,0 +1,9 @@
+.md-table{
+    .md-body{
+        .md-row:hover{
+            background-color: lighten($main-menu-active-background-color,10%);            
+            -webkit-transition: $main-menu-active-transition;
+            transition: $main-menu-active-transition;
+        }
+    }
+}

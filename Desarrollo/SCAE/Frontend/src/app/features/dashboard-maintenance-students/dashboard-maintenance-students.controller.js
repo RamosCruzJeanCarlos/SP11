@@ -2,21 +2,47 @@
 
 export default class DashboardMaintenanceStudentsController{
     constructor(CustomizedToast,StudentsResource){
-        this.dinjoTable = {
-            config : {},
-            model : {}
-        };
-        this.students = {};
         this.studentsResource = StudentsResource;
-        this.customizedToast = CustomizedToast;        
+        this.customizedToast = CustomizedToast;      
+        this.selected = [];
+        this.InitTable();
         this.InitStudents();
     }
+    InitTable(){
+        this.table = {
+            query : {
+                order : 'name',
+                limit : 10,
+                page : 1
+            },
+            headers : [
+                {
+                    name : 'id',
+                    orderBy : 'id',
+                    isNumeric : false,
+                },
+                {
+                    name : 'name',
+                    orderBy : 'name',
+                    isNumeric : false,
+                },
+                {
+                    name : 'code',
+                    orderBy : 'code',
+                    isNumeric : false,
+                }
+            ]
+        }
+    }
     InitStudents(){
-        this.studentsResource.get(null,(data)=>{
-            this.students = data;
-        },(err)=>{
-            this.customizedToast.error(err.message);
-        })
+        this.students = {};
+        this.studentsResource
+            .get(null)
+            .then((data)=>{
+                this.students = data;
+            },(err)=>{
+                this.customizedToast.error('Error cargando estudiantes');
+            })
     }
 }
 

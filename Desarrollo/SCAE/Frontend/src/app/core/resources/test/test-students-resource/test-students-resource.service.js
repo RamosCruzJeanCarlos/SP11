@@ -11,7 +11,7 @@ export default class TestStudentsResourceService{
             }) 
         }
     }
-    get(paginator,successCallback,errorCallback){
-        this.resources.crud.get({},{},successCallback,errorCallback);
+    get(paginator){
+        return this.resources.crud.get({},{}).$promise;
     }
 }

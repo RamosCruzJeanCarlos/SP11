@@ -4906,6 +4906,1501 @@ require('./angular-cookies');
 module.exports = 'ngCookies';
 
 },{"./angular-cookies":5}],7:[function(require,module,exports){
+/*
+ * Angular Material Data Table
+ * https://github.com/daniel-nagy/md-data-table
+ * @license MIT
+ * v0.10.9
+ */
+(function (window, angular, undefined) {
+'use strict';
+
+angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-progress.html', 'arrow-up.svg', 'navigate-before.svg', 'navigate-first.svg', 'navigate-last.svg', 'navigate-next.svg']);
+
+angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('md-table-pagination.html',
+    '<div class="page-select" ng-if="$pagination.showPageSelect()">\n' +
+    '  <div class="label">{{$pagination.label.page}}</div>\n' +
+    '\n' +
+    '  <md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" ng-disabled="$pagination.disabled" aria-label="Page">\n' +
+    '    <md-content>\n' +
+    '      <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>\n' +
+    '    </md-content>\n' +
+    '  </md-select>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="limit-select" ng-if="$pagination.limitOptions">\n' +
+    '  <div class="label">{{$pagination.label.rowsPerPage}}</div>\n' +
+    '\n' +
+    '  <md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" ng-disabled="$pagination.disabled" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
+    '    <md-option ng-repeat="option in $pagination.limitOptions" ng-value="option.value ? $pagination.eval(option.value) : option">{{::option.label ? option.label : option}}</md-option>\n' +
+    '  </md-select>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="buttons">\n' +
+    '  <div class="label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">\n' +
+    '    <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-click="$pagination.previous()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="Previous">\n' +
+    '    <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Next">\n' +
+    '    <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Last">\n' +
+    '    <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '</div>');
+}]);
+
+angular.module('md-table-progress.html', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('md-table-progress.html',
+    '<tr>\n' +
+    '  <th colspan="{{columnCount()}}">\n' +
+    '    <md-progress-linear ng-show="deferred()" md-mode="indeterminate"></md-progress-linear>\n' +
+    '  </th>\n' +
+    '</tr>');
+}]);
+
+angular.module('arrow-up.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('arrow-up.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>');
+}]);
+
+angular.module('navigate-before.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-before.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>');
+}]);
+
+angular.module('navigate-first.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-first.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 6 v12 h2 v-12 h-2z M17.41 7.41L16 6l-6 6 6 6 1.41-1.41L12.83 12z"/></svg>');
+}]);
+
+angular.module('navigate-last.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-last.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 6 v12 h2 v-12 h-2z M8 6L6.59 7.41 11.17 12l-4.58 4.59L8 18l6-6z"/></svg>');
+}]);
+
+angular.module('navigate-next.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-next.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>');
+}]);
+
+
+angular.module('md.data.table', ['md.table.templates']);
+
+angular.module('md.data.table').directive('mdBody', mdBody);
+
+function mdBody() {
+
+  function compile(tElement) {
+    tElement.addClass('md-body');
+  }
+
+  return {
+    compile: compile,
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdCell', mdCell);
+
+function mdCell() {
+  
+  function compile(tElement) {
+    var select = tElement.find('md-select');
+    
+    if(select.length) {
+      select.addClass('md-table-select').attr('md-container-class', 'md-table-select');
+    }
+    
+    tElement.addClass('md-cell');
+    
+    return postLink;
+  }
+  
+  // empty controller to be bind properties to in postLink function
+  function Controller() {
+    
+  }
+  
+  function postLink(scope, element, attrs, ctrls) {
+    var select = element.find('md-select');
+    var cellCtrl = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+    
+    if(attrs.ngClick) {
+      element.addClass('md-clickable');
+    }
+    
+    if(select.length) {
+      select.on('click', function (event) {
+        event.stopPropagation();
+      });
+      
+      element.addClass('md-clickable').on('click', function (event) {
+        event.stopPropagation();
+        select[0].click();
+      });
+    }
+    
+    cellCtrl.getTable = tableCtrl.getElement;
+    
+    function getColumn() {
+      return tableCtrl.$$columns[getIndex()];
+    }
+    
+    function getIndex() {
+      return Array.prototype.indexOf.call(element.parent().children(), element[0]);
+    }
+    
+    scope.$watch(getColumn, function (column) {
+      if(!column) {
+        return;
+      }
+      
+      if(column.numeric) {
+        element.addClass('md-numeric');
+      } else {
+        element.removeClass('md-numeric');
+      }
+    });
+  }
+  
+  return {
+    controller: Controller,
+    compile: compile,
+    require: ['mdCell', '^^mdTable'],
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdColumn', mdColumn);
+
+function mdColumn($compile, $mdUtil) {
+
+  function compile(tElement) {
+    tElement.addClass('md-column');
+    return postLink;
+  }
+
+  function postLink(scope, element, attrs, ctrls) {
+    var headCtrl = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+
+    function attachSortIcon() {
+      var sortIcon = angular.element('<md-icon md-svg-icon="arrow-up.svg">');
+
+      $compile(sortIcon.addClass('md-sort-icon').attr('ng-class', 'getDirection()'))(scope);
+
+      if(element.hasClass('md-numeric')) {
+        element.prepend(sortIcon);
+      } else {
+        element.append(sortIcon);
+      }
+    }
+
+    function detachSortIcon() {
+      Array.prototype.some.call(element.find('md-icon'), function (icon) {
+        return icon.classList.contains('md-sort-icon') && element[0].removeChild(icon);
+      });
+    }
+
+    function disableSorting() {
+      detachSortIcon();
+      element.removeClass('md-sort').off('click', setOrder);
+    }
+
+    function enableSorting() {
+      attachSortIcon();
+      element.addClass('md-sort').on('click', setOrder);
+    }
+
+    function getIndex() {
+      return Array.prototype.indexOf.call(element.parent().children(), element[0]);
+    }
+
+    function isActive() {
+      return scope.orderBy && (headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy);
+    }
+
+    function isNumeric() {
+      return attrs.mdNumeric === '' || scope.numeric;
+    }
+
+    function setOrder() {
+      scope.$applyAsync(function () {
+        if(isActive()) {
+          headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
+        } else {
+          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
+        }
+
+        if(angular.isFunction(headCtrl.onReorder)) {
+          $mdUtil.nextTick(function () {
+            headCtrl.onReorder(headCtrl.order);
+          });
+        }
+      });
+    }
+
+    function updateColumn(index, column) {
+      tableCtrl.$$columns[index] = column;
+
+      if(column.numeric) {
+        element.addClass('md-numeric');
+      } else {
+        element.removeClass('md-numeric');
+      }
+    }
+
+    scope.getDirection = function () {
+      if(isActive()) {
+        return headCtrl.order.charAt(0) === '-' ? 'md-desc' : 'md-asc';
+      }
+
+      return attrs.mdDesc === '' || scope.$eval(attrs.mdDesc) ? 'md-desc' : 'md-asc';
+    };
+
+    scope.$watch(isActive, function (active) {
+      if(active) {
+        element.addClass('md-active');
+      } else {
+        element.removeClass('md-active');
+      }
+    });
+
+    scope.$watch(getIndex, function (index) {
+      updateColumn(index, {'numeric': isNumeric()});
+    });
+
+    scope.$watch(isNumeric, function (numeric) {
+      updateColumn(getIndex(), {'numeric': numeric});
+    });
+
+    scope.$watch('orderBy', function (orderBy) {
+      if(orderBy) {
+        if(!element.hasClass('md-sort')) {
+          enableSorting();
+        }
+      } else if(element.hasClass('md-sort')) {
+        disableSorting();
+      }
+    });
+  }
+
+  return {
+    compile: compile,
+    require: ['^^mdHead', '^^mdTable'],
+    restrict: 'A',
+    scope: {
+      numeric: '=?mdNumeric',
+      orderBy: '@?mdOrderBy'
+    }
+  };
+}
+
+mdColumn.$inject = ['$compile', '$mdUtil'];
+
+angular.module('md.data.table')
+  .decorator('$controller', controllerDecorator)
+  .factory('$mdEditDialog', mdEditDialog);
+
+/*
+ * A decorator for ng.$controller to optionally bind properties to the
+ * controller before invoking the constructor. Stolen from the ngMock.
+ *
+ * https://docs.angularjs.org/api/ngMock/service/$controller
+ */
+function controllerDecorator($delegate) {
+  return function(expression, locals, later, ident) {
+    if(later && typeof later === 'object') {
+      var create = $delegate(expression, locals, true, ident);
+      angular.extend(create.instance, later);
+      return create();
+    }
+    return $delegate(expression, locals, later, ident);
+  };
+}
+
+controllerDecorator.$inject = ['$delegate'];
+  
+function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
+  /* jshint validthis: true */
+  
+  var ESCAPE = 27;
+  
+  var busy = false;
+  var body = angular.element($document.prop('body'));
+  
+  /*
+   * bindToController
+   * controller
+   * controllerAs
+   * locals
+   * resolve
+   * scope
+   * targetEvent
+   * template
+   * templateUrl
+   */
+  var defaultOptions = {
+    clickOutsideToClose: true,
+    disableScroll: true,
+    escToClose: true,
+    focusOnOpen: true
+  };
+  
+  function build(template, options) {
+    var scope = $rootScope.$new();
+    var element = $compile(template)(scope);
+    var backdrop = $mdUtil.createBackdrop(scope, 'md-edit-dialog-backdrop');
+    var controller;
+    
+    if(options.controller) {
+      controller = getController(options, scope, {$element: element, $scope: scope});
+    } else {
+      angular.extend(scope, options.scope);
+    }
+    
+    if(options.disableScroll) {
+      disableScroll(element);
+    }
+    
+    body.prepend(backdrop).append(element.addClass('md-whiteframe-1dp'));
+    
+    positionDialog(element, options.target);
+    
+    if(options.focusOnOpen) {
+      focusOnOpen(element);
+    }
+    
+    if(options.clickOutsideToClose) {
+      backdrop.on('click', function () {
+        element.remove();
+      });
+    }
+    
+    if(options.escToClose) {
+      escToClose(element);
+    }
+    
+    element.on('$destroy', function () {
+      busy = false;
+      backdrop.remove();
+    });
+    
+    return controller;
+  }
+  
+  function disableScroll(element) {
+    var restoreScroll = $mdUtil.disableScrollAround(element, body);
+    
+    element.on('$destroy', function () {
+      restoreScroll();
+    });
+  }
+  
+  function getController(options, scope, inject) {
+    if(!options.controller) {
+      return;
+    }
+    
+    if(options.resolve) {
+      angular.extend(inject, options.resolve);
+    }
+    
+    if(options.locals) {
+      angular.extend(inject, options.locals);
+    }
+    
+    if(options.controllerAs) {
+      scope[options.controllerAs] = {};
+      
+      if(options.bindToController) {
+        angular.extend(scope[options.controllerAs], options.scope);
+      } else {
+        angular.extend(scope, options.scope);
+      }
+    } else {
+      angular.extend(scope, options.scope);
+    }
+    
+    if(options.bindToController) {
+      return $controller(options.controller, inject, scope[options.controllerAs]);
+    } else {
+      return $controller(options.controller, inject);
+    }
+  }
+  
+  function getTemplate(options) {
+    return $q(function (resolve, reject) {
+      var template = options.template;
+      
+      function illegalType(type) {
+        reject('Unexpected template value. Expected a string; received a ' + type + '.');
+      }
+      
+      if(template) {
+        return angular.isString(template) ? resolve(template) : illegalType(typeof template);
+      }
+      
+      if(options.templateUrl) {
+        template = $templateCache.get(options.templateUrl);
+        
+        if(template) {
+          return resolve(template);
+        }
+        
+        var success = function (template) {
+          return resolve(template);
+        };
+        
+        var error = function () {
+          return reject('Error retrieving template from URL.');
+        };
+        
+        return $templateRequest(options.templateUrl).then(success, error);
+      }
+      
+      reject('Template not provided.');
+    });
+  }
+  
+  function logError(error) {
+    busy = false;
+    console.error(error);
+  }
+  
+  function escToClose(element) {
+    var keyup = function (event) {
+      if(event.keyCode === ESCAPE) {
+        element.remove();
+      }
+    };
+    
+    body.on('keyup', keyup);
+    
+    element.on('$destroy', function () {
+      body.off('keyup', keyup);
+    });
+  }
+
+  function focusOnOpen(element) {
+    $mdUtil.nextTick(function () {
+      var autofocus = $mdUtil.findFocusTarget(element);
+      
+      if(autofocus) {
+        autofocus.focus();
+      }
+    }, false);
+  }
+
+  function positionDialog(element, target) {
+    var table = angular.element(target).controller('mdCell').getTable();
+    
+    var getHeight = function () {
+      return element.prop('clientHeight');
+    };
+    
+    var getSize = function () {
+      return {
+        width: getWidth(),
+        height: getHeight()
+      };
+    };
+    
+    var getTableBounds = function () {
+      var parent = table.parent();
+      
+      if(parent.prop('tagName') === 'MD-TABLE-CONTAINER') {
+        return parent[0].getBoundingClientRect();
+      } else {
+        return table[0].getBoundingClientRect();
+      }
+    };
+    
+    var getWidth = function () {
+      return element.prop('clientWidth');
+    };
+    
+    var reposition = function () {
+      var size = getSize();
+      var cellBounds = target.getBoundingClientRect();
+      var tableBounds = getTableBounds();
+      
+      if(size.width > tableBounds.right - cellBounds.left) {
+        element.css('left', tableBounds.right - size.width + 'px');
+      } else {
+        element.css('left', cellBounds.left + 'px');
+      }
+      
+      if(size.height > tableBounds.bottom - cellBounds.top) {
+        element.css('top', tableBounds.bottom - size.height + 'px');
+      } else {
+        element.css('top', cellBounds.top + 1 + 'px');
+      }
+      
+      element.css('minWidth', cellBounds.width + 'px');
+    };
+    
+    var watchWidth = $rootScope.$watch(getWidth, reposition);
+    var watchHeight = $rootScope.$watch(getHeight, reposition);
+    
+    $window.addEventListener('resize', reposition);
+    
+    element.on('$destroy', function () {
+      watchWidth();
+      watchHeight();
+      
+      $window.removeEventListener('resize', reposition);
+    });
+  }
+  
+  function preset(size, options) {
+    
+    function getAttrs() {
+      var attrs = 'type="' + (options.type || 'text') + '"';
+      
+      for(var attr in options.validators) {
+        attrs += ' ' + attr + '="' + options.validators[attr] + '"';
+      }
+      
+      return attrs;
+    }
+    
+    return {
+      controller: ['$element', '$q', 'save', '$scope', function ($element, $q, save, $scope) {
+        function update() {
+          if($scope.editDialog.$invalid) {
+            return $q.reject();
+          }
+          
+          if(angular.isFunction(save)) {
+            return $q.when(save($scope.editDialog.input));
+          }
+          
+          return $q.resolve();
+        }
+        
+        this.dismiss = function () {
+          $element.remove();
+        };
+        
+        this.getInput = function () {
+          return $scope.editDialog.input;
+        };
+        
+        $scope.dismiss = this.dismiss;
+        
+        $scope.submit = function () {
+          update().then(function () {
+            $scope.dismiss();
+          });
+        };
+      }],
+      locals: {
+        save: options.save
+      },
+      scope: {
+        cancel: options.cancel || 'Cancel',
+        messages: options.messages,
+        model: options.modelValue,
+        ok: options.ok || 'Save',
+        placeholder: options.placeholder,
+        title: options.title,
+        size: size
+      },
+      template:
+        '<md-edit-dialog>' +
+          '<div layout="column" class="md-content">' +
+            '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
+            '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
+              '<md-input-container md-no-float>' +
+                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+                '<div ng-messages="editDialog.input.$error">' +
+                  '<div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
+                '</div>' +
+              '</md-input-container>' +
+            '</form>' +
+          '</div>' +
+          '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
+            '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
+            '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
+          '</div>' +
+        '</md-edit-dialog>'
+    };
+  }
+  
+  this.show = function (options) {
+    if(busy) {
+      return $q.reject();
+    }
+    
+    busy = true;
+    options = angular.extend({}, defaultOptions, options);
+    
+    if(!options.targetEvent) {
+      return logError('options.targetEvent is required to align the dialog with the table cell.');
+    }
+    
+    if(!options.targetEvent.currentTarget.classList.contains('md-cell')) {
+      return logError('The event target must be a table cell.');
+    }
+    
+    if(options.bindToController && !options.controllerAs) {
+      return logError('You must define options.controllerAs when options.bindToController is true.');
+    }
+    
+    options.target = options.targetEvent.currentTarget;
+    
+    var promise = getTemplate(options);
+    var promises = [promise];
+    
+    for(var prop in options.resolve) {
+      promise = options.resolve[prop];
+      promises.push($q.when(angular.isFunction(promise) ? promise() : promise));
+    }
+    
+    promise = $q.all(promises);
+    
+    promise['catch'](logError);
+    
+    return promise.then(function (results) {
+      var template = results.shift();
+      
+      for(var prop in options.resolve) {
+        options.resolve[prop] = results.shift();
+      }
+      
+      return build(template, options);
+    });
+  };
+  
+  this.small = function (options) {
+    return this.show(angular.extend({}, options, preset('small', options)));
+  }.bind(this);
+  
+  this.large = function (options) {
+    return this.show(angular.extend({}, options, preset('large', options)));
+  }.bind(this);
+  
+  return this;
+}
+
+mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];
+
+
+angular.module('md.data.table').directive('mdFoot', mdFoot);
+
+function mdFoot() {
+
+  function compile(tElement) {
+    tElement.addClass('md-foot');
+  }
+
+  return {
+    compile: compile,
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdHead', mdHead);
+
+function mdHead($compile) {
+
+  function compile(tElement) {
+    tElement.addClass('md-head');
+    return postLink;
+  }
+  
+  // empty controller to be bind scope properties to
+  function Controller() {
+    
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    // because scope.$watch is unpredictable
+    var oldValue = new Array(2);
+    
+    function addCheckboxColumn() {
+      element.children().prepend('<th class="md-column md-checkbox-column">');
+    }
+    
+    function attatchCheckbox() {
+      element.prop('lastElementChild').firstElementChild.appendChild($compile(createCheckBox())(scope)[0]);
+    }
+    
+    function createCheckBox() {
+      return angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select All',
+        'ng-click': 'toggleAll()',
+        'ng-checked': 'allSelected()',
+        'ng-disabled': '!getSelectableRows().length'
+      });
+    }
+    
+    function detachCheckbox() {
+      var cell = element.prop('lastElementChild').firstElementChild;
+      
+      if(cell.classList.contains('md-checkbox-column')) {
+        angular.element(cell).empty();
+      }
+    }
+    
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+    
+    function mdSelectCtrl(row) {
+      return angular.element(row).controller('mdSelect');
+    }
+    
+    function removeCheckboxColumn() {
+      Array.prototype.some.call(element.find('th'), function (cell) {
+        return cell.classList.contains('md-checkbox-column') && cell.remove();
+      });
+    }
+    
+    scope.allSelected = function () {
+      var rows = scope.getSelectableRows();
+      
+      return rows.length && rows.every(function (row) {
+        return row.isSelected();
+      });
+    };
+    
+    scope.getSelectableRows = function () {
+      return tableCtrl.getBodyRows().map(mdSelectCtrl).filter(function (ctrl) {
+        return ctrl && !ctrl.disabled;
+      });
+    };
+    
+    scope.selectAll = function () {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+        if(ctrl && !ctrl.isSelected()) {
+          ctrl.select();
+        }
+      });
+    };
+    
+    scope.toggleAll = function () {
+      return scope.allSelected() ? scope.unSelectAll() : scope.selectAll();
+    };
+    
+    scope.unSelectAll = function () {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+        if(ctrl && ctrl.isSelected()) {
+          ctrl.deselect();
+        }
+      });
+    };
+    
+    scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
+      if(newValue[0] !== oldValue[0]) {
+        if(newValue[0]) {
+          addCheckboxColumn();
+          
+          if(newValue[1]) {
+            attatchCheckbox();
+          }
+        } else {
+          removeCheckboxColumn();
+        }
+      } else if(newValue[0] && newValue[1] !== oldValue[1]) {
+        if(newValue[1]) {
+          attatchCheckbox();
+        } else {
+          detachCheckbox();
+        }
+      }
+      
+      angular.copy(newValue, oldValue);
+    });
+  }
+  
+  return {
+    bindToController: true,
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$mdHead',
+    require: '^^mdTable',
+    restrict: 'A',
+    scope: {
+      order: '=?mdOrder',
+      onReorder: '=?mdOnReorder'
+    }
+  };
+}
+
+mdHead.$inject = ['$compile'];
+
+angular.module('md.data.table').directive('mdRow', mdRow);
+
+function mdRow() {
+
+  function compile(tElement) {
+    tElement.addClass('md-row');
+    return postLink;
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+    
+    function isBodyRow() {
+      return tableCtrl.getBodyRows().indexOf(element[0]) !== -1;
+    }
+    
+    function isChild(node) {
+      return element[0].contains(node[0]);
+    }
+    
+    if(isBodyRow()) {
+      var cell = angular.element('<td class="md-cell">');
+      
+      scope.$watch(enableRowSelection, function (enable) {
+        // if a row is not selectable, prepend an empty cell to it
+        if(enable && !attrs.mdSelect) {
+          if(!isChild(cell)) {
+            element.prepend(cell);
+          }
+          return;
+        }
+        
+        if(isChild(cell)) {
+          cell.remove();
+        }
+      });
+    }
+  }
+
+  return {
+    compile: compile,
+    require: '^^mdTable',
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdSelect', mdSelect);
+
+function mdSelect($compile, $parse) {
+
+  // empty controller to bind scope properties to
+  function Controller() {
+
+  }
+
+  function postLink(scope, element, attrs, ctrls) {
+    var self = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+    var getId = $parse(attrs.mdSelectId);
+
+    self.id = getId(self.model);
+
+    if(tableCtrl.$$rowSelect && self.id) {
+      if(tableCtrl.$$hash.has(self.id)) {
+        var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+
+        // if the item is no longer selected remove it
+        if(index === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+
+      } else {
+
+        // check if the item has been selected
+        tableCtrl.selected.some(function (item, index) {
+          if(getId(item) === self.id) {
+            tableCtrl.$$hash.update(self.id, self.model);
+            tableCtrl.selected.splice(index, 1, self.model);
+
+            return true;
+          }
+        });
+      }
+    }
+
+    self.isSelected = function () {
+      if(!tableCtrl.$$rowSelect) {
+        return false;
+      }
+
+      if(self.id) {
+        return tableCtrl.$$hash.has(self.id);
+      }
+
+      return tableCtrl.selected.indexOf(self.model) !== -1;
+    };
+
+    self.select = function () {
+      if(self.disabled) {
+        return;
+      }
+
+      if(tableCtrl.enableMultiSelect()) {
+        tableCtrl.selected.push(self.model);
+      } else {
+        tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
+      }
+
+      if(angular.isFunction(self.onSelect)) {
+        self.onSelect(self.model);
+      }
+    };
+
+    self.deselect = function () {
+      if(self.disabled) {
+        return;
+      }
+
+      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+
+      if(angular.isFunction(self.onDeselect)) {
+        self.onDeselect(self.model);
+      }
+    };
+
+    self.toggle = function (event) {
+      if(event && event.stopPropagation) {
+        event.stopPropagation();
+      }
+
+      return self.isSelected() ? self.deselect() : self.select();
+    };
+
+    function autoSelect() {
+      return attrs.mdAutoSelect === '' || self.autoSelect;
+    }
+
+    function createCheckbox() {
+      var checkbox = angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select Row',
+        'ng-click': '$mdSelect.toggle($event)',
+        'ng-checked': '$mdSelect.isSelected()',
+        'ng-disabled': '$mdSelect.disabled'
+      });
+
+      return angular.element('<td class="md-cell md-checkbox-cell">').append($compile(checkbox)(scope));
+    }
+
+    function disableSelection() {
+      Array.prototype.some.call(element.children(), function (child) {
+        return child.classList.contains('md-checkbox-cell') && element[0].removeChild(child);
+      });
+
+      if(autoSelect()) {
+        element.off('click', toggle);
+      }
+    }
+
+    function enableSelection() {
+      element.prepend(createCheckbox());
+
+      if(autoSelect()) {
+        element.on('click', toggle);
+      }
+    }
+
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+
+    function onSelectChange(selected) {
+      if(!self.id) {
+        return;
+      }
+
+      if(tableCtrl.$$hash.has(self.id)) {
+        // check if the item has been deselected
+        if(selected.indexOf(tableCtrl.$$hash.get(self.id)) === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+
+        return;
+      }
+
+      // check if the item has been selected
+      if(selected.indexOf(self.model) !== -1) {
+        tableCtrl.$$hash.update(self.id, self.model);
+      }
+    }
+
+    function toggle(event) {
+      scope.$applyAsync(function () {
+        self.toggle(event);
+      });
+    }
+
+    scope.$watch(enableRowSelection, function (enable) {
+      if(enable) {
+        enableSelection();
+      } else {
+        disableSelection();
+      }
+    });
+
+    scope.$watch(autoSelect, function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+
+      if(tableCtrl.$$rowSelect && newValue) {
+        element.on('click', toggle);
+      } else {
+        element.off('click', toggle);
+      }
+    });
+
+    scope.$watch(self.isSelected, function (isSelected) {
+      return isSelected ? element.addClass('md-selected') : element.removeClass('md-selected');
+    });
+
+    scope.$watch(tableCtrl.enableMultiSelect, function (multiple) {
+      if(tableCtrl.$$rowSelect && !multiple) {
+        // remove all but the first selected item
+        tableCtrl.selected.splice(1);
+      }
+    });
+
+    tableCtrl.registerModelChangeListener(onSelectChange);
+
+    element.on('$destroy', function () {
+      tableCtrl.removeModelChangeListener(onSelectChange);
+    });
+  }
+
+  return {
+    bindToController: true,
+    controller: Controller,
+    controllerAs: '$mdSelect',
+    link: postLink,
+    require: ['mdSelect', '^^mdTable'],
+    restrict: 'A',
+    scope: {
+      model: '=mdSelect',
+      disabled: '=ngDisabled',
+      onSelect: '=?mdOnSelect',
+      onDeselect: '=?mdOnDeselect',
+      autoSelect: '=mdAutoSelect'
+    }
+  };
+}
+
+mdSelect.$inject = ['$compile', '$parse'];
+
+angular.module('md.data.table').directive('mdTable', mdTable);
+
+function Hash() {
+  var keys = {};
+  
+  this.equals = function (key, item) {
+    return keys[key] === item;
+  };
+
+  this.get = function (key) {
+    return keys[key];
+  };
+  
+  this.has = function (key) {
+    return keys.hasOwnProperty(key);
+  };
+
+  this.purge = function (key) {
+    delete keys[key];
+  };
+  
+  this.update = function (key, item) {
+    keys[key] = item;
+  };
+}
+
+function mdTable() {
+  
+  function compile(tElement, tAttrs) {
+    tElement.addClass('md-table');
+    
+    if(tAttrs.hasOwnProperty('mdProgress')) {
+      var body = tElement.find('tbody')[0];
+      var progress = angular.element('<thead class="md-table-progress" md-table-progress>');
+      
+      if(body) {
+        tElement[0].insertBefore(progress[0], body);
+      }
+    }
+  }
+  
+  function Controller($attrs, $element, $q, $scope) {
+    var self = this;
+    var queue = [];
+    var watchListener;
+    var modelChangeListeners = [];
+    
+    self.$$hash = new Hash();
+    self.$$columns = {};
+    
+    function enableRowSelection() {
+      self.$$rowSelect = true;
+      
+      watchListener = $scope.$watchCollection('$mdTable.selected', function (selected) {
+        modelChangeListeners.forEach(function (listener) {
+          listener(selected);
+        });
+      });
+      
+      $element.addClass('md-row-select');
+    }
+    
+    function disableRowSelection() {
+      self.$$rowSelect = false;
+      
+      if(angular.isFunction(watchListener)) {
+        watchListener();
+      }
+      
+      $element.removeClass('md-row-select');
+    }
+    
+    function resolvePromises() {
+      if(!queue.length) {
+        return $scope.$applyAsync();
+      }
+      
+      queue[0]['finally'](function () {
+        queue.shift();
+        resolvePromises();
+      });
+    }
+    
+    function rowSelect() {
+      return $attrs.mdRowSelect === '' || self.rowSelect;
+    }
+    
+    function validateModel() {
+      if(!self.selected) {
+        return console.error('Row selection: ngModel is not defined.');
+      }
+      
+      if(!angular.isArray(self.selected)) {
+        return console.error('Row selection: Expected an array. Recived ' + typeof self.selected + '.');
+      }
+      
+      return true;
+    }
+    
+    self.columnCount = function () {
+      return self.getRows($element[0]).reduce(function (count, row) {
+        return row.cells.length > count ? row.cells.length : count;
+      }, 0);
+    };
+    
+    self.getRows = function (element) {
+      return Array.prototype.filter.call(element.rows, function (row) {
+        return !row.classList.contains('ng-leave');
+      });
+    };
+    
+    self.getBodyRows = function () {
+      return Array.prototype.reduce.call($element.prop('tBodies'), function (result, tbody) {
+        return result.concat(self.getRows(tbody));
+      }, []);
+    };
+    
+    self.getElement = function () {
+      return $element;
+    };
+    
+    self.getHeaderRows = function () {
+      return self.getRows($element.prop('tHead'));
+    };
+    
+    self.enableMultiSelect = function () {
+      return $attrs.multiple === '' || $scope.$eval($attrs.multiple);
+    };
+    
+    self.waitingOnPromise = function () {
+      return !!queue.length;
+    };
+    
+    self.queuePromise = function (promise) {
+      if(!promise) {
+        return;
+      }
+      
+      if(queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+        resolvePromises();
+      }
+    };
+    
+    self.registerModelChangeListener = function (listener) {
+      modelChangeListeners.push(listener);
+    };
+    
+    self.removeModelChangeListener = function (listener) {
+      var index = modelChangeListeners.indexOf(listener);
+      
+      if(index !== -1) {
+        modelChangeListeners.splice(index, 1);
+      }
+    };
+    
+    if($attrs.hasOwnProperty('mdProgress')) {
+      $scope.$watch('$mdTable.progress', self.queuePromise);
+    }
+    
+    $scope.$watch(rowSelect, function (enable) {
+      if(enable && !!validateModel()) {
+        enableRowSelection();
+      } else {
+        disableRowSelection();
+      }
+    });
+  }
+  
+  Controller.$inject = ['$attrs', '$element', '$q', '$scope'];
+  
+  return {
+    bindToController: true,
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$mdTable',
+    restrict: 'A',
+    scope: {
+      progress: '=?mdProgress',
+      selected: '=ngModel',
+      rowSelect: '=mdRowSelect'
+    }
+  };
+}
+
+angular.module('md.data.table').directive('mdTablePagination', mdTablePagination);
+
+function mdTablePagination() {
+
+  function compile(tElement) {
+    tElement.addClass('md-table-pagination');
+  }
+
+  function Controller($attrs, $mdUtil, $scope) {
+    var self = this;
+    var defaultLabel = {
+      page: 'Page:',
+      rowsPerPage: 'Rows per page:',
+      of: 'of'
+    };
+
+    self.label = angular.copy(defaultLabel);
+
+    function isPositive(number) {
+      return parseInt(number, 10) > 0;
+    }
+
+    self.eval = function (expression) {
+      return $scope.$eval(expression);
+    };
+
+    self.first = function () {
+      self.page = 1;
+      self.onPaginationChange();
+    };
+
+    self.hasNext = function () {
+      return self.page * self.limit < self.total;
+    };
+
+    self.hasPrevious = function () {
+      return self.page > 1;
+    };
+
+    self.last = function () {
+      self.page = self.pages();
+      self.onPaginationChange();
+    };
+
+    self.max = function () {
+      return self.hasNext() ? self.page * self.limit : self.total;
+    };
+
+    self.min = function () {
+      return isPositive(self.total) ? self.page * self.limit - self.limit + 1 : 0;
+    };
+
+    self.next = function () {
+      self.page++;
+      self.onPaginationChange();
+    };
+
+    self.onPaginationChange = function () {
+      if(angular.isFunction(self.onPaginate)) {
+        $mdUtil.nextTick(function () {
+          self.onPaginate(self.page, self.limit);
+        });
+      }
+    };
+
+    self.pages = function () {
+      return isPositive(self.total) ? Math.ceil(self.total / (isPositive(self.limit) ? self.limit : 1)) : 1;
+    };
+
+    self.previous = function () {
+      self.page--;
+      self.onPaginationChange();
+    };
+
+    self.showBoundaryLinks = function () {
+      return $attrs.mdBoundaryLinks === '' || self.boundaryLinks;
+    };
+
+    self.showPageSelect = function () {
+      return $attrs.mdPageSelect === '' || self.pageSelect;
+    };
+
+    $scope.$watch('$pagination.limit', function (newValue, oldValue) {
+      if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
+        return;
+      }
+
+      // find closest page from previous min
+      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isPositive(newValue) ? newValue : 1));
+      self.onPaginationChange();
+    });
+
+    $attrs.$observe('mdLabel', function (label) {
+      angular.extend(self.label, defaultLabel, $scope.$eval(label));
+    });
+
+    $scope.$watch('$pagination.total', function (newValue, oldValue) {
+      if(isNaN(newValue) || newValue === oldValue) {
+        return;
+      }
+
+      if(self.page > self.pages()) {
+        self.last();
+      }
+    });
+  }
+
+  Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
+
+  return {
+    bindToController: {
+      boundaryLinks: '=?mdBoundaryLinks',
+      disabled: '=ngDisabled',
+      limit: '=mdLimit',
+      page: '=mdPage',
+      pageSelect: '=?mdPageSelect',
+      onPaginate: '=?mdOnPaginate',
+      limitOptions: '=?mdLimitOptions',
+      total: '@mdTotal'
+    },
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$pagination',
+    restrict: 'E',
+    scope: {},
+    templateUrl: 'md-table-pagination.html'
+  };
+}
+
+angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
+
+function mdTableProgress() {
+
+  function postLink(scope, element, attrs, tableCtrl) {
+    scope.columnCount = tableCtrl.columnCount;
+    scope.deferred = tableCtrl.waitingOnPromise;
+  }
+
+  return {
+    link: postLink,
+    require: '^^mdTable',
+    restrict: 'A',
+    scope: {},
+    templateUrl: 'md-table-progress.html'
+  };
+}
+
+angular.module('md.data.table').directive('virtualPageSelect', virtualPageSelect);
+
+function virtualPageSelect() {
+
+  function Controller($element, $scope) {
+    var self = this;
+    var content = $element.find('md-content');
+
+    self.pages = [];
+
+    function getMin(pages, total) {
+      return Math.min(pages, isFinite(total) && isPositive(total) ? total : 1);
+    }
+
+    function isPositive(number) {
+      return number > 0;
+    }
+
+    function setPages(max) {
+      if(self.pages.length > max) {
+        return self.pages.splice(max);
+      }
+
+      for(var i = self.pages.length; i < max; i++) {
+        self.pages.push(i + 1);
+      }
+    }
+
+    content.on('scroll', function () {
+      if((content.prop('clientHeight') + content.prop('scrollTop')) >= content.prop('scrollHeight')) {
+        $scope.$applyAsync(function () {
+          setPages(getMin(self.pages.length + 10, self.total));
+        });
+      }
+    });
+
+    $scope.$watch('$pageSelect.total', function (total) {
+      setPages(getMin(Math.max(self.pages.length, 10), total));
+    });
+
+    $scope.$watch('$pagination.page', function (page) {
+      for(var i = self.pages.length; i < page; i++) {
+        self.pages.push(i + 1);
+      }
+    });
+  }
+
+  Controller.$inject = ['$element', '$scope'];
+
+  return {
+    bindToController: {
+      total: '@'
+    },
+    controller: Controller,
+    controllerAs: '$pageSelect'
+  };
+}
+
+})(window, angular);
+},{}],8:[function(require,module,exports){
+// support for Browserify
+
+require('angular-material');
+require('./dist/md-data-table');
+
+module.exports = 'md.data.table';
+
+},{"./dist/md-data-table":7,"angular-material":10}],9:[function(require,module,exports){
 /*!
  * Angular Material Design
  * https://github.com/angular/material
@@ -40655,7 +42150,7 @@ angular.module("material.core").constant("$MD_THEME_CSS", "md-autocomplete.md-TH
 
 
 })(window, window.angular);;window.ngMaterial={version:{full: "1.1.3"}};
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Should already be required, here for clarity
 require('angular');
 
@@ -40669,7 +42164,7 @@ require('./angular-material');
 // Export namespace
 module.exports = 'ngMaterial';
 
-},{"./angular-material":7,"angular":13,"angular-animate":2,"angular-aria":4}],9:[function(require,module,exports){
+},{"./angular-material":9,"angular":15,"angular-animate":2,"angular-aria":4}],11:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -41529,11 +43024,11 @@ angular.module('ngResource', ['ng']).
 
 })(window, window.angular);
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 require('./angular-resource');
 module.exports = 'ngResource';
 
-},{"./angular-resource":9}],11:[function(require,module,exports){
+},{"./angular-resource":11}],13:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.4.2
@@ -46218,7 +47713,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -79591,11 +81086,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":12}],14:[function(require,module,exports){
+},{"./angular":14}],16:[function(require,module,exports){
 'use strict';
 
 //vendor dependencies
@@ -79620,7 +81115,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
 
-},{"./components":15,"./core":42,"./features":74,"angular":13}],15:[function(require,module,exports){
+},{"./components":17,"./core":44,"./features":76,"angular":15}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79652,7 +81147,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //components
 exports.default = _angular2.default.module('app.components', [_mainToolbar2.default, _mainSidenav2.default, _userProfile2.default, _mainMenu2.default]).name;
 
-},{"./main-menu":16,"./main-sidenav":20,"./main-toolbar":24,"./user-profile":28,"angular":13}],16:[function(require,module,exports){
+},{"./main-menu":18,"./main-sidenav":22,"./main-toolbar":26,"./user-profile":30,"angular":15}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79679,7 +81174,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.main-menu', [_angularMaterial2.default]).component('mainMenu', _mainMenu2.default).name;
 
-},{"./main-menu.component":17,"angular":13,"angular-material":8,"angular-ui-router":11}],17:[function(require,module,exports){
+},{"./main-menu.component":19,"angular":15,"angular-material":10,"angular-ui-router":13}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79704,7 +81199,7 @@ exports.default = {
     }
 };
 
-},{"./main-menu.controller":18,"./main-menu.template.html":19}],18:[function(require,module,exports){
+},{"./main-menu.controller":20,"./main-menu.template.html":21}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79737,10 +81232,10 @@ exports.default = MainMenuController;
 
 MainMenuController.$inject = ['$state'];
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = "<md-content layout=\"column\">    \r\n    <md-list class=\"md-dense\">        \r\n        <div ng-repeat=\"item in $ctrl.menu\">\r\n            <a ng-if=\"item.state\" ui-sref=\"{{item.state}}\" ng-class=\"{'active': $ctrl.$state.is(item.state)}\">            \r\n                <md-list-item ng-click=\"null\">                    \r\n                    <span>{{item.name}}</span>\r\n                </md-list-item>            \r\n            </a>\r\n            <md-subheader ng-if=\"!item.state\">                    \r\n                <span>{{item.name}}</span>\r\n            </md-subheader>\r\n            <a ui-sref=\"{{subitem.state}}\" ng-repeat=\"subitem in item.items\" ng-class=\"{'active': $ctrl.$state.is(subitem.state)}\">\r\n                <md-list-item ng-click=\"null\">\r\n                    <span><md-icon md-font-library=\"material-icons\">{{subitem.icon}}</md-icon>\r\n                    {{subitem.name}}</span>\r\n                </md-list-item>\r\n            </a>\r\n            <md-divider></md-divider>\r\n        </div>\r\n        <md-subheader ng-click=\"$ctrl.logout()\">Cuenta</md-subheader>\r\n        <md-list-item ng-click=\"$ctrl.logout()\">\r\n                <span><md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>Cerrar Sesión</span>\r\n        </md-list-item>\r\n        <md-divider></md-divider>\r\n    </md-list>\r\n</md-content>";
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79763,7 +81258,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.main-sidenav', [_angularMaterial2.default]).component('mainSidenav', _mainSidenav2.default).name;
 
-},{"./main-sidenav.component":21,"angular":13,"angular-material":8}],21:[function(require,module,exports){
+},{"./main-sidenav.component":23,"angular":15,"angular-material":10}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79789,7 +81284,7 @@ exports.default = {
     }
 };
 
-},{"./main-sidenav.controller":22,"./main-sidenav.template.html":23}],22:[function(require,module,exports){
+},{"./main-sidenav.controller":24,"./main-sidenav.template.html":25}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79860,10 +81355,10 @@ exports.default = MainSidenavController;
 
 MainSidenavController.$inject = ['$scope', '$mdMedia', '$mdSidenav', 'constants'];
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-component-id=\"main_side_nav\"\r\n    md-is-locked-open=\"$mdMedia('gt-xs')&&$ctrl.open\" \r\n    layout=\"column\"\r\n    md-whiteframe=\"2\">\r\n    <md-content layout=\"column\">\r\n        <user-profile user-info=\"$ctrl.userInfo\"></user-profile>\r\n        <main-menu menu=\"$ctrl.menu\"></main-menu>\r\n    </md-content>    \r\n</md-sidenav>";
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79886,7 +81381,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.main-toolbar', [_angularMaterial2.default]).component('mainToolbar', _mainToolbar2.default).name;
 
-},{"./main-toolbar.component":25,"angular":13,"angular-material":8}],25:[function(require,module,exports){
+},{"./main-toolbar.component":27,"angular":15,"angular-material":10}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79908,7 +81403,7 @@ exports.default = {
     controller: _mainToolbar2.default
 };
 
-},{"./main-toolbar.controller":26,"./main-toolbar.template.html":27}],26:[function(require,module,exports){
+},{"./main-toolbar.controller":28,"./main-toolbar.template.html":29}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79941,10 +81436,10 @@ exports.default = MainToolbarController;
 
 MainToolbarController.$inject = ['$rootScope'];
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = "<md-toolbar layout=\"row\">\r\n    <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n        <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <!--<md-button class=\"md-no-focus\">\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>-->\r\n</md-toolbar>";
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79967,7 +81462,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.components.user-profile', [_angularMaterial2.default]).component('userProfile', _userProfile2.default).name;
 
-},{"./user-profile.component":29,"angular":13,"angular-material":8}],29:[function(require,module,exports){
+},{"./user-profile.component":31,"angular":15,"angular-material":10}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79992,7 +81487,7 @@ exports.default = {
     }
 };
 
-},{"./user-profile.controller":30,"./user-profile.template.html":31}],30:[function(require,module,exports){
+},{"./user-profile.controller":32,"./user-profile.template.html":33}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80010,10 +81505,10 @@ exports.default = UserProfileController;
 
 UserProfileController.$inject = [];
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = "<div layout=\"column\">\r\n    <!--<div layout=\"column\">\r\n        <div layout-padding>\r\n            <img src=\"{{$ctrl.userInfo.profilePicture}}\" alt=\"profile picture\" class=\"md-avatar\"/>\r\n        </div>\r\n        <div layout=\"column\" layout-padding>\r\n            <span class=\"md-subtitle\">{{$ctrl.userInfo.username}}</span>\r\n            <span class=\"md-caption\">{{$ctrl.userInfo.email}}</span>        \r\n        </div>\r\n        <br>\r\n    </div>-->\r\n    <img src=\"{{$ctrl.userInfo.profilePicture}}\" alt=\"profile picture\" class=\"md-avatar\"/>\r\n    <md-list>\r\n        <md-list-item class=\"md-2-line\">\r\n            <div class=\"md-list-item-text\" layout=\"column\">\r\n                <span class=\"md-subtitle\">{{$ctrl.userInfo.username}}</span>\r\n                <span class=\"md-caption\">{{$ctrl.userInfo.email}}</span>     \r\n            </div>\r\n        </md-list-item>\r\n    </md-list>\r\n    <!--<md-subheader ng-click=\"$ctrl.logout()\" >Cuenta</md-subheader>\r\n    <md-list class=\"md-dense\">\r\n        <md-list-item ng-click=\"$ctrl.logout()\" >\r\n            <span>Cerrar Sesión</span>\r\n        </md-list-item>\r\n    </md-list>-->\r\n</div>";
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80035,7 +81530,7 @@ exports.default = {
     }
 };
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80054,7 +81549,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.constants', []).constant('constants', _constants2.default).name;
 
-},{"./constants":32,"angular":13}],34:[function(require,module,exports){
+},{"./constants":34,"angular":15}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80088,7 +81583,7 @@ function routing($urlRouterProvider, $stateProvider, $mdThemingProvider) {
 
 routing.$inject = ['$urlRouterProvider', '$stateProvider', '$mdThemingProvider'];
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80102,7 +81597,7 @@ function CookieManagerConfiguration($cookiesProvider) {
 
 CookieManagerConfiguration.$inject = ['$cookiesProvider'];
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80115,7 +81610,7 @@ function CookieManagerRun(CookieManager) {
 
 CookieManagerRun.$inject = ['CookieManager'];
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80181,7 +81676,7 @@ exports.default = CookieManagerService;
 
 CookieManagerService.$inject = ['$cookies', '$resource', 'constants'];
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80216,7 +81711,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.helpers.cookie-manager', [_angularCookies2.default, _angularResource2.default]).run(_cookieManager6.default).config(_cookieManager2.default).service('CookieManager', _cookieManager4.default).name;
 
-},{"./cookie-manager.config":35,"./cookie-manager.run":36,"./cookie-manager.service":37,"angular":13,"angular-cookies":6,"angular-resource":10}],39:[function(require,module,exports){
+},{"./cookie-manager.config":37,"./cookie-manager.run":38,"./cookie-manager.service":39,"angular":15,"angular-cookies":6,"angular-resource":12}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80270,7 +81765,7 @@ exports.default = CustomizedToast;
 
 CustomizedToast.$inject = ['$mdToast'];
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80293,7 +81788,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.helpers.positioned-toast', [_angularMaterial2.default]).service('CustomizedToast', _customizedToast2.default).name;
 
-},{"./customized-toast.service":39,"angular":13,"angular-material":8}],41:[function(require,module,exports){
+},{"./customized-toast.service":41,"angular":15,"angular-material":10}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80316,7 +81811,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.helpers', [_cookieManager2.default, _customizedToast2.default]).name;
 
-},{"./cookie-manager":38,"./customized-toast":40,"angular":13}],42:[function(require,module,exports){
+},{"./cookie-manager":40,"./customized-toast":42,"angular":15}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80359,7 +81854,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _angularMaterial2.default, _constants2.default, _helpers2.default, _utils2.default, _resources2.default]).config(_core2.default).name;
 
-},{"./constants":33,"./core.config":34,"./helpers":41,"./resources":43,"./utils":49,"angular":13,"angular-material":8,"angular-ui-router":11}],43:[function(require,module,exports){
+},{"./constants":35,"./core.config":36,"./helpers":43,"./resources":45,"./utils":51,"angular":15,"angular-material":10,"angular-ui-router":13}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80378,7 +81873,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.resources', [_test2.default]).name;
 
-},{"./test":44,"angular":13}],44:[function(require,module,exports){
+},{"./test":46,"angular":15}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80401,7 +81896,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.resources.test', [_testUsersResource2.default, _testStudentsResource2.default]).name;
 
-},{"./test-students-resource":45,"./test-users-resource":47,"angular":13}],45:[function(require,module,exports){
+},{"./test-students-resource":47,"./test-users-resource":49,"angular":15}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80428,7 +81923,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.resources.test.test-students-resource', [_angularResource2.default, _constants2.default]).service('StudentsResource', _testStudentsResource2.default).name;
 
-},{"../../../constants":33,"./test-students-resource.service":46,"angular":13,"angular-resource":10}],46:[function(require,module,exports){
+},{"../../../constants":35,"./test-students-resource.service":48,"angular":15,"angular-resource":12}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80455,8 +81950,8 @@ var TestStudentsResourceService = function () {
 
     _createClass(TestStudentsResourceService, [{
         key: 'get',
-        value: function get(paginator, successCallback, errorCallback) {
-            this.resources.crud.get({}, {}, successCallback, errorCallback);
+        value: function get(paginator) {
+            return this.resources.crud.get({}, {}).$promise;
         }
     }]);
 
@@ -80465,7 +81960,7 @@ var TestStudentsResourceService = function () {
 
 exports.default = TestStudentsResourceService;
 
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80492,7 +81987,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.resources.test.test-users-resource', [_angularResource2.default, _constants2.default]).service('UsersResource', _testUsersResource2.default).name;
 
-},{"../../../constants":33,"./test-users-resource.service":48,"angular":13,"angular-resource":10}],48:[function(require,module,exports){
+},{"../../../constants":35,"./test-users-resource.service":50,"angular":15,"angular-resource":12}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80531,7 +82026,7 @@ exports.default = TestUsersResourceService;
 
 TestUsersResourceService.$inject = ['$resource', 'constants'];
 
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80550,7 +82045,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default]).name;
 
-},{"./loading-modal":50,"angular":13}],50:[function(require,module,exports){
+},{"./loading-modal":52,"angular":15}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80575,7 +82070,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service('LoadingModal', _loadingModal2.default).name;
 
-},{"./loading-modal.component":51,"./loading-modal.service":53,"angular":13,"angular-material":8}],51:[function(require,module,exports){
+},{"./loading-modal.component":53,"./loading-modal.service":55,"angular":15,"angular-material":10}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80597,7 +82092,7 @@ exports.default = {
     controller: _loadingModal2.default
 };
 
-},{"./loading-modal.controller":52,"./loading-modal.template.html":54}],52:[function(require,module,exports){
+},{"./loading-modal.controller":54,"./loading-modal.template.html":56}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80615,7 +82110,7 @@ exports.default = LoadingModalController;
 
 LoadingModalController.$inject = [];
 
-},{}],53:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80659,10 +82154,10 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}],54:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
 
-},{}],55:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80684,7 +82179,7 @@ exports.default = {
     controller: _dashboardHome2.default
 };
 
-},{"./dashboard-home.controller":56,"./dashboard-home.template.html":57}],56:[function(require,module,exports){
+},{"./dashboard-home.controller":58,"./dashboard-home.template.html":59}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80704,10 +82199,10 @@ exports.default = DashboardHomeController;
 
 DashboardHomeController.$inject = ['constants'];
 
-},{}],57:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = "<md-content layout=\"row\" layout-align=\"center center\" flex>\r\n    <h1>{{$ctrl.content}}</h1>\r\n</md-content>\r\n";
 
-},{}],58:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80730,7 +82225,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('dashboardHome', _dashboardHome2.default).name;
 
-},{"../../core":42,"./dashboard-home.component":55,"angular":13}],59:[function(require,module,exports){
+},{"../../core":44,"./dashboard-home.component":57,"angular":15}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80752,7 +82247,7 @@ exports.default = {
     controller: _dashboardMaintenanceStudents2.default
 };
 
-},{"./dashboard-maintenance-students.controller":60,"./dashboard-maintenance-students.template.html":61}],60:[function(require,module,exports){
+},{"./dashboard-maintenance-students.controller":62,"./dashboard-maintenance-students.template.html":63}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80767,25 +82262,47 @@ var DashboardMaintenanceStudentsController = function () {
     function DashboardMaintenanceStudentsController(CustomizedToast, StudentsResource) {
         _classCallCheck(this, DashboardMaintenanceStudentsController);
 
-        this.dinjoTable = {
-            config: {},
-            model: {}
-        };
-        this.students = {};
         this.studentsResource = StudentsResource;
         this.customizedToast = CustomizedToast;
+        this.selected = [];
+        this.InitTable();
         this.InitStudents();
     }
 
     _createClass(DashboardMaintenanceStudentsController, [{
+        key: 'InitTable',
+        value: function InitTable() {
+            this.table = {
+                query: {
+                    order: 'name',
+                    limit: 10,
+                    page: 1
+                },
+                headers: [{
+                    name: 'id',
+                    orderBy: 'id',
+                    isNumeric: false
+                }, {
+                    name: 'name',
+                    orderBy: 'name',
+                    isNumeric: false
+                }, {
+                    name: 'code',
+                    orderBy: 'code',
+                    isNumeric: false
+                }]
+            };
+        }
+    }, {
         key: 'InitStudents',
         value: function InitStudents() {
             var _this = this;
 
-            this.studentsResource.get(null, function (data) {
+            this.students = {};
+            this.studentsResource.get(null).then(function (data) {
                 _this.students = data;
             }, function (err) {
-                _this.customizedToast.error(err.message);
+                _this.customizedToast.error('Error cargando estudiantes');
             });
         }
     }]);
@@ -80798,10 +82315,10 @@ exports.default = DashboardMaintenanceStudentsController;
 
 DashboardMaintenanceStudentsController.$inject = ['CustomizedToast', 'StudentsResource'];
 
-},{}],61:[function(require,module,exports){
-module.exports = "<md-content layout=\"column\" layout-margin>\r\n    <h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <dinjo-table \r\n        configuration=\"$ctrl.dinjoTable.config\"\r\n        model=\"$ctrl.dinjoTable.model\"\r\n        data=\"$ctrl.students\"/>\r\n    <md-content layout=\"row\" layout-wrap>\r\n        <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n        <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n        <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n        <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n    </md-content>\r\n</md-content>";
+},{}],63:[function(require,module,exports){
+module.exports = "<md-content layout=\"column\" layout-margin ng-cloak>\r\n    <!--<h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <md-card layout-padding>        \r\n        <md-content layout=\"row\" layout-wrap>\r\n            <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n            <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n            <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n            <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n        </md-content>\r\n    </md-card>-->\r\n    <md-card>      \r\n        <md-toolbar class=\"md-table-toolbar md-default\">\r\n            <div class=\"md-toolbar-tools\" layout=\"row\">\r\n                <span>Mantenimiento Estudiantes</span>\r\n                <div flex></div>\r\n                <md-button class=\"md-icon-button\">\r\n                    <md-icon md-font-library=\"material-icons\">person_add</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-table-container>\r\n            <table md-table md-row-select=\"false\" ng-model=\"$ctrl.selected\">\r\n                <thead md-head md-order=\"$ctrl.table.query.order\">\r\n                    <tr md-row>\r\n                        <th md-column \r\n                            ng-repeat=\"header in $ctrl.table.headers\"  \r\n                            md-order-by=\"{{header.orderBy}}\"\r\n                            md-numeric=\"header.isNumeric\">\r\n                            {{header.name | uppercase}}                            \r\n                        </th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody md-body>\r\n                    <tr md-row md-select=\"student\" md-auto-select ng-repeat=\"student in $ctrl.students\">\r\n                        <td md-cell ng-repeat=\"field in $ctrl.table.headers\">{{student[field.name]}}</td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </md-table-container>\r\n    </md-card>    \r\n</md-content>";
 
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80816,6 +82333,10 @@ var _angularMaterial = require('angular-material');
 
 var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
 
+var _angularMaterialDataTable = require('angular-material-data-table');
+
+var _angularMaterialDataTable2 = _interopRequireDefault(_angularMaterialDataTable);
+
 var _core = require('../../core');
 
 var _core2 = _interopRequireDefault(_core);
@@ -80826,9 +82347,9 @@ var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanc
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.features.dashboard-maintenance-students', [_angularMaterial2.default]).component('dashboardMaintenanceStudents', _dashboardMaintenanceStudents2.default).name;
+exports.default = _angular2.default.module('app.features.dashboard-maintenance-students', [_angularMaterial2.default, _angularMaterialDataTable2.default]).component('dashboardMaintenanceStudents', _dashboardMaintenanceStudents2.default).name;
 
-},{"../../core":42,"./dashboard-maintenance-students.component":59,"angular":13,"angular-material":8}],63:[function(require,module,exports){
+},{"../../core":44,"./dashboard-maintenance-students.component":61,"angular":15,"angular-material":10,"angular-material-data-table":8}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80850,7 +82371,7 @@ exports.default = {
     controller: _dashboardMaintenance2.default
 };
 
-},{"./dashboard-maintenance.controller":65,"./dashboard-maintenance.template.html":66}],64:[function(require,module,exports){
+},{"./dashboard-maintenance.controller":67,"./dashboard-maintenance.template.html":68}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80872,7 +82393,7 @@ function config($urlRouterProvider, $stateProvider) {
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],65:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80890,10 +82411,10 @@ exports.default = DashboardMaintenanceController;
 
 DashboardMaintenanceController.$inject = [];
 
-},{}],66:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = "<ui-view></ui-view>";
 
-},{}],67:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80924,7 +82445,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard-maintenance', [_angularUiRouter2.default, _dashboardMaintenanceStudents2.default]).config(_dashboardMaintenance2.default).component('dashboardMaintenance', _dashboardMaintenance4.default).name;
 
-},{"../dashboard-maintenance-students":62,"./dashboard-maintenance.component":63,"./dashboard-maintenance.config":64,"angular":13,"angular-ui-router":11}],68:[function(require,module,exports){
+},{"../dashboard-maintenance-students":64,"./dashboard-maintenance.component":65,"./dashboard-maintenance.config":66,"angular":15,"angular-ui-router":13}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80946,7 +82467,7 @@ exports.default = {
     controller: _dashboard2.default
 };
 
-},{"./dashboard.controller":70,"./dashboard.template.html":72}],69:[function(require,module,exports){
+},{"./dashboard.controller":72,"./dashboard.template.html":74}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -80984,7 +82505,7 @@ function config($urlRouterProvider, $stateProvider) {
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],70:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81028,7 +82549,7 @@ exports.default = DashboardController;
 
 DashboardController.$inject = ['$rootScope', 'constants', 'UsersResource', 'CustomizedToast'];
 
-},{}],71:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81043,10 +82564,10 @@ function run($rootScope) {
 
 run.$inject = ['$rootScope'];
 
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 module.exports = "<div layout=\"row\">    \r\n    <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n    <div layout=\"column\" flex  md-swipe-right=\"$ctrl.OnSwipeView()\">            \r\n        <md-toolbar hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n            <span>{{$ctrl.title}}<span>\r\n        </md-toolbar>\r\n        <main-toolbar></main-toolbar>            \r\n        <ui-view layout=\"column\" flex=\"grow\"></ui-view>\r\n    </div>        \r\n</div>";
 
-},{}],73:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81089,7 +82610,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default, _dashboardMaintenance2.default]).config(_dashboard4.default).run(_dashboard2.default).component('dashboard', _dashboard6.default).name;
 
-},{"../../components":15,"../../core":42,"../dashboard-home":58,"../dashboard-maintenance":67,"./dashboard.component":68,"./dashboard.config":69,"./dashboard.run":71,"angular":13}],74:[function(require,module,exports){
+},{"../../components":17,"../../core":44,"../dashboard-home":60,"../dashboard-maintenance":69,"./dashboard.component":70,"./dashboard.config":71,"./dashboard.run":73,"angular":15}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81120,7 +82641,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
 
-},{"../components":15,"../core":42,"./dashboard":73,"./login":75,"angular":13}],75:[function(require,module,exports){
+},{"../components":17,"../core":44,"./dashboard":75,"./login":77,"angular":15}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81149,7 +82670,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
 
-},{"../../core":42,"./login.component":76,"angular":13,"angular-material":8,"angular-ui-router":11}],76:[function(require,module,exports){
+},{"../../core":44,"./login.component":78,"angular":15,"angular-material":10,"angular-ui-router":13}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81171,7 +82692,7 @@ exports.default = {
     controller: _login2.default
 };
 
-},{"./login.controller":77,"./login.template.html":78}],77:[function(require,module,exports){
+},{"./login.controller":79,"./login.template.html":80}],79:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81206,7 +82727,7 @@ exports.default = LoginController;
 
 LoginController.$inject = ['constants', '$state'];
 
-},{}],78:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus tabindex=\"1\">\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\" tabindex=\"1\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
 
-},{}]},{},[14]);
+},{}]},{},[16]);

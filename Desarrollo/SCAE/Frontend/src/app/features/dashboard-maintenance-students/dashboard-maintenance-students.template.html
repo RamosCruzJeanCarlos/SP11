@@ -1,13 +1,41 @@
-<md-content layout="column" layout-margin>
-    <h1 class="md-title">Mantenimiento Estudiantes</h1>
-    <dinjo-table 
-        configuration="$ctrl.dinjoTable.config"
-        model="$ctrl.dinjoTable.model"
-        data="$ctrl.students"/>
-    <md-content layout="row" layout-wrap>
-        <md-button class="md-raised md-primary">Añadir</md-button>
-        <md-button class="md-raised md-accent">Editar</md-button>
-        <md-button class="md-raised md-warn md-hue-2">Eliminar</md-button>
-        <md-button class="md-raised md-warn">Cursos Inscritos</md-button>
-    </md-content>
+<md-content layout="column" layout-margin ng-cloak>
+    <!--<h1 class="md-title">Mantenimiento Estudiantes</h1>
+    <md-card layout-padding>        
+        <md-content layout="row" layout-wrap>
+            <md-button class="md-raised md-primary">Añadir</md-button>
+            <md-button class="md-raised md-accent">Editar</md-button>
+            <md-button class="md-raised md-warn md-hue-2">Eliminar</md-button>
+            <md-button class="md-raised md-warn">Cursos Inscritos</md-button>
+        </md-content>
+    </md-card>-->
+    <md-card>      
+        <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools" layout="row">
+                <span>Mantenimiento Estudiantes</span>
+                <div flex></div>
+                <md-button class="md-icon-button">
+                    <md-icon md-font-library="material-icons">person_add</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-table-container>
+            <table md-table md-row-select="false" ng-model="$ctrl.selected">
+                <thead md-head md-order="$ctrl.table.query.order">
+                    <tr md-row>
+                        <th md-column 
+                            ng-repeat="header in $ctrl.table.headers"  
+                            md-order-by="{{header.orderBy}}"
+                            md-numeric="header.isNumeric">
+                            {{header.name | uppercase}}                            
+                        </th>
+                    </tr>
+                </thead>
+                <tbody md-body>
+                    <tr md-row md-select="student" md-auto-select ng-repeat="student in $ctrl.students">
+                        <td md-cell ng-repeat="field in $ctrl.table.headers">{{student[field.name]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+    </md-card>    
 </md-content>
