@@ -1,0 +1,12 @@
+<md-sidenav 
+    class="md-sidenav-left" 
+    md-component-id="main_side_nav"
+    md-is-locked-open="$mdMedia('gt-xs')&&$ctrl.open" 
+    layout="column"
+    md-whiteframe="2">
+    <md-content layout="column">
+        <user-profile user-info="$ctrl.userInfo"></user-profile>
+        <md-subheader class="md-no-sticky">Navegación</md-subheader>
+        <main-menu menu="$ctrl.menu"></main-menu>
+    </md-content>    
+</md-sidenav>
