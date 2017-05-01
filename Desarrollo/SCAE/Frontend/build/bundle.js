@@ -81437,7 +81437,7 @@ exports.default = MainToolbarController;
 MainToolbarController.$inject = ['$rootScope'];
 
 },{}],29:[function(require,module,exports){
-module.exports = "<md-toolbar layout=\"row\">\r\n    <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n        <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <!--<md-button class=\"md-no-focus\">\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>-->\r\n</md-toolbar>";
+module.exports = "<md-toolbar layout=\"row\" md-whiteframe=\"3\">\r\n    <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n        <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <!--<md-button class=\"md-no-focus\">\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>-->\r\n</md-toolbar>";
 
 },{}],30:[function(require,module,exports){
 'use strict';
@@ -81560,7 +81560,7 @@ function routing($urlRouterProvider, $stateProvider, $mdThemingProvider) {
 
     $mdThemingProvider.theme('default').primaryPalette('cyan', {
         'default': '700'
-    }).accentPalette('green', {
+    }).accentPalette('grey', {
         'default': '600'
     }).warnPalette('red', {
         'default': '400'
@@ -82274,22 +82274,25 @@ var DashboardMaintenanceStudentsController = function () {
         value: function InitTable() {
             this.table = {
                 query: {
-                    order: 'name',
+                    order: 'id',
                     limit: 10,
                     page: 1
                 },
                 headers: [{
+                    caption: 'ID',
                     name: 'id',
-                    orderBy: 'id',
-                    isNumeric: false
+                    isNumeric: false,
+                    show: false
                 }, {
+                    caption: 'Nombre',
                     name: 'name',
-                    orderBy: 'name',
-                    isNumeric: false
+                    isNumeric: false,
+                    show: true
                 }, {
+                    caption: 'Código',
                     name: 'code',
-                    orderBy: 'code',
-                    isNumeric: false
+                    isNumeric: false,
+                    show: true
                 }]
             };
         }
@@ -82298,7 +82301,7 @@ var DashboardMaintenanceStudentsController = function () {
         value: function InitStudents() {
             var _this = this;
 
-            this.students = {};
+            this.students = [];
             this.studentsResource.get(null).then(function (data) {
                 _this.students = data;
             }, function (err) {
@@ -82316,7 +82319,7 @@ exports.default = DashboardMaintenanceStudentsController;
 DashboardMaintenanceStudentsController.$inject = ['CustomizedToast', 'StudentsResource'];
 
 },{}],63:[function(require,module,exports){
-module.exports = "<md-content layout=\"column\" layout-margin ng-cloak>\r\n    <!--<h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <md-card layout-padding>        \r\n        <md-content layout=\"row\" layout-wrap>\r\n            <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n            <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n            <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n            <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n        </md-content>\r\n    </md-card>-->\r\n    <md-card>      \r\n        <md-toolbar class=\"md-table-toolbar md-default\">\r\n            <div class=\"md-toolbar-tools\" layout=\"row\">\r\n                <span>Mantenimiento Estudiantes</span>\r\n                <div flex></div>\r\n                <md-button class=\"md-icon-button\">\r\n                    <md-icon md-font-library=\"material-icons\">person_add</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-table-container>\r\n            <table md-table md-row-select=\"false\" ng-model=\"$ctrl.selected\">\r\n                <thead md-head md-order=\"$ctrl.table.query.order\">\r\n                    <tr md-row>\r\n                        <th md-column \r\n                            ng-repeat=\"header in $ctrl.table.headers\"  \r\n                            md-order-by=\"{{header.orderBy}}\"\r\n                            md-numeric=\"header.isNumeric\">\r\n                            {{header.name | uppercase}}                            \r\n                        </th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody md-body>\r\n                    <tr md-row md-select=\"student\" md-auto-select ng-repeat=\"student in $ctrl.students\">\r\n                        <td md-cell ng-repeat=\"field in $ctrl.table.headers\">{{student[field.name]}}</td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </md-table-container>\r\n    </md-card>    \r\n</md-content>";
+module.exports = "<md-content layout=\"column\" layout-margin ng-cloak>\r\n    <!--<h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <md-card layout-padding>        \r\n        <md-content layout=\"row\" layout-wrap>\r\n            <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n            <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n            <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n            <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n        </md-content>\r\n    </md-card>-->\r\n    <md-card>      \r\n        <md-toolbar class=\"md-table-toolbar md-default\">\r\n            <div class=\"md-toolbar-tools\" layout=\"row\">\r\n                <span>Mantenimiento Estudiantes</span>\r\n                <div flex></div>\r\n                <md-button class=\"md-icon-button md-primary md-hue-2\">\r\n                    <md-tooltip md-direction=\"bottom\">Añadir</md-tooltip>\r\n                    <md-icon md-font-library=\"material-icons\" class=\"md-green\">person_add</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-table-container layout-padding>\r\n            <table md-table md-row-select=\"false\" ng-model=\"$ctrl.selected\">\r\n                <thead md-head md-order=\"$ctrl.table.query.order\">\r\n                    <tr md-row>\r\n                        <th md-column>OPERACIONES</th>\r\n                        <th md-column \r\n                            ng-repeat=\"header in $ctrl.table.headers\"  \r\n                            md-order-by=\"{{header.name}}\"\r\n                            md-numeric=\"header.isNumeric\"\r\n                            ng-show=\"header.show\">\r\n                            {{header.caption | uppercase}}                            \r\n                        </th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody md-body>\r\n                    <tr md-row md-select=\"student\" md-auto-select ng-repeat=\"student in $ctrl.students | orderBy: $ctrl.table.query.order\">\r\n                        <td md-cell>\r\n                            <div layout=\"row\">\r\n                                <md-button class=\"md-icon-button md-primary\">\r\n                                    <md-tooltip md-direction=\"bottom\">Editar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-blue\">mode_edit</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-accent md-hue-3\">\r\n                                    <md-tooltip md-direction=\"bottom\">Cursos</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\">school</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-warn\">\r\n                                    <md-tooltip md-direction=\"bottom\" >Eliminar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-red\">delete</md-icon>\r\n                                </md-button>\r\n                            </div>\r\n                        </td>\r\n                        <td md-cell ng-repeat=\"field in $ctrl.table.headers\" ng-show=\"field.show\">\r\n                            {{student[field.name]}}\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </md-table-container>\r\n    </md-card>    \r\n</md-content>";
 
 },{}],64:[function(require,module,exports){
 'use strict';

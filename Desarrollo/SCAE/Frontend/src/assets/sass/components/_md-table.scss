@@ -1,9 +1,19 @@
 .md-table{
+    .md-head{
+        .md-row{
+            .md-column{
+                /*text-align: center;*/
+            }
+            .md-table-content-tools{
+                text-align: center;
+            }
+        }
+    }
     .md-body{
         .md-row:hover{
-            background-color: lighten($main-menu-active-background-color,10%);            
+            /*background-color: lighten($main-menu-active-background-color,10%);            
             -webkit-transition: $main-menu-active-transition;
-            transition: $main-menu-active-transition;
+            transition: $main-menu-active-transition;*/
         }
     }
 }

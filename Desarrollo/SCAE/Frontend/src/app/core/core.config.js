@@ -6,7 +6,7 @@ export default function routing($urlRouterProvider,$stateProvider,$mdThemingProv
     .primaryPalette('cyan',{
         'default' : '700'
     })
-    .accentPalette('green',{
+    .accentPalette('grey',{
         'default' : '600'
     })
     .warnPalette('red',{

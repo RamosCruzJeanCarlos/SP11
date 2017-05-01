@@ -16,8 +16,9 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
   display: block; }
 
-body {
-  line-height: 1; }
+body, md-content {
+  line-height: 1;
+  background-color: #EAEAEA !important; }
 
 ol, ul {
   list-style: none; }
@@ -18233,10 +18234,16 @@ md-toast.toast-warning .md-toast-content {
 md-toast.toast-error .md-toast-content {
   background-color: #cc3333; }
 
+.md-table .md-head .md-row .md-column {
+  /*text-align: center;*/ }
+
+.md-table .md-head .md-row .md-table-content-tools {
+  text-align: center; }
+
 .md-table .md-body .md-row:hover {
-  background-color: #d7d7d7;
-  -webkit-transition: all linear 0.3s;
-  transition: all linear 0.3s; }
+  /*background-color: lighten($main-menu-active-background-color,10%);            
+            -webkit-transition: $main-menu-active-transition;
+            transition: $main-menu-active-transition;*/ }
 
 login > div {
   background: repeating-linear-gradient(45deg, #BCDCFF, #BCDCFF 25px, #a3cfff 25px, #a3cfff 50px);

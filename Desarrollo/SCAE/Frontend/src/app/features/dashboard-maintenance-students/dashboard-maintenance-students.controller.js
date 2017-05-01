@@ -11,31 +11,34 @@ export default class DashboardMaintenanceStudentsController{
     InitTable(){
         this.table = {
             query : {
-                order : 'name',
+                order : 'id',
                 limit : 10,
                 page : 1
             },
             headers : [
                 {
+                    caption : 'ID',
                     name : 'id',
-                    orderBy : 'id',
                     isNumeric : false,
+                    show : false
                 },
                 {
+                    caption : 'Nombre',
                     name : 'name',
-                    orderBy : 'name',
                     isNumeric : false,
+                    show : true
                 },
                 {
+                    caption : 'Código',
                     name : 'code',
-                    orderBy : 'code',
                     isNumeric : false,
+                    show : true
                 }
             ]
         }
     }
     InitStudents(){
-        this.students = {};
+        this.students = [];
         this.studentsResource
             .get(null)
             .then((data)=>{
