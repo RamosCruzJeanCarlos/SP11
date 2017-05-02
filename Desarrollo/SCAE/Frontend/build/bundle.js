@@ -81115,7 +81115,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
 
-},{"./components":17,"./core":44,"./features":76,"angular":15}],17:[function(require,module,exports){
+},{"./components":17,"./core":44,"./features":80,"angular":15}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81233,7 +81233,7 @@ exports.default = MainMenuController;
 MainMenuController.$inject = ['$state'];
 
 },{}],21:[function(require,module,exports){
-module.exports = "<md-content layout=\"column\">    \r\n    <md-list class=\"md-dense\">        \r\n        <div ng-repeat=\"item in $ctrl.menu\">\r\n            <a ng-if=\"item.state\" ui-sref=\"{{item.state}}\" ng-class=\"{'active': $ctrl.$state.is(item.state)}\">            \r\n                <md-list-item ng-click=\"null\">                    \r\n                    <span>{{item.name}}</span>\r\n                </md-list-item>            \r\n            </a>\r\n            <md-subheader ng-if=\"!item.state\">                    \r\n                <span>{{item.name}}</span>\r\n            </md-subheader>\r\n            <a ui-sref=\"{{subitem.state}}\" ng-repeat=\"subitem in item.items\" ng-class=\"{'active': $ctrl.$state.is(subitem.state)}\">\r\n                <md-list-item ng-click=\"null\">\r\n                    <span><md-icon md-font-library=\"material-icons\">{{subitem.icon}}</md-icon>\r\n                    {{subitem.name}}</span>\r\n                </md-list-item>\r\n            </a>\r\n            <md-divider></md-divider>\r\n        </div>\r\n        <md-subheader ng-click=\"$ctrl.logout()\">Cuenta</md-subheader>\r\n        <md-list-item ng-click=\"$ctrl.logout()\">\r\n                <span><md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>Cerrar Sesión</span>\r\n        </md-list-item>\r\n        <md-divider></md-divider>\r\n    </md-list>\r\n</md-content>";
+module.exports = "<div layout=\"column\">    \r\n    <md-list class=\"md-dense\">        \r\n        <div ng-repeat=\"item in $ctrl.menu\">\r\n            <a ng-if=\"item.state\" ui-sref=\"{{item.state}}\" ng-class=\"{'active': $ctrl.$state.is(item.state)}\">            \r\n                <md-list-item ng-click=\"null\">                    \r\n                    <span>{{item.name}}</span>\r\n                </md-list-item>            \r\n            </a>\r\n            <md-subheader ng-if=\"!item.state\">                    \r\n                <span>{{item.name}}</span>\r\n            </md-subheader>\r\n            <a ui-sref=\"{{subitem.state}}\" ng-repeat=\"subitem in item.items\" ng-class=\"{'active': $ctrl.$state.is(subitem.state)}\">\r\n                <md-list-item ng-click=\"null\">\r\n                    <span><md-icon md-font-library=\"material-icons\">{{subitem.icon}}</md-icon>\r\n                    {{subitem.name}}</span>\r\n                </md-list-item>\r\n            </a>\r\n            <md-divider></md-divider>\r\n        </div>\r\n        <md-subheader ng-click=\"$ctrl.logout()\">Cuenta</md-subheader>\r\n        <md-list-item ng-click=\"$ctrl.logout()\">\r\n                <span><md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>Cerrar Sesión</span>\r\n        </md-list-item>\r\n        <md-divider></md-divider>\r\n    </md-list>\r\n</div>";
 
 },{}],22:[function(require,module,exports){
 'use strict';
@@ -81356,7 +81356,7 @@ exports.default = MainSidenavController;
 MainSidenavController.$inject = ['$scope', '$mdMedia', '$mdSidenav', 'constants'];
 
 },{}],25:[function(require,module,exports){
-module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-component-id=\"main_side_nav\"\r\n    md-is-locked-open=\"$mdMedia('gt-xs')&&$ctrl.open\" \r\n    layout=\"column\"\r\n    md-whiteframe=\"2\">\r\n    <md-content layout=\"column\">\r\n        <user-profile user-info=\"$ctrl.userInfo\"></user-profile>\r\n        <main-menu menu=\"$ctrl.menu\"></main-menu>\r\n    </md-content>    \r\n</md-sidenav>";
+module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-component-id=\"main_side_nav\"\r\n    md-is-locked-open=\"$mdMedia('gt-xs')&&$ctrl.open\" \r\n    layout=\"column\"\r\n    md-whiteframe=\"2\">\r\n    <div layout=\"column\">\r\n        <user-profile user-info=\"$ctrl.userInfo\"></user-profile>\r\n        <main-menu menu=\"$ctrl.menu\"></main-menu>\r\n    </div>    \r\n</md-sidenav>";
 
 },{}],26:[function(require,module,exports){
 'use strict';
@@ -81369,6 +81369,10 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
 var _mainToolbar = require('./main-toolbar.component');
 
 var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
@@ -81379,9 +81383,9 @@ var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.components.main-toolbar', [_angularMaterial2.default]).component('mainToolbar', _mainToolbar2.default).name;
+exports.default = _angular2.default.module('app.components.main-toolbar', [_core2.default, _angularMaterial2.default]).component('mainToolbar', _mainToolbar2.default).name;
 
-},{"./main-toolbar.component":27,"angular":15,"angular-material":10}],27:[function(require,module,exports){
+},{"../../core":44,"./main-toolbar.component":27,"angular":15,"angular-material":10}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -81415,10 +81419,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var MainToolbarController = function () {
-    function MainToolbarController($rootScope) {
+    function MainToolbarController($rootScope, constants) {
         _classCallCheck(this, MainToolbarController);
 
         this.$rootScope = $rootScope;
+        this.title = constants.app.title;
     }
 
     _createClass(MainToolbarController, [{
@@ -81434,10 +81439,10 @@ var MainToolbarController = function () {
 exports.default = MainToolbarController;
 
 
-MainToolbarController.$inject = ['$rootScope'];
+MainToolbarController.$inject = ['$rootScope', 'constants'];
 
 },{}],29:[function(require,module,exports){
-module.exports = "<md-toolbar layout=\"row\" md-whiteframe=\"3\">\r\n    <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n        <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n    </md-button>\r\n    <span flex></span>\r\n    <!--<md-button class=\"md-no-focus\">\r\n        <md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>\r\n    </md-button>-->\r\n</md-toolbar>";
+module.exports = "<md-toolbar md-whiteframe=\"3\">\r\n    <div class=\"column\">\r\n        <div class=\"md-toolbar-tools\" hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n            <span>{{$ctrl.title}}</span>\r\n        </div>\r\n        <div class=\"md-toolbar-tools\">\r\n            <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n                <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n            </md-button>\r\n        <span flex></span>    \r\n        </div>\r\n    </div>    \r\n</md-toolbar>";
 
 },{}],30:[function(require,module,exports){
 'use strict';
@@ -81854,7 +81859,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _angularMaterial2.default, _constants2.default, _helpers2.default, _utils2.default, _resources2.default]).config(_core2.default).name;
 
-},{"./constants":35,"./core.config":36,"./helpers":43,"./resources":45,"./utils":51,"angular":15,"angular-material":10,"angular-ui-router":13}],45:[function(require,module,exports){
+},{"./constants":35,"./core.config":36,"./helpers":43,"./resources":45,"./utils":55,"angular":15,"angular-material":10,"angular-ui-router":13}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82033,6 +82038,175 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CrudDialogController = function () {
+    function CrudDialogController($mdDialog, locals) {
+        _classCallCheck(this, CrudDialogController);
+
+        this.$mdDialog = $mdDialog;
+        this.title = locals.title;
+        this.mode = locals.mode;
+        this.model = locals.model;
+    }
+
+    _createClass(CrudDialogController, [{
+        key: 'cancel',
+        value: function cancel() {
+            this.$mdDialog.cancel();
+        }
+    }, {
+        key: 'confirm',
+        value: function confirm() {
+            this.$mdDialog.hide(this.fillModel());
+        }
+    }, {
+        key: 'fillModel',
+        value: function fillModel() {
+            return this.model.reduce(function (previousValue, nextValue) {
+                previousValue[nextValue.name] = nextValue.value;
+                return previousValue;
+            }, {});
+        }
+    }]);
+
+    return CrudDialogController;
+}();
+
+exports.default = CrudDialogController;
+
+
+CrudDialogController.$inject = ['$mdDialog', 'locals'];
+
+},{}],52:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _crudDialogTemplate = require('./crud-dialog.template.html');
+
+var _crudDialogTemplate2 = _interopRequireDefault(_crudDialogTemplate);
+
+var _crudDialog = require('./crud-dialog.controller');
+
+var _crudDialog2 = _interopRequireDefault(_crudDialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CrudDialogService = function () {
+    function CrudDialogService($mdDialog, $mdMedia) {
+        _classCallCheck(this, CrudDialogService);
+
+        this.$mdDialog = $mdDialog;
+        this.$mdMedia = $mdMedia;
+    }
+
+    _createClass(CrudDialogService, [{
+        key: 'add',
+        value: function add(title, model, event) {
+            var _this = this;
+
+            return this.$mdDialog.show({
+                targetEvent: event,
+                template: _crudDialogTemplate2.default,
+                controller: _crudDialog2.default,
+                controllerAs: 'ctrl',
+                fullscreen: true,
+                clickOutsideToClose: false,
+                locals: {
+                    title: title,
+                    mode: 'add',
+                    model: _angular2.default.copy(model)
+                },
+                onShowing: function onShowing(scope, element) {
+                    if (_this.$mdMedia('gt-sm')) {
+                        element.find('md-dialog').css('min-width', '50%');
+                    }
+                }
+            });
+        }
+    }, {
+        key: 'edit',
+        value: function edit(title, data, model, event) {
+            var _this2 = this;
+
+            return this.$mdDialog.show({
+                targetEvent: event,
+                template: _crudDialogTemplate2.default,
+                controller: _crudDialog2.default,
+                controllerAs: 'ctrl',
+                fullscreen: true,
+                clickOutsideToClose: false,
+                locals: {
+                    title: title,
+                    mode: 'edit',
+                    model: model.reduce(function (previousValue, nextValue, index) {
+                        previousValue[index].value = data[nextValue.name];
+                        return previousValue;
+                    }, _angular2.default.copy(model))
+                },
+                onShowing: function onShowing(scope, element) {
+                    if (_this2.$mdMedia('gt-sm')) {
+                        element.find('md-dialog').css('min-width', '50%');
+                    }
+                }
+            });
+        }
+    }]);
+
+    return CrudDialogService;
+}();
+
+exports.default = CrudDialogService;
+
+
+CrudDialogService.$inject = ['$mdDialog', '$mdMedia'];
+
+},{"./crud-dialog.controller":51,"./crud-dialog.template.html":53,"angular":15}],53:[function(require,module,exports){
+module.exports = "<md-dialog aria-label=\"Crud Dialog\">\r\n    <form ng-cloak ng-submit=\"ctrl.confirm()\">\r\n        <md-toolbar>\r\n            <div class=\"md-toolbar-tools\">\r\n                <h2>{{ctrl.title}}</h2>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-dialog-content>\r\n            <div class=\"md-dialog-content\" layout=\"column\">\r\n                <div ng-if=\"ctrl.mode=='add'||ctrl.mode=='edit'\">\r\n                    <div layout=\"row\" ng-repeat=\"prop in ctrl.model\" ng-if=\"prop.show\">\r\n                        <md-input-container flex>\r\n                            <label>{{prop.displayName}}</label>\r\n                            <input type=\"text\" ng-if=\"!prop.isNumeric\" ng-model=\"prop.value\">\r\n                            <input type=\"number\" ng-if=\"prop.isNumeric\" ng-model=\"prop.value\">\r\n                        </md-input-container>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </md-dialog-content>\r\n        <md-dialog-actions>\r\n            <span flex></span>\r\n            <md-button class=\"md-warn md-raised\" ng-click=\"ctrl.cancel()\">\r\n                Cancelar\r\n            </md-button>\r\n            <md-button type=\"submit\" class=\"md-primary md-raised\" ng-click=\"ctrl.confirm()\">\r\n                Aceptar\r\n            </md-button>\r\n        </md-dialog-actions>\r\n    </form>\r\n</md-dialog>";
+
+},{}],54:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _crudDialog = require('./crud-dialog.service');
+
+var _crudDialog2 = _interopRequireDefault(_crudDialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.utils.crud-dialog', [_angularMaterial2.default]).service('CrudDialogService', _crudDialog2.default).name;
+
+},{"./crud-dialog.service":52,"angular":15,"angular-material":10}],55:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
@@ -82041,11 +82215,15 @@ var _loadingModal = require('./loading-modal');
 
 var _loadingModal2 = _interopRequireDefault(_loadingModal);
 
+var _crudDialog = require('./crud-dialog');
+
+var _crudDialog2 = _interopRequireDefault(_crudDialog);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default]).name;
+exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default, _crudDialog2.default]).name;
 
-},{"./loading-modal":52,"angular":15}],52:[function(require,module,exports){
+},{"./crud-dialog":54,"./loading-modal":56,"angular":15}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82070,7 +82248,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service('LoadingModal', _loadingModal2.default).name;
 
-},{"./loading-modal.component":53,"./loading-modal.service":55,"angular":15,"angular-material":10}],53:[function(require,module,exports){
+},{"./loading-modal.component":57,"./loading-modal.service":59,"angular":15,"angular-material":10}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82092,7 +82270,7 @@ exports.default = {
     controller: _loadingModal2.default
 };
 
-},{"./loading-modal.controller":54,"./loading-modal.template.html":56}],54:[function(require,module,exports){
+},{"./loading-modal.controller":58,"./loading-modal.template.html":60}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82110,7 +82288,7 @@ exports.default = LoadingModalController;
 
 LoadingModalController.$inject = [];
 
-},{}],55:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82154,10 +82332,10 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}],56:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
 
-},{}],57:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82179,7 +82357,7 @@ exports.default = {
     controller: _dashboardHome2.default
 };
 
-},{"./dashboard-home.controller":58,"./dashboard-home.template.html":59}],58:[function(require,module,exports){
+},{"./dashboard-home.controller":62,"./dashboard-home.template.html":63}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82199,10 +82377,10 @@ exports.default = DashboardHomeController;
 
 DashboardHomeController.$inject = ['constants'];
 
-},{}],59:[function(require,module,exports){
-module.exports = "<md-content layout=\"row\" layout-align=\"center center\" flex>\r\n    <h1>{{$ctrl.content}}</h1>\r\n</md-content>\r\n";
+},{}],63:[function(require,module,exports){
+module.exports = "<div layout=\"row\" layout-align=\"center center\" flex>\r\n    <h1>{{$ctrl.content}}</h1>\r\n</div>\r\n";
 
-},{}],60:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82225,7 +82403,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('dashboardHome', _dashboardHome2.default).name;
 
-},{"../../core":44,"./dashboard-home.component":57,"angular":15}],61:[function(require,module,exports){
+},{"../../core":44,"./dashboard-home.component":61,"angular":15}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82247,7 +82425,7 @@ exports.default = {
     controller: _dashboardMaintenanceStudents2.default
 };
 
-},{"./dashboard-maintenance-students.controller":62,"./dashboard-maintenance-students.template.html":63}],62:[function(require,module,exports){
+},{"./dashboard-maintenance-students.controller":66,"./dashboard-maintenance-students.template.html":67}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82259,46 +82437,51 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DashboardMaintenanceStudentsController = function () {
-    function DashboardMaintenanceStudentsController(CustomizedToast, StudentsResource) {
+    function DashboardMaintenanceStudentsController(CustomizedToast, StudentsResource, CrudDialogService) {
         _classCallCheck(this, DashboardMaintenanceStudentsController);
 
         this.studentsResource = StudentsResource;
         this.customizedToast = CustomizedToast;
-        this.selected = [];
-        this.InitTable();
-        this.InitStudents();
+        this.crudDialogService = CrudDialogService;
+        this.setModel();
+        this.initTable();
+        this.initStudents();
     }
 
     _createClass(DashboardMaintenanceStudentsController, [{
-        key: 'InitTable',
-        value: function InitTable() {
+        key: 'setModel',
+        value: function setModel() {
+            this.model = [{
+                displayName: 'ID',
+                name: 'id',
+                isNumeric: false,
+                show: false
+            }, {
+                displayName: 'Nombre',
+                name: 'name',
+                isNumeric: false,
+                show: true
+            }, {
+                displayName: 'Código',
+                name: 'code',
+                isNumeric: false,
+                show: true
+            }];
+        }
+    }, {
+        key: 'initTable',
+        value: function initTable() {
             this.table = {
                 query: {
                     order: 'id',
                     limit: 10,
                     page: 1
-                },
-                headers: [{
-                    caption: 'ID',
-                    name: 'id',
-                    isNumeric: false,
-                    show: false
-                }, {
-                    caption: 'Nombre',
-                    name: 'name',
-                    isNumeric: false,
-                    show: true
-                }, {
-                    caption: 'Código',
-                    name: 'code',
-                    isNumeric: false,
-                    show: true
-                }]
+                }
             };
         }
     }, {
-        key: 'InitStudents',
-        value: function InitStudents() {
+        key: 'initStudents',
+        value: function initStudents() {
             var _this = this;
 
             this.students = [];
@@ -82308,6 +82491,17 @@ var DashboardMaintenanceStudentsController = function () {
                 _this.customizedToast.error('Error cargando estudiantes');
             });
         }
+    }, {
+        key: 'add',
+        value: function add(event) {
+            this.crudDialogService.add('Añadir estudiante', this.model, event);
+        }
+    }, {
+        key: 'edit',
+        value: function edit(student, event) {
+
+            this.crudDialogService.edit('Editar estudiante', student, this.model, event);
+        }
     }]);
 
     return DashboardMaintenanceStudentsController;
@@ -82316,12 +82510,12 @@ var DashboardMaintenanceStudentsController = function () {
 exports.default = DashboardMaintenanceStudentsController;
 
 
-DashboardMaintenanceStudentsController.$inject = ['CustomizedToast', 'StudentsResource'];
+DashboardMaintenanceStudentsController.$inject = ['CustomizedToast', 'StudentsResource', 'CrudDialogService'];
 
-},{}],63:[function(require,module,exports){
-module.exports = "<md-content layout=\"column\" layout-margin ng-cloak>\r\n    <!--<h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <md-card layout-padding>        \r\n        <md-content layout=\"row\" layout-wrap>\r\n            <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n            <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n            <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n            <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n        </md-content>\r\n    </md-card>-->\r\n    <md-card>      \r\n        <md-toolbar class=\"md-table-toolbar md-default\">\r\n            <div class=\"md-toolbar-tools\" layout=\"row\">\r\n                <span>Mantenimiento Estudiantes</span>\r\n                <div flex></div>\r\n                <md-button class=\"md-icon-button md-primary md-hue-2\">\r\n                    <md-tooltip md-direction=\"bottom\">Añadir</md-tooltip>\r\n                    <md-icon md-font-library=\"material-icons\" class=\"md-green\">person_add</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-table-container layout-padding>\r\n            <table md-table md-row-select=\"false\" ng-model=\"$ctrl.selected\">\r\n                <thead md-head md-order=\"$ctrl.table.query.order\">\r\n                    <tr md-row>\r\n                        <th md-column>OPERACIONES</th>\r\n                        <th md-column \r\n                            ng-repeat=\"header in $ctrl.table.headers\"  \r\n                            md-order-by=\"{{header.name}}\"\r\n                            md-numeric=\"header.isNumeric\"\r\n                            ng-show=\"header.show\">\r\n                            {{header.caption | uppercase}}                            \r\n                        </th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody md-body>\r\n                    <tr md-row md-select=\"student\" md-auto-select ng-repeat=\"student in $ctrl.students | orderBy: $ctrl.table.query.order\">\r\n                        <td md-cell>\r\n                            <div layout=\"row\">\r\n                                <md-button class=\"md-icon-button md-primary\">\r\n                                    <md-tooltip md-direction=\"bottom\">Editar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-blue\">mode_edit</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-accent md-hue-3\">\r\n                                    <md-tooltip md-direction=\"bottom\">Cursos</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\">school</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-warn\">\r\n                                    <md-tooltip md-direction=\"bottom\" >Eliminar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-red\">delete</md-icon>\r\n                                </md-button>\r\n                            </div>\r\n                        </td>\r\n                        <td md-cell ng-repeat=\"field in $ctrl.table.headers\" ng-show=\"field.show\">\r\n                            {{student[field.name]}}\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </md-table-container>\r\n    </md-card>    \r\n</md-content>";
+},{}],67:[function(require,module,exports){
+module.exports = "<div layout=\"column\" layout-margin ng-cloak>\r\n    <!--<h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <md-card layout-padding>        \r\n        <md-content layout=\"row\" layout-wrap>\r\n            <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n            <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n            <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n            <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n        </md-content>\r\n    </md-card>-->\r\n    <md-card>      \r\n        <md-toolbar class=\"md-table-toolbar md-default\">\r\n            <div class=\"md-toolbar-tools\" layout=\"row\">\r\n                <span>Mantenimiento Estudiantes</span>\r\n                <div flex></div>\r\n                <md-button class=\"md-icon-button md-primary md-hue-2\" ng-click=\"$ctrl.add($event)\">\r\n                    <md-tooltip md-direction=\"bottom\">Añadir</md-tooltip>\r\n                    <md-icon md-font-library=\"material-icons\" class=\"md-green\">person_add</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-table-container layout-padding>\r\n            <table md-table md-row-select=\"false\" ng-model=\"$ctrl.selected\">\r\n                <thead md-head md-order=\"$ctrl.table.query.order\">\r\n                    <tr md-row>\r\n                        <th md-column>OPERACIONES</th>\r\n                        <th md-column \r\n                            ng-repeat=\"header in $ctrl.model\"  \r\n                            md-order-by=\"{{header.name}}\"\r\n                            md-numeric=\"header.isNumeric\"\r\n                            ng-show=\"header.show\">\r\n                            {{header.displayName | uppercase}}                            \r\n                        </th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody md-body>\r\n                    <tr md-row md-select=\"student\" md-auto-select ng-repeat=\"student in $ctrl.students | orderBy: $ctrl.table.query.order\">\r\n                        <td md-cell>\r\n                            <div layout=\"row\">\r\n                                <md-button class=\"md-icon-button md-primary\" ng-click=\"$ctrl.edit(student,$event)\">\r\n                                    <md-tooltip md-direction=\"bottom\">Editar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-blue\">mode_edit</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-accent md-hue-2\">\r\n                                    <md-tooltip md-direction=\"bottom\">Cursos</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\">school</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-warn\">\r\n                                    <md-tooltip md-direction=\"bottom\" >Eliminar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-red\">delete</md-icon>\r\n                                </md-button>\r\n                            </div>\r\n                        </td>\r\n                        <td md-cell ng-repeat=\"field in $ctrl.model\" ng-show=\"field.show\">\r\n                            {{student[field.name]}}\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </md-table-container>\r\n    </md-card>    \r\n</div>";
 
-},{}],64:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82352,7 +82546,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard-maintenance-students', [_angularMaterial2.default, _angularMaterialDataTable2.default]).component('dashboardMaintenanceStudents', _dashboardMaintenanceStudents2.default).name;
 
-},{"../../core":44,"./dashboard-maintenance-students.component":61,"angular":15,"angular-material":10,"angular-material-data-table":8}],65:[function(require,module,exports){
+},{"../../core":44,"./dashboard-maintenance-students.component":65,"angular":15,"angular-material":10,"angular-material-data-table":8}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82374,7 +82568,7 @@ exports.default = {
     controller: _dashboardMaintenance2.default
 };
 
-},{"./dashboard-maintenance.controller":67,"./dashboard-maintenance.template.html":68}],66:[function(require,module,exports){
+},{"./dashboard-maintenance.controller":71,"./dashboard-maintenance.template.html":72}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82396,7 +82590,7 @@ function config($urlRouterProvider, $stateProvider) {
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],67:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82414,10 +82608,10 @@ exports.default = DashboardMaintenanceController;
 
 DashboardMaintenanceController.$inject = [];
 
-},{}],68:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = "<ui-view></ui-view>";
 
-},{}],69:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82448,7 +82642,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard-maintenance', [_angularUiRouter2.default, _dashboardMaintenanceStudents2.default]).config(_dashboardMaintenance2.default).component('dashboardMaintenance', _dashboardMaintenance4.default).name;
 
-},{"../dashboard-maintenance-students":64,"./dashboard-maintenance.component":65,"./dashboard-maintenance.config":66,"angular":15,"angular-ui-router":13}],70:[function(require,module,exports){
+},{"../dashboard-maintenance-students":68,"./dashboard-maintenance.component":69,"./dashboard-maintenance.config":70,"angular":15,"angular-ui-router":13}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82470,7 +82664,7 @@ exports.default = {
     controller: _dashboard2.default
 };
 
-},{"./dashboard.controller":72,"./dashboard.template.html":74}],71:[function(require,module,exports){
+},{"./dashboard.controller":76,"./dashboard.template.html":78}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82508,7 +82702,7 @@ function config($urlRouterProvider, $stateProvider) {
 
 config.$inject = ['$urlRouterProvider', '$stateProvider'];
 
-},{}],72:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82520,13 +82714,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DashboardController = function () {
-    function DashboardController($rootScope, constants, UsersResourceService, CustomizedToast) {
+    function DashboardController($rootScope, UsersResourceService, CustomizedToast) {
         var _this = this;
 
         _classCallCheck(this, DashboardController);
 
-        this.title = constants.app.title;
-        this.subtitle = constants.app.subtitle;
         this.$rootScope = $rootScope;
         UsersResourceService.get(function (data) {
             _this.userInfo = data.info;
@@ -82550,9 +82742,9 @@ var DashboardController = function () {
 exports.default = DashboardController;
 
 
-DashboardController.$inject = ['$rootScope', 'constants', 'UsersResource', 'CustomizedToast'];
+DashboardController.$inject = ['$rootScope', 'UsersResource', 'CustomizedToast'];
 
-},{}],73:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82567,10 +82759,10 @@ function run($rootScope) {
 
 run.$inject = ['$rootScope'];
 
-},{}],74:[function(require,module,exports){
-module.exports = "<div layout=\"row\">    \r\n    <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n    <div layout=\"column\" flex  md-swipe-right=\"$ctrl.OnSwipeView()\">            \r\n        <md-toolbar hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n            <span>{{$ctrl.title}}<span>\r\n        </md-toolbar>\r\n        <main-toolbar></main-toolbar>            \r\n        <ui-view layout=\"column\" flex=\"grow\"></ui-view>\r\n    </div>        \r\n</div>";
+},{}],78:[function(require,module,exports){
+module.exports = "<div layout=\"row\">    \r\n    <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n    <div layout=\"column\" flex  md-swipe-right=\"$ctrl.OnSwipeView()\">            \r\n        <main-toolbar></main-toolbar>            \r\n        <ui-view layout=\"column\" flex=\"grow\"></ui-view>\r\n    </div>        \r\n</div>";
 
-},{}],75:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -82613,7 +82805,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default, _dashboardMaintenance2.default]).config(_dashboard4.default).run(_dashboard2.default).component('dashboard', _dashboard6.default).name;
 
-},{"../../components":17,"../../core":44,"../dashboard-home":60,"../dashboard-maintenance":69,"./dashboard.component":70,"./dashboard.config":71,"./dashboard.run":73,"angular":15}],76:[function(require,module,exports){
+},{"../../components":17,"../../core":44,"../dashboard-home":64,"../dashboard-maintenance":73,"./dashboard.component":74,"./dashboard.config":75,"./dashboard.run":77,"angular":15}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82644,7 +82836,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
 
-},{"../components":17,"../core":44,"./dashboard":75,"./login":77,"angular":15}],77:[function(require,module,exports){
+},{"../components":17,"../core":44,"./dashboard":79,"./login":81,"angular":15}],81:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82673,7 +82865,7 @@ var angularMaterial = require('angular-material');
 
 exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
 
-},{"../../core":44,"./login.component":78,"angular":15,"angular-material":10,"angular-ui-router":13}],78:[function(require,module,exports){
+},{"../../core":44,"./login.component":82,"angular":15,"angular-material":10,"angular-ui-router":13}],82:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82695,7 +82887,7 @@ exports.default = {
     controller: _login2.default
 };
 
-},{"./login.controller":79,"./login.template.html":80}],79:[function(require,module,exports){
+},{"./login.controller":83,"./login.template.html":84}],83:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -82730,7 +82922,7 @@ exports.default = LoginController;
 
 LoginController.$inject = ['constants', '$state'];
 
-},{}],80:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus tabindex=\"1\">\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\" tabindex=\"1\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
 
 },{}]},{},[16]);

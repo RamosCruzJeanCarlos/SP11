@@ -1,7 +1,5 @@
 export default class DashboardController{
-    constructor($rootScope,constants,UsersResourceService,CustomizedToast){
-        this.title = constants.app.title;
-        this.subtitle = constants.app.subtitle;
+    constructor($rootScope,UsersResourceService,CustomizedToast){
         this.$rootScope = $rootScope;
         UsersResourceService.get(
             (data)=>{
@@ -19,4 +17,4 @@ export default class DashboardController{
     }
 }
 
-DashboardController.$inject = ['$rootScope','constants','UsersResource','CustomizedToast'];
+DashboardController.$inject = ['$rootScope','UsersResource','CustomizedToast'];

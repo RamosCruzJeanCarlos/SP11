@@ -1,43 +1,46 @@
 'use strict';
 
 export default class DashboardMaintenanceStudentsController{
-    constructor(CustomizedToast,StudentsResource){
+    constructor(CustomizedToast,StudentsResource,CrudDialogService){
         this.studentsResource = StudentsResource;
-        this.customizedToast = CustomizedToast;      
-        this.selected = [];
-        this.InitTable();
-        this.InitStudents();
+        this.customizedToast = CustomizedToast;    
+        this.crudDialogService = CrudDialogService;
+        this.setModel();
+        this.initTable();
+        this.initStudents();
     }
-    InitTable(){
+    setModel(){
+        this.model = [
+            {
+                displayName : 'ID',
+                name : 'id',
+                isNumeric : false,
+                show : false
+            },
+            {
+                displayName : 'Nombre',
+                name : 'name',
+                isNumeric : false,
+                show : true
+            },
+            {
+                displayName : 'Código',
+                name : 'code',
+                isNumeric : false,
+                show : true
+            }
+        ]
+    }
+    initTable(){
         this.table = {
             query : {
                 order : 'id',
                 limit : 10,
                 page : 1
-            },
-            headers : [
-                {
-                    caption : 'ID',
-                    name : 'id',
-                    isNumeric : false,
-                    show : false
-                },
-                {
-                    caption : 'Nombre',
-                    name : 'name',
-                    isNumeric : false,
-                    show : true
-                },
-                {
-                    caption : 'Código',
-                    name : 'code',
-                    isNumeric : false,
-                    show : true
-                }
-            ]
+            }            
         }
     }
-    InitStudents(){
+    initStudents(){
         this.students = [];
         this.studentsResource
             .get(null)
@@ -47,6 +50,13 @@ export default class DashboardMaintenanceStudentsController{
                 this.customizedToast.error('Error cargando estudiantes');
             })
     }
+    add(event){
+        this.crudDialogService.add('Añadir estudiante',this.model,event);
+    }
+    edit(student,event){
+        
+        this.crudDialogService.edit('Editar estudiante',student,this.model,event);
+    }
 }
 
-DashboardMaintenanceStudentsController.$inject = ['CustomizedToast','StudentsResource'];
+DashboardMaintenanceStudentsController.$inject = ['CustomizedToast','StudentsResource','CrudDialogService'];

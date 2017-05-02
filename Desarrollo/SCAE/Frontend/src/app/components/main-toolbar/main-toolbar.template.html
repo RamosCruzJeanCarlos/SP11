@@ -1,9 +1,13 @@
-<md-toolbar layout="row" md-whiteframe="3">
-    <md-button class="md-no-focus" ng-click="$ctrl.closeMainSidenav();" >   
-        <md-icon md-font-library="material-icons">view_headline</md-icon>
-    </md-button>
-    <span flex></span>
-    <!--<md-button class="md-no-focus">
-        <md-icon md-font-library="material-icons">power_settings_new</md-icon>
-    </md-button>-->
+<md-toolbar md-whiteframe="3">
+    <div class="column">
+        <div class="md-toolbar-tools" hide-gt-xs layout="row" layout-align="center center">
+            <span>{{$ctrl.title}}</span>
+        </div>
+        <div class="md-toolbar-tools">
+            <md-button class="md-no-focus" ng-click="$ctrl.closeMainSidenav();" >   
+                <md-icon md-font-library="material-icons">view_headline</md-icon>
+            </md-button>
+        <span flex></span>    
+        </div>
+    </div>    
 </md-toolbar>

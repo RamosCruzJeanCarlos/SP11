@@ -1,4 +1,4 @@
-<md-content layout="column">    
+<div layout="column">    
     <md-list class="md-dense">        
         <div ng-repeat="item in $ctrl.menu">
             <a ng-if="item.state" ui-sref="{{item.state}}" ng-class="{'active': $ctrl.$state.is(item.state)}">            
@@ -23,4 +23,4 @@
         </md-list-item>
         <md-divider></md-divider>
     </md-list>
-</md-content>
+</div>
