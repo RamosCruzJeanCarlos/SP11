@@ -1,0 +1,26 @@
+<div layout="column">    
+    <md-list class="md-dense">        
+        <div ng-repeat="item in $ctrl.menu">
+            <a ng-if="item.state" ui-sref="{{item.state}}" ng-class="{'active': $ctrl.$state.is(item.state)}">            
+                <md-list-item ng-click="null">                    
+                    <span>{{item.name}}</span>
+                </md-list-item>            
+            </a>
+            <md-subheader ng-if="!item.state">                    
+                <span>{{item.name}}</span>
+            </md-subheader>
+            <a ui-sref="{{subitem.state}}" ng-repeat="subitem in item.items" ng-class="{'active': $ctrl.$state.is(subitem.state)}">
+                <md-list-item ng-click="null">
+                    <span><md-icon md-font-library="material-icons">{{subitem.icon}}</md-icon>
+                    {{subitem.name}}</span>
+                </md-list-item>
+            </a>
+            <md-divider></md-divider>
+        </div>
+        <md-subheader ng-click="$ctrl.logout()">Cuenta</md-subheader>
+        <md-list-item ng-click="$ctrl.logout()">
+                <span><md-icon md-font-library="material-icons">power_settings_new</md-icon>Cerrar Sesión</span>
+        </md-list-item>
+        <md-divider></md-divider>
+    </md-list>
+</div>

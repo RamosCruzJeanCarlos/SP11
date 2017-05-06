@@ -1,0 +1,62 @@
+<div layout="column" layout-margin ng-cloak>
+    <!--<h1 class="md-title">Mantenimiento Estudiantes</h1>
+    <md-card layout-padding>        
+        <md-content layout="row" layout-wrap>
+            <md-button class="md-raised md-primary">Añadir</md-button>
+            <md-button class="md-raised md-accent">Editar</md-button>
+            <md-button class="md-raised md-warn md-hue-2">Eliminar</md-button>
+            <md-button class="md-raised md-warn">Cursos Inscritos</md-button>
+        </md-content>
+    </md-card>-->
+    <md-card>      
+        <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools" layout="row">
+                <span>Mantenimiento Estudiantes</span>
+                <div flex></div>
+                <md-button class="md-icon-button md-primary md-hue-2" ng-click="$ctrl.add($event)">
+                    <md-tooltip md-direction="bottom">Añadir</md-tooltip>
+                    <md-icon md-font-library="material-icons" class="md-green">person_add</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-table-container layout-padding>
+            <table md-table md-row-select="false" ng-model="$ctrl.selected">
+                <thead md-head md-order="$ctrl.table.query.order">
+                    <tr md-row>
+                        <th md-column>OPERACIONES</th>
+                        <th md-column 
+                            ng-repeat="header in $ctrl.model"  
+                            md-order-by="{{header.name}}"
+                            md-numeric="header.isNumeric"
+                            ng-show="header.show">
+                            {{header.displayName | uppercase}}                            
+                        </th>
+                    </tr>
+                </thead>
+                <tbody md-body>
+                    <tr md-row md-select="student" md-auto-select ng-repeat="student in $ctrl.students | orderBy: $ctrl.table.query.order">
+                        <td md-cell>
+                            <div layout="row">
+                                <md-button class="md-icon-button md-primary" ng-click="$ctrl.edit(student,$event)">
+                                    <md-tooltip md-direction="bottom">Editar</md-tooltip>
+                                    <md-icon md-font-library="material-icons" class="md-blue">mode_edit</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button md-accent md-hue-2">
+                                    <md-tooltip md-direction="bottom">Cursos</md-tooltip>
+                                    <md-icon md-font-library="material-icons">school</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button md-warn">
+                                    <md-tooltip md-direction="bottom" >Eliminar</md-tooltip>
+                                    <md-icon md-font-library="material-icons" class="md-red">delete</md-icon>
+                                </md-button>
+                            </div>
+                        </td>
+                        <td md-cell ng-repeat="field in $ctrl.model" ng-show="field.show">
+                            {{student[field.name]}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+    </md-card>    
+</div>

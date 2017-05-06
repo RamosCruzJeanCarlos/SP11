@@ -2,7 +2,6 @@
 //base
 
 //login
-$login-height : 100%;
 $login-background-color : #BCDCFF;
 $login-background-stripes-width: 25px;
 $login-background-stripes-darking: 5%;
@@ -14,4 +13,20 @@ $login-background: repeating-linear-gradient(
   darken($login-background-color,$login-background-stripes-darking) 2*$login-background-stripes-width
 );
 $login-form-background-color : white;
+
+//main-sidenav
+$main-sidenav-content-text-color: gray;
+
+//main-menu
+$main-menu-active-transition : all linear 0.3s;
+$main-menu-active-color : white;
+$main-menu-active-background-color : #BDBDBD;
+$main-menu-active-font-style : italic;
+
+//md-toast
+$md-toast-info-background-color : darken(skyblue,25%);
+$md-toast-error-background-color : desaturate(red,40%);
+$md-toast-warning-background-color : desaturate(orange,10%);
+$md-toast-success-background-color : saturate(green,40%);
+
 

@@ -1,0 +1,16 @@
+main-menu{
+    overflow: auto;
+    a,md-list-item{
+        text-decoration: none;
+        color:  $main-sidenav-content-text-color;;
+    }
+    a.active{        
+        md-list-item{
+            -webkit-transition: $main-menu-active-transition;
+            transition: $main-menu-active-transition;
+            font-style: $main-menu-active-font-style;
+            color: $main-menu-active-color;
+            background-color: $main-menu-active-background-color;
+        }
+    }
+}

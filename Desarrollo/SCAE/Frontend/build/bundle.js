@@ -4569,6 +4569,1838 @@ require('./angular-aria');
 module.exports = 'ngAria';
 
 },{"./angular-aria":3}],5:[function(require,module,exports){
+/**
+ * @license AngularJS v1.6.4
+ * (c) 2010-2017 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+(function(window, angular) {'use strict';
+
+/**
+ * @ngdoc module
+ * @name ngCookies
+ * @description
+ *
+ * # ngCookies
+ *
+ * The `ngCookies` module provides a convenient wrapper for reading and writing browser cookies.
+ *
+ *
+ * <div doc-module-components="ngCookies"></div>
+ *
+ * See {@link ngCookies.$cookies `$cookies`} for usage.
+ */
+
+
+angular.module('ngCookies', ['ng']).
+  info({ angularVersion: '1.6.4' }).
+  /**
+   * @ngdoc provider
+   * @name $cookiesProvider
+   * @description
+   * Use `$cookiesProvider` to change the default behavior of the {@link ngCookies.$cookies $cookies} service.
+   * */
+   provider('$cookies', [/** @this */function $CookiesProvider() {
+    /**
+     * @ngdoc property
+     * @name $cookiesProvider#defaults
+     * @description
+     *
+     * Object containing default options to pass when setting cookies.
+     *
+     * The object may have following properties:
+     *
+     * - **path** - `{string}` - The cookie will be available only for this path and its
+     *   sub-paths. By default, this is the URL that appears in your `<base>` tag.
+     * - **domain** - `{string}` - The cookie will be available only for this domain and
+     *   its sub-domains. For security reasons the user agent will not accept the cookie
+     *   if the current domain is not a sub-domain of this domain or equal to it.
+     * - **expires** - `{string|Date}` - String of the form "Wdy, DD Mon YYYY HH:MM:SS GMT"
+     *   or a Date object indicating the exact date/time this cookie will expire.
+     * - **secure** - `{boolean}` - If `true`, then the cookie will only be available through a
+     *   secured connection.
+     *
+     * Note: By default, the address that appears in your `<base>` tag will be used as the path.
+     * This is important so that cookies will be visible for all routes when html5mode is enabled.
+     *
+     * @example
+     *
+     * ```js
+     * angular.module('cookiesProviderExample', ['ngCookies'])
+     *   .config(['$cookiesProvider', function($cookiesProvider) {
+     *     // Setting default options
+     *     $cookiesProvider.defaults.domain = 'foo.com';
+     *     $cookiesProvider.defaults.secure = true;
+     *   }]);
+     * ```
+     **/
+    var defaults = this.defaults = {};
+
+    function calcOptions(options) {
+      return options ? angular.extend({}, defaults, options) : defaults;
+    }
+
+    /**
+     * @ngdoc service
+     * @name $cookies
+     *
+     * @description
+     * Provides read/write access to browser's cookies.
+     *
+     * <div class="alert alert-info">
+     * Up until Angular 1.3, `$cookies` exposed properties that represented the
+     * current browser cookie values. In version 1.4, this behavior has changed, and
+     * `$cookies` now provides a standard api of getters, setters etc.
+     * </div>
+     *
+     * Requires the {@link ngCookies `ngCookies`} module to be installed.
+     *
+     * @example
+     *
+     * ```js
+     * angular.module('cookiesExample', ['ngCookies'])
+     *   .controller('ExampleController', ['$cookies', function($cookies) {
+     *     // Retrieving a cookie
+     *     var favoriteCookie = $cookies.get('myFavorite');
+     *     // Setting a cookie
+     *     $cookies.put('myFavorite', 'oatmeal');
+     *   }]);
+     * ```
+     */
+    this.$get = ['$$cookieReader', '$$cookieWriter', function($$cookieReader, $$cookieWriter) {
+      return {
+        /**
+         * @ngdoc method
+         * @name $cookies#get
+         *
+         * @description
+         * Returns the value of given cookie key
+         *
+         * @param {string} key Id to use for lookup.
+         * @returns {string} Raw cookie value.
+         */
+        get: function(key) {
+          return $$cookieReader()[key];
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookies#getObject
+         *
+         * @description
+         * Returns the deserialized value of given cookie key
+         *
+         * @param {string} key Id to use for lookup.
+         * @returns {Object} Deserialized cookie value.
+         */
+        getObject: function(key) {
+          var value = this.get(key);
+          return value ? angular.fromJson(value) : value;
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookies#getAll
+         *
+         * @description
+         * Returns a key value object with all the cookies
+         *
+         * @returns {Object} All cookies
+         */
+        getAll: function() {
+          return $$cookieReader();
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookies#put
+         *
+         * @description
+         * Sets a value for given cookie key
+         *
+         * @param {string} key Id for the `value`.
+         * @param {string} value Raw value to be stored.
+         * @param {Object=} options Options object.
+         *    See {@link ngCookies.$cookiesProvider#defaults $cookiesProvider.defaults}
+         */
+        put: function(key, value, options) {
+          $$cookieWriter(key, value, calcOptions(options));
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookies#putObject
+         *
+         * @description
+         * Serializes and sets a value for given cookie key
+         *
+         * @param {string} key Id for the `value`.
+         * @param {Object} value Value to be stored.
+         * @param {Object=} options Options object.
+         *    See {@link ngCookies.$cookiesProvider#defaults $cookiesProvider.defaults}
+         */
+        putObject: function(key, value, options) {
+          this.put(key, angular.toJson(value), options);
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookies#remove
+         *
+         * @description
+         * Remove given cookie
+         *
+         * @param {string} key Id of the key-value pair to delete.
+         * @param {Object=} options Options object.
+         *    See {@link ngCookies.$cookiesProvider#defaults $cookiesProvider.defaults}
+         */
+        remove: function(key, options) {
+          $$cookieWriter(key, undefined, calcOptions(options));
+        }
+      };
+    }];
+  }]);
+
+angular.module('ngCookies').
+/**
+ * @ngdoc service
+ * @name $cookieStore
+ * @deprecated
+ * sinceVersion="v1.4.0"
+ * Please use the {@link ngCookies.$cookies `$cookies`} service instead.
+ *
+ * @requires $cookies
+ *
+ * @description
+ * Provides a key-value (string-object) storage, that is backed by session cookies.
+ * Objects put or retrieved from this storage are automatically serialized or
+ * deserialized by angular's toJson/fromJson.
+ *
+ * Requires the {@link ngCookies `ngCookies`} module to be installed.
+ *
+ * @example
+ *
+ * ```js
+ * angular.module('cookieStoreExample', ['ngCookies'])
+ *   .controller('ExampleController', ['$cookieStore', function($cookieStore) {
+ *     // Put cookie
+ *     $cookieStore.put('myFavorite','oatmeal');
+ *     // Get cookie
+ *     var favoriteCookie = $cookieStore.get('myFavorite');
+ *     // Removing a cookie
+ *     $cookieStore.remove('myFavorite');
+ *   }]);
+ * ```
+ */
+ factory('$cookieStore', ['$cookies', function($cookies) {
+
+    return {
+      /**
+       * @ngdoc method
+       * @name $cookieStore#get
+       *
+       * @description
+       * Returns the value of given cookie key
+       *
+       * @param {string} key Id to use for lookup.
+       * @returns {Object} Deserialized cookie value, undefined if the cookie does not exist.
+       */
+      get: function(key) {
+        return $cookies.getObject(key);
+      },
+
+      /**
+       * @ngdoc method
+       * @name $cookieStore#put
+       *
+       * @description
+       * Sets a value for given cookie key
+       *
+       * @param {string} key Id for the `value`.
+       * @param {Object} value Value to be stored.
+       */
+      put: function(key, value) {
+        $cookies.putObject(key, value);
+      },
+
+      /**
+       * @ngdoc method
+       * @name $cookieStore#remove
+       *
+       * @description
+       * Remove given cookie
+       *
+       * @param {string} key Id of the key-value pair to delete.
+       */
+      remove: function(key) {
+        $cookies.remove(key);
+      }
+    };
+
+  }]);
+
+/**
+ * @name $$cookieWriter
+ * @requires $document
+ *
+ * @description
+ * This is a private service for writing cookies
+ *
+ * @param {string} name Cookie name
+ * @param {string=} value Cookie value (if undefined, cookie will be deleted)
+ * @param {Object=} options Object with options that need to be stored for the cookie.
+ */
+function $$CookieWriter($document, $log, $browser) {
+  var cookiePath = $browser.baseHref();
+  var rawDocument = $document[0];
+
+  function buildCookieString(name, value, options) {
+    var path, expires;
+    options = options || {};
+    expires = options.expires;
+    path = angular.isDefined(options.path) ? options.path : cookiePath;
+    if (angular.isUndefined(value)) {
+      expires = 'Thu, 01 Jan 1970 00:00:00 GMT';
+      value = '';
+    }
+    if (angular.isString(expires)) {
+      expires = new Date(expires);
+    }
+
+    var str = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+    str += path ? ';path=' + path : '';
+    str += options.domain ? ';domain=' + options.domain : '';
+    str += expires ? ';expires=' + expires.toUTCString() : '';
+    str += options.secure ? ';secure' : '';
+
+    // per http://www.ietf.org/rfc/rfc2109.txt browser must allow at minimum:
+    // - 300 cookies
+    // - 20 cookies per unique domain
+    // - 4096 bytes per cookie
+    var cookieLength = str.length + 1;
+    if (cookieLength > 4096) {
+      $log.warn('Cookie \'' + name +
+        '\' possibly not set or overflowed because it was too large (' +
+        cookieLength + ' > 4096 bytes)!');
+    }
+
+    return str;
+  }
+
+  return function(name, value, options) {
+    rawDocument.cookie = buildCookieString(name, value, options);
+  };
+}
+
+$$CookieWriter.$inject = ['$document', '$log', '$browser'];
+
+angular.module('ngCookies').provider('$$cookieWriter', /** @this */ function $$CookieWriterProvider() {
+  this.$get = $$CookieWriter;
+});
+
+
+})(window, window.angular);
+
+},{}],6:[function(require,module,exports){
+require('./angular-cookies');
+module.exports = 'ngCookies';
+
+},{"./angular-cookies":5}],7:[function(require,module,exports){
+/*
+ * Angular Material Data Table
+ * https://github.com/daniel-nagy/md-data-table
+ * @license MIT
+ * v0.10.9
+ */
+(function (window, angular, undefined) {
+'use strict';
+
+angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-progress.html', 'arrow-up.svg', 'navigate-before.svg', 'navigate-first.svg', 'navigate-last.svg', 'navigate-next.svg']);
+
+angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('md-table-pagination.html',
+    '<div class="page-select" ng-if="$pagination.showPageSelect()">\n' +
+    '  <div class="label">{{$pagination.label.page}}</div>\n' +
+    '\n' +
+    '  <md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" ng-disabled="$pagination.disabled" aria-label="Page">\n' +
+    '    <md-content>\n' +
+    '      <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>\n' +
+    '    </md-content>\n' +
+    '  </md-select>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="limit-select" ng-if="$pagination.limitOptions">\n' +
+    '  <div class="label">{{$pagination.label.rowsPerPage}}</div>\n' +
+    '\n' +
+    '  <md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" ng-disabled="$pagination.disabled" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
+    '    <md-option ng-repeat="option in $pagination.limitOptions" ng-value="option.value ? $pagination.eval(option.value) : option">{{::option.label ? option.label : option}}</md-option>\n' +
+    '  </md-select>\n' +
+    '</div>\n' +
+    '\n' +
+    '<div class="buttons">\n' +
+    '  <div class="label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">\n' +
+    '    <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-click="$pagination.previous()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="Previous">\n' +
+    '    <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Next">\n' +
+    '    <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '\n' +
+    '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Last">\n' +
+    '    <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
+    '  </md-button>\n' +
+    '</div>');
+}]);
+
+angular.module('md-table-progress.html', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('md-table-progress.html',
+    '<tr>\n' +
+    '  <th colspan="{{columnCount()}}">\n' +
+    '    <md-progress-linear ng-show="deferred()" md-mode="indeterminate"></md-progress-linear>\n' +
+    '  </th>\n' +
+    '</tr>');
+}]);
+
+angular.module('arrow-up.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('arrow-up.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>');
+}]);
+
+angular.module('navigate-before.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-before.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>');
+}]);
+
+angular.module('navigate-first.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-first.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 6 v12 h2 v-12 h-2z M17.41 7.41L16 6l-6 6 6 6 1.41-1.41L12.83 12z"/></svg>');
+}]);
+
+angular.module('navigate-last.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-last.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 6 v12 h2 v-12 h-2z M8 6L6.59 7.41 11.17 12l-4.58 4.59L8 18l6-6z"/></svg>');
+}]);
+
+angular.module('navigate-next.svg', []).run(['$templateCache', function($templateCache) {
+  $templateCache.put('navigate-next.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>');
+}]);
+
+
+angular.module('md.data.table', ['md.table.templates']);
+
+angular.module('md.data.table').directive('mdBody', mdBody);
+
+function mdBody() {
+
+  function compile(tElement) {
+    tElement.addClass('md-body');
+  }
+
+  return {
+    compile: compile,
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdCell', mdCell);
+
+function mdCell() {
+  
+  function compile(tElement) {
+    var select = tElement.find('md-select');
+    
+    if(select.length) {
+      select.addClass('md-table-select').attr('md-container-class', 'md-table-select');
+    }
+    
+    tElement.addClass('md-cell');
+    
+    return postLink;
+  }
+  
+  // empty controller to be bind properties to in postLink function
+  function Controller() {
+    
+  }
+  
+  function postLink(scope, element, attrs, ctrls) {
+    var select = element.find('md-select');
+    var cellCtrl = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+    
+    if(attrs.ngClick) {
+      element.addClass('md-clickable');
+    }
+    
+    if(select.length) {
+      select.on('click', function (event) {
+        event.stopPropagation();
+      });
+      
+      element.addClass('md-clickable').on('click', function (event) {
+        event.stopPropagation();
+        select[0].click();
+      });
+    }
+    
+    cellCtrl.getTable = tableCtrl.getElement;
+    
+    function getColumn() {
+      return tableCtrl.$$columns[getIndex()];
+    }
+    
+    function getIndex() {
+      return Array.prototype.indexOf.call(element.parent().children(), element[0]);
+    }
+    
+    scope.$watch(getColumn, function (column) {
+      if(!column) {
+        return;
+      }
+      
+      if(column.numeric) {
+        element.addClass('md-numeric');
+      } else {
+        element.removeClass('md-numeric');
+      }
+    });
+  }
+  
+  return {
+    controller: Controller,
+    compile: compile,
+    require: ['mdCell', '^^mdTable'],
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdColumn', mdColumn);
+
+function mdColumn($compile, $mdUtil) {
+
+  function compile(tElement) {
+    tElement.addClass('md-column');
+    return postLink;
+  }
+
+  function postLink(scope, element, attrs, ctrls) {
+    var headCtrl = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+
+    function attachSortIcon() {
+      var sortIcon = angular.element('<md-icon md-svg-icon="arrow-up.svg">');
+
+      $compile(sortIcon.addClass('md-sort-icon').attr('ng-class', 'getDirection()'))(scope);
+
+      if(element.hasClass('md-numeric')) {
+        element.prepend(sortIcon);
+      } else {
+        element.append(sortIcon);
+      }
+    }
+
+    function detachSortIcon() {
+      Array.prototype.some.call(element.find('md-icon'), function (icon) {
+        return icon.classList.contains('md-sort-icon') && element[0].removeChild(icon);
+      });
+    }
+
+    function disableSorting() {
+      detachSortIcon();
+      element.removeClass('md-sort').off('click', setOrder);
+    }
+
+    function enableSorting() {
+      attachSortIcon();
+      element.addClass('md-sort').on('click', setOrder);
+    }
+
+    function getIndex() {
+      return Array.prototype.indexOf.call(element.parent().children(), element[0]);
+    }
+
+    function isActive() {
+      return scope.orderBy && (headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy);
+    }
+
+    function isNumeric() {
+      return attrs.mdNumeric === '' || scope.numeric;
+    }
+
+    function setOrder() {
+      scope.$applyAsync(function () {
+        if(isActive()) {
+          headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
+        } else {
+          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
+        }
+
+        if(angular.isFunction(headCtrl.onReorder)) {
+          $mdUtil.nextTick(function () {
+            headCtrl.onReorder(headCtrl.order);
+          });
+        }
+      });
+    }
+
+    function updateColumn(index, column) {
+      tableCtrl.$$columns[index] = column;
+
+      if(column.numeric) {
+        element.addClass('md-numeric');
+      } else {
+        element.removeClass('md-numeric');
+      }
+    }
+
+    scope.getDirection = function () {
+      if(isActive()) {
+        return headCtrl.order.charAt(0) === '-' ? 'md-desc' : 'md-asc';
+      }
+
+      return attrs.mdDesc === '' || scope.$eval(attrs.mdDesc) ? 'md-desc' : 'md-asc';
+    };
+
+    scope.$watch(isActive, function (active) {
+      if(active) {
+        element.addClass('md-active');
+      } else {
+        element.removeClass('md-active');
+      }
+    });
+
+    scope.$watch(getIndex, function (index) {
+      updateColumn(index, {'numeric': isNumeric()});
+    });
+
+    scope.$watch(isNumeric, function (numeric) {
+      updateColumn(getIndex(), {'numeric': numeric});
+    });
+
+    scope.$watch('orderBy', function (orderBy) {
+      if(orderBy) {
+        if(!element.hasClass('md-sort')) {
+          enableSorting();
+        }
+      } else if(element.hasClass('md-sort')) {
+        disableSorting();
+      }
+    });
+  }
+
+  return {
+    compile: compile,
+    require: ['^^mdHead', '^^mdTable'],
+    restrict: 'A',
+    scope: {
+      numeric: '=?mdNumeric',
+      orderBy: '@?mdOrderBy'
+    }
+  };
+}
+
+mdColumn.$inject = ['$compile', '$mdUtil'];
+
+angular.module('md.data.table')
+  .decorator('$controller', controllerDecorator)
+  .factory('$mdEditDialog', mdEditDialog);
+
+/*
+ * A decorator for ng.$controller to optionally bind properties to the
+ * controller before invoking the constructor. Stolen from the ngMock.
+ *
+ * https://docs.angularjs.org/api/ngMock/service/$controller
+ */
+function controllerDecorator($delegate) {
+  return function(expression, locals, later, ident) {
+    if(later && typeof later === 'object') {
+      var create = $delegate(expression, locals, true, ident);
+      angular.extend(create.instance, later);
+      return create();
+    }
+    return $delegate(expression, locals, later, ident);
+  };
+}
+
+controllerDecorator.$inject = ['$delegate'];
+  
+function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
+  /* jshint validthis: true */
+  
+  var ESCAPE = 27;
+  
+  var busy = false;
+  var body = angular.element($document.prop('body'));
+  
+  /*
+   * bindToController
+   * controller
+   * controllerAs
+   * locals
+   * resolve
+   * scope
+   * targetEvent
+   * template
+   * templateUrl
+   */
+  var defaultOptions = {
+    clickOutsideToClose: true,
+    disableScroll: true,
+    escToClose: true,
+    focusOnOpen: true
+  };
+  
+  function build(template, options) {
+    var scope = $rootScope.$new();
+    var element = $compile(template)(scope);
+    var backdrop = $mdUtil.createBackdrop(scope, 'md-edit-dialog-backdrop');
+    var controller;
+    
+    if(options.controller) {
+      controller = getController(options, scope, {$element: element, $scope: scope});
+    } else {
+      angular.extend(scope, options.scope);
+    }
+    
+    if(options.disableScroll) {
+      disableScroll(element);
+    }
+    
+    body.prepend(backdrop).append(element.addClass('md-whiteframe-1dp'));
+    
+    positionDialog(element, options.target);
+    
+    if(options.focusOnOpen) {
+      focusOnOpen(element);
+    }
+    
+    if(options.clickOutsideToClose) {
+      backdrop.on('click', function () {
+        element.remove();
+      });
+    }
+    
+    if(options.escToClose) {
+      escToClose(element);
+    }
+    
+    element.on('$destroy', function () {
+      busy = false;
+      backdrop.remove();
+    });
+    
+    return controller;
+  }
+  
+  function disableScroll(element) {
+    var restoreScroll = $mdUtil.disableScrollAround(element, body);
+    
+    element.on('$destroy', function () {
+      restoreScroll();
+    });
+  }
+  
+  function getController(options, scope, inject) {
+    if(!options.controller) {
+      return;
+    }
+    
+    if(options.resolve) {
+      angular.extend(inject, options.resolve);
+    }
+    
+    if(options.locals) {
+      angular.extend(inject, options.locals);
+    }
+    
+    if(options.controllerAs) {
+      scope[options.controllerAs] = {};
+      
+      if(options.bindToController) {
+        angular.extend(scope[options.controllerAs], options.scope);
+      } else {
+        angular.extend(scope, options.scope);
+      }
+    } else {
+      angular.extend(scope, options.scope);
+    }
+    
+    if(options.bindToController) {
+      return $controller(options.controller, inject, scope[options.controllerAs]);
+    } else {
+      return $controller(options.controller, inject);
+    }
+  }
+  
+  function getTemplate(options) {
+    return $q(function (resolve, reject) {
+      var template = options.template;
+      
+      function illegalType(type) {
+        reject('Unexpected template value. Expected a string; received a ' + type + '.');
+      }
+      
+      if(template) {
+        return angular.isString(template) ? resolve(template) : illegalType(typeof template);
+      }
+      
+      if(options.templateUrl) {
+        template = $templateCache.get(options.templateUrl);
+        
+        if(template) {
+          return resolve(template);
+        }
+        
+        var success = function (template) {
+          return resolve(template);
+        };
+        
+        var error = function () {
+          return reject('Error retrieving template from URL.');
+        };
+        
+        return $templateRequest(options.templateUrl).then(success, error);
+      }
+      
+      reject('Template not provided.');
+    });
+  }
+  
+  function logError(error) {
+    busy = false;
+    console.error(error);
+  }
+  
+  function escToClose(element) {
+    var keyup = function (event) {
+      if(event.keyCode === ESCAPE) {
+        element.remove();
+      }
+    };
+    
+    body.on('keyup', keyup);
+    
+    element.on('$destroy', function () {
+      body.off('keyup', keyup);
+    });
+  }
+
+  function focusOnOpen(element) {
+    $mdUtil.nextTick(function () {
+      var autofocus = $mdUtil.findFocusTarget(element);
+      
+      if(autofocus) {
+        autofocus.focus();
+      }
+    }, false);
+  }
+
+  function positionDialog(element, target) {
+    var table = angular.element(target).controller('mdCell').getTable();
+    
+    var getHeight = function () {
+      return element.prop('clientHeight');
+    };
+    
+    var getSize = function () {
+      return {
+        width: getWidth(),
+        height: getHeight()
+      };
+    };
+    
+    var getTableBounds = function () {
+      var parent = table.parent();
+      
+      if(parent.prop('tagName') === 'MD-TABLE-CONTAINER') {
+        return parent[0].getBoundingClientRect();
+      } else {
+        return table[0].getBoundingClientRect();
+      }
+    };
+    
+    var getWidth = function () {
+      return element.prop('clientWidth');
+    };
+    
+    var reposition = function () {
+      var size = getSize();
+      var cellBounds = target.getBoundingClientRect();
+      var tableBounds = getTableBounds();
+      
+      if(size.width > tableBounds.right - cellBounds.left) {
+        element.css('left', tableBounds.right - size.width + 'px');
+      } else {
+        element.css('left', cellBounds.left + 'px');
+      }
+      
+      if(size.height > tableBounds.bottom - cellBounds.top) {
+        element.css('top', tableBounds.bottom - size.height + 'px');
+      } else {
+        element.css('top', cellBounds.top + 1 + 'px');
+      }
+      
+      element.css('minWidth', cellBounds.width + 'px');
+    };
+    
+    var watchWidth = $rootScope.$watch(getWidth, reposition);
+    var watchHeight = $rootScope.$watch(getHeight, reposition);
+    
+    $window.addEventListener('resize', reposition);
+    
+    element.on('$destroy', function () {
+      watchWidth();
+      watchHeight();
+      
+      $window.removeEventListener('resize', reposition);
+    });
+  }
+  
+  function preset(size, options) {
+    
+    function getAttrs() {
+      var attrs = 'type="' + (options.type || 'text') + '"';
+      
+      for(var attr in options.validators) {
+        attrs += ' ' + attr + '="' + options.validators[attr] + '"';
+      }
+      
+      return attrs;
+    }
+    
+    return {
+      controller: ['$element', '$q', 'save', '$scope', function ($element, $q, save, $scope) {
+        function update() {
+          if($scope.editDialog.$invalid) {
+            return $q.reject();
+          }
+          
+          if(angular.isFunction(save)) {
+            return $q.when(save($scope.editDialog.input));
+          }
+          
+          return $q.resolve();
+        }
+        
+        this.dismiss = function () {
+          $element.remove();
+        };
+        
+        this.getInput = function () {
+          return $scope.editDialog.input;
+        };
+        
+        $scope.dismiss = this.dismiss;
+        
+        $scope.submit = function () {
+          update().then(function () {
+            $scope.dismiss();
+          });
+        };
+      }],
+      locals: {
+        save: options.save
+      },
+      scope: {
+        cancel: options.cancel || 'Cancel',
+        messages: options.messages,
+        model: options.modelValue,
+        ok: options.ok || 'Save',
+        placeholder: options.placeholder,
+        title: options.title,
+        size: size
+      },
+      template:
+        '<md-edit-dialog>' +
+          '<div layout="column" class="md-content">' +
+            '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
+            '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
+              '<md-input-container md-no-float>' +
+                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+                '<div ng-messages="editDialog.input.$error">' +
+                  '<div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
+                '</div>' +
+              '</md-input-container>' +
+            '</form>' +
+          '</div>' +
+          '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
+            '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
+            '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
+          '</div>' +
+        '</md-edit-dialog>'
+    };
+  }
+  
+  this.show = function (options) {
+    if(busy) {
+      return $q.reject();
+    }
+    
+    busy = true;
+    options = angular.extend({}, defaultOptions, options);
+    
+    if(!options.targetEvent) {
+      return logError('options.targetEvent is required to align the dialog with the table cell.');
+    }
+    
+    if(!options.targetEvent.currentTarget.classList.contains('md-cell')) {
+      return logError('The event target must be a table cell.');
+    }
+    
+    if(options.bindToController && !options.controllerAs) {
+      return logError('You must define options.controllerAs when options.bindToController is true.');
+    }
+    
+    options.target = options.targetEvent.currentTarget;
+    
+    var promise = getTemplate(options);
+    var promises = [promise];
+    
+    for(var prop in options.resolve) {
+      promise = options.resolve[prop];
+      promises.push($q.when(angular.isFunction(promise) ? promise() : promise));
+    }
+    
+    promise = $q.all(promises);
+    
+    promise['catch'](logError);
+    
+    return promise.then(function (results) {
+      var template = results.shift();
+      
+      for(var prop in options.resolve) {
+        options.resolve[prop] = results.shift();
+      }
+      
+      return build(template, options);
+    });
+  };
+  
+  this.small = function (options) {
+    return this.show(angular.extend({}, options, preset('small', options)));
+  }.bind(this);
+  
+  this.large = function (options) {
+    return this.show(angular.extend({}, options, preset('large', options)));
+  }.bind(this);
+  
+  return this;
+}
+
+mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];
+
+
+angular.module('md.data.table').directive('mdFoot', mdFoot);
+
+function mdFoot() {
+
+  function compile(tElement) {
+    tElement.addClass('md-foot');
+  }
+
+  return {
+    compile: compile,
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdHead', mdHead);
+
+function mdHead($compile) {
+
+  function compile(tElement) {
+    tElement.addClass('md-head');
+    return postLink;
+  }
+  
+  // empty controller to be bind scope properties to
+  function Controller() {
+    
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    // because scope.$watch is unpredictable
+    var oldValue = new Array(2);
+    
+    function addCheckboxColumn() {
+      element.children().prepend('<th class="md-column md-checkbox-column">');
+    }
+    
+    function attatchCheckbox() {
+      element.prop('lastElementChild').firstElementChild.appendChild($compile(createCheckBox())(scope)[0]);
+    }
+    
+    function createCheckBox() {
+      return angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select All',
+        'ng-click': 'toggleAll()',
+        'ng-checked': 'allSelected()',
+        'ng-disabled': '!getSelectableRows().length'
+      });
+    }
+    
+    function detachCheckbox() {
+      var cell = element.prop('lastElementChild').firstElementChild;
+      
+      if(cell.classList.contains('md-checkbox-column')) {
+        angular.element(cell).empty();
+      }
+    }
+    
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+    
+    function mdSelectCtrl(row) {
+      return angular.element(row).controller('mdSelect');
+    }
+    
+    function removeCheckboxColumn() {
+      Array.prototype.some.call(element.find('th'), function (cell) {
+        return cell.classList.contains('md-checkbox-column') && cell.remove();
+      });
+    }
+    
+    scope.allSelected = function () {
+      var rows = scope.getSelectableRows();
+      
+      return rows.length && rows.every(function (row) {
+        return row.isSelected();
+      });
+    };
+    
+    scope.getSelectableRows = function () {
+      return tableCtrl.getBodyRows().map(mdSelectCtrl).filter(function (ctrl) {
+        return ctrl && !ctrl.disabled;
+      });
+    };
+    
+    scope.selectAll = function () {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+        if(ctrl && !ctrl.isSelected()) {
+          ctrl.select();
+        }
+      });
+    };
+    
+    scope.toggleAll = function () {
+      return scope.allSelected() ? scope.unSelectAll() : scope.selectAll();
+    };
+    
+    scope.unSelectAll = function () {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+        if(ctrl && ctrl.isSelected()) {
+          ctrl.deselect();
+        }
+      });
+    };
+    
+    scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
+      if(newValue[0] !== oldValue[0]) {
+        if(newValue[0]) {
+          addCheckboxColumn();
+          
+          if(newValue[1]) {
+            attatchCheckbox();
+          }
+        } else {
+          removeCheckboxColumn();
+        }
+      } else if(newValue[0] && newValue[1] !== oldValue[1]) {
+        if(newValue[1]) {
+          attatchCheckbox();
+        } else {
+          detachCheckbox();
+        }
+      }
+      
+      angular.copy(newValue, oldValue);
+    });
+  }
+  
+  return {
+    bindToController: true,
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$mdHead',
+    require: '^^mdTable',
+    restrict: 'A',
+    scope: {
+      order: '=?mdOrder',
+      onReorder: '=?mdOnReorder'
+    }
+  };
+}
+
+mdHead.$inject = ['$compile'];
+
+angular.module('md.data.table').directive('mdRow', mdRow);
+
+function mdRow() {
+
+  function compile(tElement) {
+    tElement.addClass('md-row');
+    return postLink;
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+    
+    function isBodyRow() {
+      return tableCtrl.getBodyRows().indexOf(element[0]) !== -1;
+    }
+    
+    function isChild(node) {
+      return element[0].contains(node[0]);
+    }
+    
+    if(isBodyRow()) {
+      var cell = angular.element('<td class="md-cell">');
+      
+      scope.$watch(enableRowSelection, function (enable) {
+        // if a row is not selectable, prepend an empty cell to it
+        if(enable && !attrs.mdSelect) {
+          if(!isChild(cell)) {
+            element.prepend(cell);
+          }
+          return;
+        }
+        
+        if(isChild(cell)) {
+          cell.remove();
+        }
+      });
+    }
+  }
+
+  return {
+    compile: compile,
+    require: '^^mdTable',
+    restrict: 'A'
+  };
+}
+
+angular.module('md.data.table').directive('mdSelect', mdSelect);
+
+function mdSelect($compile, $parse) {
+
+  // empty controller to bind scope properties to
+  function Controller() {
+
+  }
+
+  function postLink(scope, element, attrs, ctrls) {
+    var self = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+    var getId = $parse(attrs.mdSelectId);
+
+    self.id = getId(self.model);
+
+    if(tableCtrl.$$rowSelect && self.id) {
+      if(tableCtrl.$$hash.has(self.id)) {
+        var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+
+        // if the item is no longer selected remove it
+        if(index === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+
+      } else {
+
+        // check if the item has been selected
+        tableCtrl.selected.some(function (item, index) {
+          if(getId(item) === self.id) {
+            tableCtrl.$$hash.update(self.id, self.model);
+            tableCtrl.selected.splice(index, 1, self.model);
+
+            return true;
+          }
+        });
+      }
+    }
+
+    self.isSelected = function () {
+      if(!tableCtrl.$$rowSelect) {
+        return false;
+      }
+
+      if(self.id) {
+        return tableCtrl.$$hash.has(self.id);
+      }
+
+      return tableCtrl.selected.indexOf(self.model) !== -1;
+    };
+
+    self.select = function () {
+      if(self.disabled) {
+        return;
+      }
+
+      if(tableCtrl.enableMultiSelect()) {
+        tableCtrl.selected.push(self.model);
+      } else {
+        tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
+      }
+
+      if(angular.isFunction(self.onSelect)) {
+        self.onSelect(self.model);
+      }
+    };
+
+    self.deselect = function () {
+      if(self.disabled) {
+        return;
+      }
+
+      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+
+      if(angular.isFunction(self.onDeselect)) {
+        self.onDeselect(self.model);
+      }
+    };
+
+    self.toggle = function (event) {
+      if(event && event.stopPropagation) {
+        event.stopPropagation();
+      }
+
+      return self.isSelected() ? self.deselect() : self.select();
+    };
+
+    function autoSelect() {
+      return attrs.mdAutoSelect === '' || self.autoSelect;
+    }
+
+    function createCheckbox() {
+      var checkbox = angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select Row',
+        'ng-click': '$mdSelect.toggle($event)',
+        'ng-checked': '$mdSelect.isSelected()',
+        'ng-disabled': '$mdSelect.disabled'
+      });
+
+      return angular.element('<td class="md-cell md-checkbox-cell">').append($compile(checkbox)(scope));
+    }
+
+    function disableSelection() {
+      Array.prototype.some.call(element.children(), function (child) {
+        return child.classList.contains('md-checkbox-cell') && element[0].removeChild(child);
+      });
+
+      if(autoSelect()) {
+        element.off('click', toggle);
+      }
+    }
+
+    function enableSelection() {
+      element.prepend(createCheckbox());
+
+      if(autoSelect()) {
+        element.on('click', toggle);
+      }
+    }
+
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+
+    function onSelectChange(selected) {
+      if(!self.id) {
+        return;
+      }
+
+      if(tableCtrl.$$hash.has(self.id)) {
+        // check if the item has been deselected
+        if(selected.indexOf(tableCtrl.$$hash.get(self.id)) === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+
+        return;
+      }
+
+      // check if the item has been selected
+      if(selected.indexOf(self.model) !== -1) {
+        tableCtrl.$$hash.update(self.id, self.model);
+      }
+    }
+
+    function toggle(event) {
+      scope.$applyAsync(function () {
+        self.toggle(event);
+      });
+    }
+
+    scope.$watch(enableRowSelection, function (enable) {
+      if(enable) {
+        enableSelection();
+      } else {
+        disableSelection();
+      }
+    });
+
+    scope.$watch(autoSelect, function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+
+      if(tableCtrl.$$rowSelect && newValue) {
+        element.on('click', toggle);
+      } else {
+        element.off('click', toggle);
+      }
+    });
+
+    scope.$watch(self.isSelected, function (isSelected) {
+      return isSelected ? element.addClass('md-selected') : element.removeClass('md-selected');
+    });
+
+    scope.$watch(tableCtrl.enableMultiSelect, function (multiple) {
+      if(tableCtrl.$$rowSelect && !multiple) {
+        // remove all but the first selected item
+        tableCtrl.selected.splice(1);
+      }
+    });
+
+    tableCtrl.registerModelChangeListener(onSelectChange);
+
+    element.on('$destroy', function () {
+      tableCtrl.removeModelChangeListener(onSelectChange);
+    });
+  }
+
+  return {
+    bindToController: true,
+    controller: Controller,
+    controllerAs: '$mdSelect',
+    link: postLink,
+    require: ['mdSelect', '^^mdTable'],
+    restrict: 'A',
+    scope: {
+      model: '=mdSelect',
+      disabled: '=ngDisabled',
+      onSelect: '=?mdOnSelect',
+      onDeselect: '=?mdOnDeselect',
+      autoSelect: '=mdAutoSelect'
+    }
+  };
+}
+
+mdSelect.$inject = ['$compile', '$parse'];
+
+angular.module('md.data.table').directive('mdTable', mdTable);
+
+function Hash() {
+  var keys = {};
+  
+  this.equals = function (key, item) {
+    return keys[key] === item;
+  };
+
+  this.get = function (key) {
+    return keys[key];
+  };
+  
+  this.has = function (key) {
+    return keys.hasOwnProperty(key);
+  };
+
+  this.purge = function (key) {
+    delete keys[key];
+  };
+  
+  this.update = function (key, item) {
+    keys[key] = item;
+  };
+}
+
+function mdTable() {
+  
+  function compile(tElement, tAttrs) {
+    tElement.addClass('md-table');
+    
+    if(tAttrs.hasOwnProperty('mdProgress')) {
+      var body = tElement.find('tbody')[0];
+      var progress = angular.element('<thead class="md-table-progress" md-table-progress>');
+      
+      if(body) {
+        tElement[0].insertBefore(progress[0], body);
+      }
+    }
+  }
+  
+  function Controller($attrs, $element, $q, $scope) {
+    var self = this;
+    var queue = [];
+    var watchListener;
+    var modelChangeListeners = [];
+    
+    self.$$hash = new Hash();
+    self.$$columns = {};
+    
+    function enableRowSelection() {
+      self.$$rowSelect = true;
+      
+      watchListener = $scope.$watchCollection('$mdTable.selected', function (selected) {
+        modelChangeListeners.forEach(function (listener) {
+          listener(selected);
+        });
+      });
+      
+      $element.addClass('md-row-select');
+    }
+    
+    function disableRowSelection() {
+      self.$$rowSelect = false;
+      
+      if(angular.isFunction(watchListener)) {
+        watchListener();
+      }
+      
+      $element.removeClass('md-row-select');
+    }
+    
+    function resolvePromises() {
+      if(!queue.length) {
+        return $scope.$applyAsync();
+      }
+      
+      queue[0]['finally'](function () {
+        queue.shift();
+        resolvePromises();
+      });
+    }
+    
+    function rowSelect() {
+      return $attrs.mdRowSelect === '' || self.rowSelect;
+    }
+    
+    function validateModel() {
+      if(!self.selected) {
+        return console.error('Row selection: ngModel is not defined.');
+      }
+      
+      if(!angular.isArray(self.selected)) {
+        return console.error('Row selection: Expected an array. Recived ' + typeof self.selected + '.');
+      }
+      
+      return true;
+    }
+    
+    self.columnCount = function () {
+      return self.getRows($element[0]).reduce(function (count, row) {
+        return row.cells.length > count ? row.cells.length : count;
+      }, 0);
+    };
+    
+    self.getRows = function (element) {
+      return Array.prototype.filter.call(element.rows, function (row) {
+        return !row.classList.contains('ng-leave');
+      });
+    };
+    
+    self.getBodyRows = function () {
+      return Array.prototype.reduce.call($element.prop('tBodies'), function (result, tbody) {
+        return result.concat(self.getRows(tbody));
+      }, []);
+    };
+    
+    self.getElement = function () {
+      return $element;
+    };
+    
+    self.getHeaderRows = function () {
+      return self.getRows($element.prop('tHead'));
+    };
+    
+    self.enableMultiSelect = function () {
+      return $attrs.multiple === '' || $scope.$eval($attrs.multiple);
+    };
+    
+    self.waitingOnPromise = function () {
+      return !!queue.length;
+    };
+    
+    self.queuePromise = function (promise) {
+      if(!promise) {
+        return;
+      }
+      
+      if(queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+        resolvePromises();
+      }
+    };
+    
+    self.registerModelChangeListener = function (listener) {
+      modelChangeListeners.push(listener);
+    };
+    
+    self.removeModelChangeListener = function (listener) {
+      var index = modelChangeListeners.indexOf(listener);
+      
+      if(index !== -1) {
+        modelChangeListeners.splice(index, 1);
+      }
+    };
+    
+    if($attrs.hasOwnProperty('mdProgress')) {
+      $scope.$watch('$mdTable.progress', self.queuePromise);
+    }
+    
+    $scope.$watch(rowSelect, function (enable) {
+      if(enable && !!validateModel()) {
+        enableRowSelection();
+      } else {
+        disableRowSelection();
+      }
+    });
+  }
+  
+  Controller.$inject = ['$attrs', '$element', '$q', '$scope'];
+  
+  return {
+    bindToController: true,
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$mdTable',
+    restrict: 'A',
+    scope: {
+      progress: '=?mdProgress',
+      selected: '=ngModel',
+      rowSelect: '=mdRowSelect'
+    }
+  };
+}
+
+angular.module('md.data.table').directive('mdTablePagination', mdTablePagination);
+
+function mdTablePagination() {
+
+  function compile(tElement) {
+    tElement.addClass('md-table-pagination');
+  }
+
+  function Controller($attrs, $mdUtil, $scope) {
+    var self = this;
+    var defaultLabel = {
+      page: 'Page:',
+      rowsPerPage: 'Rows per page:',
+      of: 'of'
+    };
+
+    self.label = angular.copy(defaultLabel);
+
+    function isPositive(number) {
+      return parseInt(number, 10) > 0;
+    }
+
+    self.eval = function (expression) {
+      return $scope.$eval(expression);
+    };
+
+    self.first = function () {
+      self.page = 1;
+      self.onPaginationChange();
+    };
+
+    self.hasNext = function () {
+      return self.page * self.limit < self.total;
+    };
+
+    self.hasPrevious = function () {
+      return self.page > 1;
+    };
+
+    self.last = function () {
+      self.page = self.pages();
+      self.onPaginationChange();
+    };
+
+    self.max = function () {
+      return self.hasNext() ? self.page * self.limit : self.total;
+    };
+
+    self.min = function () {
+      return isPositive(self.total) ? self.page * self.limit - self.limit + 1 : 0;
+    };
+
+    self.next = function () {
+      self.page++;
+      self.onPaginationChange();
+    };
+
+    self.onPaginationChange = function () {
+      if(angular.isFunction(self.onPaginate)) {
+        $mdUtil.nextTick(function () {
+          self.onPaginate(self.page, self.limit);
+        });
+      }
+    };
+
+    self.pages = function () {
+      return isPositive(self.total) ? Math.ceil(self.total / (isPositive(self.limit) ? self.limit : 1)) : 1;
+    };
+
+    self.previous = function () {
+      self.page--;
+      self.onPaginationChange();
+    };
+
+    self.showBoundaryLinks = function () {
+      return $attrs.mdBoundaryLinks === '' || self.boundaryLinks;
+    };
+
+    self.showPageSelect = function () {
+      return $attrs.mdPageSelect === '' || self.pageSelect;
+    };
+
+    $scope.$watch('$pagination.limit', function (newValue, oldValue) {
+      if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
+        return;
+      }
+
+      // find closest page from previous min
+      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isPositive(newValue) ? newValue : 1));
+      self.onPaginationChange();
+    });
+
+    $attrs.$observe('mdLabel', function (label) {
+      angular.extend(self.label, defaultLabel, $scope.$eval(label));
+    });
+
+    $scope.$watch('$pagination.total', function (newValue, oldValue) {
+      if(isNaN(newValue) || newValue === oldValue) {
+        return;
+      }
+
+      if(self.page > self.pages()) {
+        self.last();
+      }
+    });
+  }
+
+  Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
+
+  return {
+    bindToController: {
+      boundaryLinks: '=?mdBoundaryLinks',
+      disabled: '=ngDisabled',
+      limit: '=mdLimit',
+      page: '=mdPage',
+      pageSelect: '=?mdPageSelect',
+      onPaginate: '=?mdOnPaginate',
+      limitOptions: '=?mdLimitOptions',
+      total: '@mdTotal'
+    },
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$pagination',
+    restrict: 'E',
+    scope: {},
+    templateUrl: 'md-table-pagination.html'
+  };
+}
+
+angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
+
+function mdTableProgress() {
+
+  function postLink(scope, element, attrs, tableCtrl) {
+    scope.columnCount = tableCtrl.columnCount;
+    scope.deferred = tableCtrl.waitingOnPromise;
+  }
+
+  return {
+    link: postLink,
+    require: '^^mdTable',
+    restrict: 'A',
+    scope: {},
+    templateUrl: 'md-table-progress.html'
+  };
+}
+
+angular.module('md.data.table').directive('virtualPageSelect', virtualPageSelect);
+
+function virtualPageSelect() {
+
+  function Controller($element, $scope) {
+    var self = this;
+    var content = $element.find('md-content');
+
+    self.pages = [];
+
+    function getMin(pages, total) {
+      return Math.min(pages, isFinite(total) && isPositive(total) ? total : 1);
+    }
+
+    function isPositive(number) {
+      return number > 0;
+    }
+
+    function setPages(max) {
+      if(self.pages.length > max) {
+        return self.pages.splice(max);
+      }
+
+      for(var i = self.pages.length; i < max; i++) {
+        self.pages.push(i + 1);
+      }
+    }
+
+    content.on('scroll', function () {
+      if((content.prop('clientHeight') + content.prop('scrollTop')) >= content.prop('scrollHeight')) {
+        $scope.$applyAsync(function () {
+          setPages(getMin(self.pages.length + 10, self.total));
+        });
+      }
+    });
+
+    $scope.$watch('$pageSelect.total', function (total) {
+      setPages(getMin(Math.max(self.pages.length, 10), total));
+    });
+
+    $scope.$watch('$pagination.page', function (page) {
+      for(var i = self.pages.length; i < page; i++) {
+        self.pages.push(i + 1);
+      }
+    });
+  }
+
+  Controller.$inject = ['$element', '$scope'];
+
+  return {
+    bindToController: {
+      total: '@'
+    },
+    controller: Controller,
+    controllerAs: '$pageSelect'
+  };
+}
+
+})(window, angular);
+},{}],8:[function(require,module,exports){
+// support for Browserify
+
+require('angular-material');
+require('./dist/md-data-table');
+
+module.exports = 'md.data.table';
+
+},{"./dist/md-data-table":7,"angular-material":10}],9:[function(require,module,exports){
 /*!
  * Angular Material Design
  * https://github.com/angular/material
@@ -40318,7 +42150,7 @@ angular.module("material.core").constant("$MD_THEME_CSS", "md-autocomplete.md-TH
 
 
 })(window, window.angular);;window.ngMaterial={version:{full: "1.1.3"}};
-},{}],6:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Should already be required, here for clarity
 require('angular');
 
@@ -40332,7 +42164,7 @@ require('./angular-material');
 // Export namespace
 module.exports = 'ngMaterial';
 
-},{"./angular-material":5,"angular":11,"angular-animate":2,"angular-aria":4}],7:[function(require,module,exports){
+},{"./angular-material":9,"angular":15,"angular-animate":2,"angular-aria":4}],11:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -40340,745 +42172,863 @@ module.exports = 'ngMaterial';
  */
 (function(window, angular) {'use strict';
 
-var forEach;
-var isArray;
-var isString;
-var jqLite;
+var $resourceMinErr = angular.$$minErr('$resource');
+
+// Helper functions and regex to lookup a dotted path on an object
+// stopping at undefined/null.  The path must be composed of ASCII
+// identifiers (just like $parse)
+var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
+
+function isValidDottedPath(path) {
+  return (path != null && path !== '' && path !== 'hasOwnProperty' &&
+      MEMBER_NAME_REGEX.test('.' + path));
+}
+
+function lookupDottedPath(obj, path) {
+  if (!isValidDottedPath(path)) {
+    throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
+  }
+  var keys = path.split('.');
+  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
+    var key = keys[i];
+    obj = (obj !== null) ? obj[key] : undefined;
+  }
+  return obj;
+}
+
+/**
+ * Create a shallow copy of an object and clear other fields from the destination
+ */
+function shallowClearAndCopy(src, dst) {
+  dst = dst || {};
+
+  angular.forEach(dst, function(value, key) {
+    delete dst[key];
+  });
+
+  for (var key in src) {
+    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+      dst[key] = src[key];
+    }
+  }
+
+  return dst;
+}
 
 /**
  * @ngdoc module
- * @name ngMessages
+ * @name ngResource
  * @description
  *
- * The `ngMessages` module provides enhanced support for displaying messages within templates
- * (typically within forms or when rendering message objects that return key/value data).
- * Instead of relying on JavaScript code and/or complex ng-if statements within your form template to
- * show and hide error messages specific to the state of an input field, the `ngMessages` and
- * `ngMessage` directives are designed to handle the complexity, inheritance and priority
- * sequencing based on the order of how the messages are defined in the template.
+ * # ngResource
  *
- * Currently, the ngMessages module only contains the code for the `ngMessages`, `ngMessagesInclude`
- * `ngMessage` and `ngMessageExp` directives.
+ * The `ngResource` module provides interaction support with RESTful services
+ * via the $resource service.
  *
- * # Usage
- * The `ngMessages` directive allows keys in a key/value collection to be associated with a child element
- * (or 'message') that will show or hide based on the truthiness of that key's value in the collection. A common use
- * case for `ngMessages` is to display error messages for inputs using the `$error` object exposed by the
- * {@link ngModel ngModel} directive.
  *
- * The child elements of the `ngMessages` directive are matched to the collection keys by a `ngMessage` or
- * `ngMessageExp` directive. The value of these attributes must match a key in the collection that is provided by
- * the `ngMessages` directive.
+ * <div doc-module-components="ngResource"></div>
  *
- * Consider the following example, which illustrates a typical use case of `ngMessages`. Within the form `myForm` we
- * have a text input named `myField` which is bound to the scope variable `field` using the {@link ngModel ngModel}
- * directive.
- *
- * The `myField` field is a required input of type `email` with a maximum length of 15 characters.
- *
- * ```html
- * <form name="myForm">
- *   <label>
- *     Enter text:
- *     <input type="email" ng-model="field" name="myField" required maxlength="15" />
- *   </label>
- *   <div ng-messages="myForm.myField.$error" role="alert">
- *     <div ng-message="required">Please enter a value for this field.</div>
- *     <div ng-message="email">This field must be a valid email address.</div>
- *     <div ng-message="maxlength">This field can be at most 15 characters long.</div>
- *   </div>
- * </form>
- * ```
- *
- * In order to show error messages corresponding to `myField` we first create an element with an `ngMessages` attribute
- * set to the `$error` object owned by the `myField` input in our `myForm` form.
- *
- * Within this element we then create separate elements for each of the possible errors that `myField` could have.
- * The `ngMessage` attribute is used to declare which element(s) will appear for which error - for example,
- * setting `ng-message="required"` specifies that this particular element should be displayed when there
- * is no value present for the required field `myField` (because the key `required` will be `true` in the object
- * `myForm.myField.$error`).
- *
- * ### Message order
- *
- * By default, `ngMessages` will only display one message for a particular key/value collection at any time. If more
- * than one message (or error) key is currently true, then which message is shown is determined by the order of messages
- * in the HTML template code (messages declared first are prioritised). This mechanism means the developer does not have
- * to prioritize messages using custom JavaScript code.
- *
- * Given the following error object for our example (which informs us that the field `myField` currently has both the
- * `required` and `email` errors):
- *
- * ```javascript
- * <!-- keep in mind that ngModel automatically sets these error flags -->
- * myField.$error = { required : true, email: true, maxlength: false };
- * ```
- * The `required` message will be displayed to the user since it appears before the `email` message in the DOM.
- * Once the user types a single character, the `required` message will disappear (since the field now has a value)
- * but the `email` message will be visible because it is still applicable.
- *
- * ### Displaying multiple messages at the same time
- *
- * While `ngMessages` will by default only display one error element at a time, the `ng-messages-multiple` attribute can
- * be applied to the `ngMessages` container element to cause it to display all applicable error messages at once:
- *
- * ```html
- * <!-- attribute-style usage -->
- * <div ng-messages="myForm.myField.$error" ng-messages-multiple>...</div>
- *
- * <!-- element-style usage -->
- * <ng-messages for="myForm.myField.$error" multiple>...</ng-messages>
- * ```
- *
- * ## Reusing and Overriding Messages
- * In addition to prioritization, ngMessages also allows for including messages from a remote or an inline
- * template. This allows for generic collection of messages to be reused across multiple parts of an
- * application.
- *
- * ```html
- * <script type="text/ng-template" id="error-messages">
- *   <div ng-message="required">This field is required</div>
- *   <div ng-message="minlength">This field is too short</div>
- * </script>
- *
- * <div ng-messages="myForm.myField.$error" role="alert">
- *   <div ng-messages-include="error-messages"></div>
- * </div>
- * ```
- *
- * However, including generic messages may not be useful enough to match all input fields, therefore,
- * `ngMessages` provides the ability to override messages defined in the remote template by redefining
- * them within the directive container.
- *
- * ```html
- * <!-- a generic template of error messages known as "my-custom-messages" -->
- * <script type="text/ng-template" id="my-custom-messages">
- *   <div ng-message="required">This field is required</div>
- *   <div ng-message="minlength">This field is too short</div>
- * </script>
- *
- * <form name="myForm">
- *   <label>
- *     Email address
- *     <input type="email"
- *            id="email"
- *            name="myEmail"
- *            ng-model="email"
- *            minlength="5"
- *            required />
- *   </label>
- *   <!-- any ng-message elements that appear BEFORE the ng-messages-include will
- *        override the messages present in the ng-messages-include template -->
- *   <div ng-messages="myForm.myEmail.$error" role="alert">
- *     <!-- this required message has overridden the template message -->
- *     <div ng-message="required">You did not enter your email address</div>
- *
- *     <!-- this is a brand new message and will appear last in the prioritization -->
- *     <div ng-message="email">Your email address is invalid</div>
- *
- *     <!-- and here are the generic error messages -->
- *     <div ng-messages-include="my-custom-messages"></div>
- *   </div>
- * </form>
- * ```
- *
- * In the example HTML code above the message that is set on required will override the corresponding
- * required message defined within the remote template. Therefore, with particular input fields (such
- * email addresses, date fields, autocomplete inputs, etc...), specialized error messages can be applied
- * while more generic messages can be used to handle other, more general input errors.
- *
- * ## Dynamic Messaging
- * ngMessages also supports using expressions to dynamically change key values. Using arrays and
- * repeaters to list messages is also supported. This means that the code below will be able to
- * fully adapt itself and display the appropriate message when any of the expression data changes:
- *
- * ```html
- * <form name="myForm">
- *   <label>
- *     Email address
- *     <input type="email"
- *            name="myEmail"
- *            ng-model="email"
- *            minlength="5"
- *            required />
- *   </label>
- *   <div ng-messages="myForm.myEmail.$error" role="alert">
- *     <div ng-message="required">You did not enter your email address</div>
- *     <div ng-repeat="errorMessage in errorMessages">
- *       <!-- use ng-message-exp for a message whose key is given by an expression -->
- *       <div ng-message-exp="errorMessage.type">{{ errorMessage.text }}</div>
- *     </div>
- *   </div>
- * </form>
- * ```
- *
- * The `errorMessage.type` expression can be a string value or it can be an array so
- * that multiple errors can be associated with a single error message:
- *
- * ```html
- *   <label>
- *     Email address
- *     <input type="email"
- *            ng-model="data.email"
- *            name="myEmail"
- *            ng-minlength="5"
- *            ng-maxlength="100"
- *            required />
- *   </label>
- *   <div ng-messages="myForm.myEmail.$error" role="alert">
- *     <div ng-message-exp="'required'">You did not enter your email address</div>
- *     <div ng-message-exp="['minlength', 'maxlength']">
- *       Your email must be between 5 and 100 characters long
- *     </div>
- *   </div>
- * ```
- *
- * Feel free to use other structural directives such as ng-if and ng-switch to further control
- * what messages are active and when. Be careful, if you place ng-message on the same element
- * as these structural directives, Angular may not be able to determine if a message is active
- * or not. Therefore it is best to place the ng-message on a child element of the structural
- * directive.
- *
- * ```html
- * <div ng-messages="myForm.myEmail.$error" role="alert">
- *   <div ng-if="showRequiredError">
- *     <div ng-message="required">Please enter something</div>
- *   </div>
- * </div>
- * ```
- *
- * ## Animations
- * If the `ngAnimate` module is active within the application then the `ngMessages`, `ngMessage` and
- * `ngMessageExp` directives will trigger animations whenever any messages are added and removed from
- * the DOM by the `ngMessages` directive.
- *
- * Whenever the `ngMessages` directive contains one or more visible messages then the `.ng-active` CSS
- * class will be added to the element. The `.ng-inactive` CSS class will be applied when there are no
- * messages present. Therefore, CSS transitions and keyframes as well as JavaScript animations can
- * hook into the animations whenever these classes are added/removed.
- *
- * Let's say that our HTML code for our messages container looks like so:
- *
- * ```html
- * <div ng-messages="myMessages" class="my-messages" role="alert">
- *   <div ng-message="alert" class="some-message">...</div>
- *   <div ng-message="fail" class="some-message">...</div>
- * </div>
- * ```
- *
- * Then the CSS animation code for the message container looks like so:
- *
- * ```css
- * .my-messages {
- *   transition:1s linear all;
- * }
- * .my-messages.ng-active {
- *   // messages are visible
- * }
- * .my-messages.ng-inactive {
- *   // messages are hidden
- * }
- * ```
- *
- * Whenever an inner message is attached (becomes visible) or removed (becomes hidden) then the enter
- * and leave animation is triggered for each particular element bound to the `ngMessage` directive.
- *
- * Therefore, the CSS code for the inner messages looks like so:
- *
- * ```css
- * .some-message {
- *   transition:1s linear all;
- * }
- *
- * .some-message.ng-enter {}
- * .some-message.ng-enter.ng-enter-active {}
- *
- * .some-message.ng-leave {}
- * .some-message.ng-leave.ng-leave-active {}
- * ```
- *
- * {@link ngAnimate Click here} to learn how to use JavaScript animations or to learn more about ngAnimate.
+ * See {@link ngResource.$resourceProvider} and {@link ngResource.$resource} for usage.
  */
-angular.module('ngMessages', [], function initAngularHelpers() {
-  // Access helpers from angular core.
-  // Do it inside a `config` block to ensure `window.angular` is available.
-  forEach = angular.forEach;
-  isArray = angular.isArray;
-  isString = angular.isString;
-  jqLite = angular.element;
-})
-  .info({ angularVersion: '1.6.4' })
 
-  /**
-   * @ngdoc directive
-   * @module ngMessages
-   * @name ngMessages
-   * @restrict AE
-   *
-   * @description
-   * `ngMessages` is a directive that is designed to show and hide messages based on the state
-   * of a key/value object that it listens on. The directive itself complements error message
-   * reporting with the `ngModel` $error object (which stores a key/value state of validation errors).
-   *
-   * `ngMessages` manages the state of internal messages within its container element. The internal
-   * messages use the `ngMessage` directive and will be inserted/removed from the page depending
-   * on if they're present within the key/value object. By default, only one message will be displayed
-   * at a time and this depends on the prioritization of the messages within the template. (This can
-   * be changed by using the `ng-messages-multiple` or `multiple` attribute on the directive container.)
-   *
-   * A remote template can also be used to promote message reusability and messages can also be
-   * overridden.
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-message="stringValue">...</ANY>
-   *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-   *   <ANY ng-message-exp="expressionValue">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-message when="stringValue">...</ng-message>
-   *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-   *   <ng-message when-exp="expressionValue">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * @param {string} ngMessages an angular expression evaluating to a key/value object
-   *                 (this is typically the $error object on an ngModel instance).
-   * @param {string=} ngMessagesMultiple|multiple when set, all messages will be displayed with true
-   *
-   * @example
-   * <example name="ngMessages-directive" module="ngMessagesExample"
-   *          deps="angular-messages.js"
-   *          animations="true" fixBase="true">
-   *   <file name="index.html">
-   *     <form name="myForm">
-   *       <label>
-   *         Enter your name:
-   *         <input type="text"
-   *                name="myName"
-   *                ng-model="name"
-   *                ng-minlength="5"
-   *                ng-maxlength="20"
-   *                required />
-   *       </label>
-   *       <pre>myForm.myName.$error = {{ myForm.myName.$error | json }}</pre>
-   *
-   *       <div ng-messages="myForm.myName.$error" style="color:maroon" role="alert">
-   *         <div ng-message="required">You did not enter a field</div>
-   *         <div ng-message="minlength">Your field is too short</div>
-   *         <div ng-message="maxlength">Your field is too long</div>
-   *       </div>
-   *     </form>
-   *   </file>
-   *   <file name="script.js">
-   *     angular.module('ngMessagesExample', ['ngMessages']);
-   *   </file>
-   * </example>
-   */
-  .directive('ngMessages', ['$animate', function($animate) {
-    var ACTIVE_CLASS = 'ng-active';
-    var INACTIVE_CLASS = 'ng-inactive';
+/**
+ * @ngdoc provider
+ * @name $resourceProvider
+ *
+ * @description
+ *
+ * Use `$resourceProvider` to change the default behavior of the {@link ngResource.$resource}
+ * service.
+ *
+ * ## Dependencies
+ * Requires the {@link ngResource } module to be installed.
+ *
+ */
 
-    return {
-      require: 'ngMessages',
-      restrict: 'AE',
-      controller: ['$element', '$scope', '$attrs', function NgMessagesCtrl($element, $scope, $attrs) {
-        var ctrl = this;
-        var latestKey = 0;
-        var nextAttachId = 0;
+/**
+ * @ngdoc service
+ * @name $resource
+ * @requires $http
+ * @requires ng.$log
+ * @requires $q
+ * @requires ng.$timeout
+ *
+ * @description
+ * A factory which creates a resource object that lets you interact with
+ * [RESTful](http://en.wikipedia.org/wiki/Representational_State_Transfer) server-side data sources.
+ *
+ * The returned resource object has action methods which provide high-level behaviors without
+ * the need to interact with the low level {@link ng.$http $http} service.
+ *
+ * Requires the {@link ngResource `ngResource`} module to be installed.
+ *
+ * By default, trailing slashes will be stripped from the calculated URLs,
+ * which can pose problems with server backends that do not expect that
+ * behavior.  This can be disabled by configuring the `$resourceProvider` like
+ * this:
+ *
+ * ```js
+     app.config(['$resourceProvider', function($resourceProvider) {
+       // Don't strip trailing slashes from calculated URLs
+       $resourceProvider.defaults.stripTrailingSlashes = false;
+     }]);
+ * ```
+ *
+ * @param {string} url A parameterized URL template with parameters prefixed by `:` as in
+ *   `/user/:username`. If you are using a URL with a port number (e.g.
+ *   `http://example.com:8080/api`), it will be respected.
+ *
+ *   If you are using a url with a suffix, just add the suffix, like this:
+ *   `$resource('http://example.com/resource.json')` or `$resource('http://example.com/:id.json')`
+ *   or even `$resource('http://example.com/resource/:resource_id.:format')`
+ *   If the parameter before the suffix is empty, :resource_id in this case, then the `/.` will be
+ *   collapsed down to a single `.`.  If you need this sequence to appear and not collapse then you
+ *   can escape it with `/\.`.
+ *
+ * @param {Object=} paramDefaults Default values for `url` parameters. These can be overridden in
+ *   `actions` methods. If a parameter value is a function, it will be called every time
+ *   a param value needs to be obtained for a request (unless the param was overridden). The function
+ *   will be passed the current data value as an argument.
+ *
+ *   Each key value in the parameter object is first bound to url template if present and then any
+ *   excess keys are appended to the url search query after the `?`.
+ *
+ *   Given a template `/path/:verb` and parameter `{verb:'greet', salutation:'Hello'}` results in
+ *   URL `/path/greet?salutation=Hello`.
+ *
+ *   If the parameter value is prefixed with `@`, then the value for that parameter will be
+ *   extracted from the corresponding property on the `data` object (provided when calling actions
+ *   with a request body).
+ *   For example, if the `defaultParam` object is `{someParam: '@someProp'}` then the value of
+ *   `someParam` will be `data.someProp`.
+ *   Note that the parameter will be ignored, when calling a "GET" action method (i.e. an action
+ *   method that does not accept a request body)
+ *
+ * @param {Object.<Object>=} actions Hash with declaration of custom actions that will be available
+ *   in addition to the default set of resource actions (see below). If a custom action has the same
+ *   key as a default action (e.g. `save`), then the default action will be *overwritten*, and not
+ *   extended.
+ *
+ *   The declaration should be created in the format of {@link ng.$http#usage $http.config}:
+ *
+ *       {action1: {method:?, params:?, isArray:?, headers:?, ...},
+ *        action2: {method:?, params:?, isArray:?, headers:?, ...},
+ *        ...}
+ *
+ *   Where:
+ *
+ *   - **`action`** – {string} – The name of action. This name becomes the name of the method on
+ *     your resource object.
+ *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
+ *     `DELETE`, `JSONP`, etc).
+ *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of
+ *     the parameter value is a function, it will be called every time when a param value needs to
+ *     be obtained for a request (unless the param was overridden). The function will be passed the
+ *     current data value as an argument.
+ *   - **`url`** – {string} – action specific `url` override. The url templating is supported just
+ *     like for the resource-level urls.
+ *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array,
+ *     see `returns` section.
+ *   - **`transformRequest`** –
+ *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
+ *     transform function or an array of such functions. The transform function takes the http
+ *     request body and headers and returns its transformed (typically serialized) version.
+ *     By default, transformRequest will contain one function that checks if the request data is
+ *     an object and serializes it using `angular.toJson`. To prevent this behavior, set
+ *     `transformRequest` to an empty array: `transformRequest: []`
+ *   - **`transformResponse`** –
+ *     `{function(data, headersGetter, status)|Array.<function(data, headersGetter, status)>}` –
+ *     transform function or an array of such functions. The transform function takes the http
+ *     response body, headers and status and returns its transformed (typically deserialized)
+ *     version.
+ *     By default, transformResponse will contain one function that checks if the response looks
+ *     like a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior,
+ *     set `transformResponse` to an empty array: `transformResponse: []`
+ *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the
+ *     GET request, otherwise if a cache instance built with
+ *     {@link ng.$cacheFactory $cacheFactory} is supplied, this cache will be used for
+ *     caching.
+ *   - **`timeout`** – `{number}` – timeout in milliseconds.<br />
+ *     **Note:** In contrast to {@link ng.$http#usage $http.config}, {@link ng.$q promises} are
+ *     **not** supported in $resource, because the same value would be used for multiple requests.
+ *     If you are looking for a way to cancel requests, you should use the `cancellable` option.
+ *   - **`cancellable`** – `{boolean}` – if set to true, the request made by a "non-instance" call
+ *     will be cancelled (if not already completed) by calling `$cancelRequest()` on the call's
+ *     return value. Calling `$cancelRequest()` for a non-cancellable or an already
+ *     completed/cancelled request will have no effect.<br />
+ *   - **`withCredentials`** - `{boolean}` - whether to set the `withCredentials` flag on the
+ *     XHR object. See
+ *     [requests with credentials](https://developer.mozilla.org/en/http_access_control#section_5)
+ *     for more information.
+ *   - **`responseType`** - `{string}` - see
+ *     [requestType](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType).
+ *   - **`interceptor`** - `{Object=}` - The interceptor object has two optional methods -
+ *     `response` and `responseError`. Both `response` and `responseError` interceptors get called
+ *     with `http response` object. See {@link ng.$http $http interceptors}.
+ *   - **`hasBody`** - `{boolean}` - allows to specify if a request body should be included or not.
+ *     If not specified only POST, PUT and PATCH requests will have a body.
+ *
+ * @param {Object} options Hash with custom settings that should extend the
+ *   default `$resourceProvider` behavior.  The supported options are:
+ *
+ *   - **`stripTrailingSlashes`** – {boolean} – If true then the trailing
+ *   slashes from any calculated URL will be stripped. (Defaults to true.)
+ *   - **`cancellable`** – {boolean} – If true, the request made by a "non-instance" call will be
+ *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return value.
+ *   This can be overwritten per action. (Defaults to false.)
+ *
+ * @returns {Object} A resource "class" object with methods for the default set of resource actions
+ *   optionally extended with custom `actions`. The default set contains these actions:
+ *   ```js
+ *   { 'get':    {method:'GET'},
+ *     'save':   {method:'POST'},
+ *     'query':  {method:'GET', isArray:true},
+ *     'remove': {method:'DELETE'},
+ *     'delete': {method:'DELETE'} };
+ *   ```
+ *
+ *   Calling these methods invoke an {@link ng.$http} with the specified http method,
+ *   destination and parameters. When the data is returned from the server then the object is an
+ *   instance of the resource class. The actions `save`, `remove` and `delete` are available on it
+ *   as  methods with the `$` prefix. This allows you to easily perform CRUD operations (create,
+ *   read, update, delete) on server-side data like this:
+ *   ```js
+ *   var User = $resource('/user/:userId', {userId:'@id'});
+ *   var user = User.get({userId:123}, function() {
+ *     user.abc = true;
+ *     user.$save();
+ *   });
+ *   ```
+ *
+ *   It is important to realize that invoking a $resource object method immediately returns an
+ *   empty reference (object or array depending on `isArray`). Once the data is returned from the
+ *   server the existing reference is populated with the actual data. This is a useful trick since
+ *   usually the resource is assigned to a model which is then rendered by the view. Having an empty
+ *   object results in no rendering, once the data arrives from the server then the object is
+ *   populated with the data and the view automatically re-renders itself showing the new data. This
+ *   means that in most cases one never has to write a callback function for the action methods.
+ *
+ *   The action methods on the class object or instance object can be invoked with the following
+ *   parameters:
+ *
+ *   - "class" actions without a body: `Resource.action([parameters], [success], [error])`
+ *   - "class" actions with a body: `Resource.action([parameters], postData, [success], [error])`
+ *   - instance actions: `instance.$action([parameters], [success], [error])`
+ *
+ *
+ *   When calling instance methods, the instance itself is used as the request body (if the action
+ *   should have a body). By default, only actions using `POST`, `PUT` or `PATCH` have request
+ *   bodies, but you can use the `hasBody` configuration option to specify whether an action
+ *   should have a body or not (regardless of its HTTP method).
+ *
+ *
+ *   Success callback is called with (value (Object|Array), responseHeaders (Function),
+ *   status (number), statusText (string)) arguments, where the value is the populated resource
+ *   instance or collection object. The error callback is called with (httpResponse) argument.
+ *
+ *   Class actions return empty instance (with additional properties below).
+ *   Instance actions return promise of the action.
+ *
+ *   The Resource instances and collections have these additional properties:
+ *
+ *   - `$promise`: the {@link ng.$q promise} of the original server interaction that created this
+ *     instance or collection.
+ *
+ *     On success, the promise is resolved with the same resource instance or collection object,
+ *     updated with data from server. This makes it easy to use in
+ *     {@link ngRoute.$routeProvider resolve section of $routeProvider.when()} to defer view
+ *     rendering until the resource(s) are loaded.
+ *
+ *     On failure, the promise is rejected with the {@link ng.$http http response} object, without
+ *     the `resource` property.
+ *
+ *     If an interceptor object was provided, the promise will instead be resolved with the value
+ *     returned by the interceptor.
+ *
+ *   - `$resolved`: `true` after first server interaction is completed (either with success or
+ *      rejection), `false` before that. Knowing if the Resource has been resolved is useful in
+ *      data-binding.
+ *
+ *   The Resource instances and collections have these additional methods:
+ *
+ *   - `$cancelRequest`: If there is a cancellable, pending request related to the instance or
+ *      collection, calling this method will abort the request.
+ *
+ *   The Resource instances have these additional methods:
+ *
+ *   - `toJSON`: It returns a simple object without any of the extra properties added as part of
+ *     the Resource API. This object can be serialized through {@link angular.toJson} safely
+ *     without attaching Angular-specific fields. Notice that `JSON.stringify` (and
+ *     `angular.toJson`) automatically use this method when serializing a Resource instance
+ *     (see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON%28%29_behavior)).
+ *
+ * @example
+ *
+ * # Credit card resource
+ *
+ * ```js
+     // Define CreditCard class
+     var CreditCard = $resource('/user/:userId/card/:cardId',
+      {userId:123, cardId:'@id'}, {
+       charge: {method:'POST', params:{charge:true}}
+      });
 
-        this.getAttachId = function getAttachId() { return nextAttachId++; };
+     // We can retrieve a collection from the server
+     var cards = CreditCard.query(function() {
+       // GET: /user/123/card
+       // server returns: [ {id:456, number:'1234', name:'Smith'} ];
 
-        var messages = this.messages = {};
-        var renderLater, cachedCollection;
+       var card = cards[0];
+       // each item is an instance of CreditCard
+       expect(card instanceof CreditCard).toEqual(true);
+       card.name = "J. Smith";
+       // non GET methods are mapped onto the instances
+       card.$save();
+       // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
+       // server returns: {id:456, number:'1234', name: 'J. Smith'};
 
-        this.render = function(collection) {
-          collection = collection || {};
+       // our custom method is mapped as well.
+       card.$charge({amount:9.99});
+       // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
+     });
 
-          renderLater = false;
-          cachedCollection = collection;
+     // we can create an instance as well
+     var newCard = new CreditCard({number:'0123'});
+     newCard.name = "Mike Smith";
+     newCard.$save();
+     // POST: /user/123/card {number:'0123', name:'Mike Smith'}
+     // server returns: {id:789, number:'0123', name: 'Mike Smith'};
+     expect(newCard.id).toEqual(789);
+ * ```
+ *
+ * The object returned from this function execution is a resource "class" which has "static" method
+ * for each action in the definition.
+ *
+ * Calling these methods invoke `$http` on the `url` template with the given `method`, `params` and
+ * `headers`.
+ *
+ * @example
+ *
+ * # User resource
+ *
+ * When the data is returned from the server then the object is an instance of the resource type and
+ * all of the non-GET methods are available with `$` prefix. This allows you to easily support CRUD
+ * operations (create, read, update, delete) on server-side data.
 
-          // this is true if the attribute is empty or if the attribute value is truthy
-          var multiple = isAttrTruthy($scope, $attrs.ngMessagesMultiple) ||
-                         isAttrTruthy($scope, $attrs.multiple);
+   ```js
+     var User = $resource('/user/:userId', {userId:'@id'});
+     User.get({userId:123}, function(user) {
+       user.abc = true;
+       user.$save();
+     });
+   ```
+ *
+ * It's worth noting that the success callback for `get`, `query` and other methods gets passed
+ * in the response that came from the server as well as $http header getter function, so one
+ * could rewrite the above example and get access to http headers as:
+ *
+   ```js
+     var User = $resource('/user/:userId', {userId:'@id'});
+     User.get({userId:123}, function(user, getResponseHeaders){
+       user.abc = true;
+       user.$save(function(user, putResponseHeaders) {
+         //user => saved user object
+         //putResponseHeaders => $http header getter
+       });
+     });
+   ```
+ *
+ * You can also access the raw `$http` promise via the `$promise` property on the object returned
+ *
+   ```
+     var User = $resource('/user/:userId', {userId:'@id'});
+     User.get({userId:123})
+         .$promise.then(function(user) {
+           $scope.user = user;
+         });
+   ```
+ *
+ * @example
+ *
+ * # Creating a custom 'PUT' request
+ *
+ * In this example we create a custom method on our resource to make a PUT request
+ * ```js
+ *    var app = angular.module('app', ['ngResource', 'ngRoute']);
+ *
+ *    // Some APIs expect a PUT request in the format URL/object/ID
+ *    // Here we are creating an 'update' method
+ *    app.factory('Notes', ['$resource', function($resource) {
+ *    return $resource('/notes/:id', null,
+ *        {
+ *            'update': { method:'PUT' }
+ *        });
+ *    }]);
+ *
+ *    // In our controller we get the ID from the URL using ngRoute and $routeParams
+ *    // We pass in $routeParams and our Notes factory along with $scope
+ *    app.controller('NotesCtrl', ['$scope', '$routeParams', 'Notes',
+                                      function($scope, $routeParams, Notes) {
+ *    // First get a note object from the factory
+ *    var note = Notes.get({ id:$routeParams.id });
+ *    $id = note.id;
+ *
+ *    // Now call update passing in the ID first then the object you are updating
+ *    Notes.update({ id:$id }, note);
+ *
+ *    // This will PUT /notes/ID with the note object in the request payload
+ *    }]);
+ * ```
+ *
+ * @example
+ *
+ * # Cancelling requests
+ *
+ * If an action's configuration specifies that it is cancellable, you can cancel the request related
+ * to an instance or collection (as long as it is a result of a "non-instance" call):
+ *
+   ```js
+     // ...defining the `Hotel` resource...
+     var Hotel = $resource('/api/hotel/:id', {id: '@id'}, {
+       // Let's make the `query()` method cancellable
+       query: {method: 'get', isArray: true, cancellable: true}
+     });
 
-          var unmatchedMessages = [];
-          var matchedKeys = {};
-          var messageItem = ctrl.head;
-          var messageFound = false;
-          var totalMessages = 0;
+     // ...somewhere in the PlanVacationController...
+     ...
+     this.onDestinationChanged = function onDestinationChanged(destination) {
+       // We don't care about any pending request for hotels
+       // in a different destination any more
+       this.availableHotels.$cancelRequest();
 
-          // we use != instead of !== to allow for both undefined and null values
-          while (messageItem != null) {
-            totalMessages++;
-            var messageCtrl = messageItem.message;
+       // Let's query for hotels in '<destination>'
+       // (calls: /api/hotel?location=<destination>)
+       this.availableHotels = Hotel.query({location: destination});
+     };
+   ```
+ *
+ */
+angular.module('ngResource', ['ng']).
+  info({ angularVersion: '1.6.4' }).
+  provider('$resource', function ResourceProvider() {
+    var PROTOCOL_AND_IPV6_REGEX = /^https?:\/\/\[[^\]]*][^/]*/;
 
-            var messageUsed = false;
-            if (!messageFound) {
-              forEach(collection, function(value, key) {
-                if (!messageUsed && truthy(value) && messageCtrl.test(key)) {
-                  // this is to prevent the same error name from showing up twice
-                  if (matchedKeys[key]) return;
-                  matchedKeys[key] = true;
+    var provider = this;
 
-                  messageUsed = true;
-                  messageCtrl.attach();
+    /**
+     * @ngdoc property
+     * @name $resourceProvider#defaults
+     * @description
+     * Object containing default options used when creating `$resource` instances.
+     *
+     * The default values satisfy a wide range of usecases, but you may choose to overwrite any of
+     * them to further customize your instances. The available properties are:
+     *
+     * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any
+     *   calculated URL will be stripped.<br />
+     *   (Defaults to true.)
+     * - **cancellable** – `{boolean}` – If true, the request made by a "non-instance" call will be
+     *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return
+     *   value. For more details, see {@link ngResource.$resource}. This can be overwritten per
+     *   resource class or action.<br />
+     *   (Defaults to false.)
+     * - **actions** - `{Object.<Object>}` - A hash with default actions declarations. Actions are
+     *   high-level methods corresponding to RESTful actions/methods on resources. An action may
+     *   specify what HTTP method to use, what URL to hit, if the return value will be a single
+     *   object or a collection (array) of objects etc. For more details, see
+     *   {@link ngResource.$resource}. The actions can also be enhanced or overwritten per resource
+     *   class.<br />
+     *   The default actions are:
+     *   ```js
+     *   {
+     *     get: {method: 'GET'},
+     *     save: {method: 'POST'},
+     *     query: {method: 'GET', isArray: true},
+     *     remove: {method: 'DELETE'},
+     *     delete: {method: 'DELETE'}
+     *   }
+     *   ```
+     *
+     * #### Example
+     *
+     * For example, you can specify a new `update` action that uses the `PUT` HTTP verb:
+     *
+     * ```js
+     *   angular.
+     *     module('myApp').
+     *     config(['$resourceProvider', function ($resourceProvider) {
+     *       $resourceProvider.defaults.actions.update = {
+     *         method: 'PUT'
+     *       };
+     *     });
+     * ```
+     *
+     * Or you can even overwrite the whole `actions` list and specify your own:
+     *
+     * ```js
+     *   angular.
+     *     module('myApp').
+     *     config(['$resourceProvider', function ($resourceProvider) {
+     *       $resourceProvider.defaults.actions = {
+     *         create: {method: 'POST'},
+     *         get:    {method: 'GET'},
+     *         getAll: {method: 'GET', isArray:true},
+     *         update: {method: 'PUT'},
+     *         delete: {method: 'DELETE'}
+     *       };
+     *     });
+     * ```
+     *
+     */
+    this.defaults = {
+      // Strip slashes by default
+      stripTrailingSlashes: true,
+
+      // Make non-instance requests cancellable (via `$cancelRequest()`)
+      cancellable: false,
+
+      // Default actions configuration
+      actions: {
+        'get': {method: 'GET'},
+        'save': {method: 'POST'},
+        'query': {method: 'GET', isArray: true},
+        'remove': {method: 'DELETE'},
+        'delete': {method: 'DELETE'}
+      }
+    };
+
+    this.$get = ['$http', '$log', '$q', '$timeout', function($http, $log, $q, $timeout) {
+
+      var noop = angular.noop,
+          forEach = angular.forEach,
+          extend = angular.extend,
+          copy = angular.copy,
+          isArray = angular.isArray,
+          isDefined = angular.isDefined,
+          isFunction = angular.isFunction,
+          isNumber = angular.isNumber,
+          encodeUriQuery = angular.$$encodeUriQuery,
+          encodeUriSegment = angular.$$encodeUriSegment;
+
+      function Route(template, defaults) {
+        this.template = template;
+        this.defaults = extend({}, provider.defaults, defaults);
+        this.urlParams = {};
+      }
+
+      Route.prototype = {
+        setUrlParams: function(config, params, actionUrl) {
+          var self = this,
+            url = actionUrl || self.template,
+            val,
+            encodedVal,
+            protocolAndIpv6 = '';
+
+          var urlParams = self.urlParams = Object.create(null);
+          forEach(url.split(/\W/), function(param) {
+            if (param === 'hasOwnProperty') {
+              throw $resourceMinErr('badname', 'hasOwnProperty is not a valid parameter name.');
+            }
+            if (!(new RegExp('^\\d+$').test(param)) && param &&
+              (new RegExp('(^|[^\\\\]):' + param + '(\\W|$)').test(url))) {
+              urlParams[param] = {
+                isQueryParamValue: (new RegExp('\\?.*=:' + param + '(?:\\W|$)')).test(url)
+              };
+            }
+          });
+          url = url.replace(/\\:/g, ':');
+          url = url.replace(PROTOCOL_AND_IPV6_REGEX, function(match) {
+            protocolAndIpv6 = match;
+            return '';
+          });
+
+          params = params || {};
+          forEach(self.urlParams, function(paramInfo, urlParam) {
+            val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam];
+            if (isDefined(val) && val !== null) {
+              if (paramInfo.isQueryParamValue) {
+                encodedVal = encodeUriQuery(val, true);
+              } else {
+                encodedVal = encodeUriSegment(val);
+              }
+              url = url.replace(new RegExp(':' + urlParam + '(\\W|$)', 'g'), function(match, p1) {
+                return encodedVal + p1;
+              });
+            } else {
+              url = url.replace(new RegExp('(/?):' + urlParam + '(\\W|$)', 'g'), function(match,
+                  leadingSlashes, tail) {
+                if (tail.charAt(0) === '/') {
+                  return tail;
+                } else {
+                  return leadingSlashes + tail;
                 }
               });
             }
-
-            if (messageUsed) {
-              // unless we want to display multiple messages then we should
-              // set a flag here to avoid displaying the next message in the list
-              messageFound = !multiple;
-            } else {
-              unmatchedMessages.push(messageCtrl);
-            }
-
-            messageItem = messageItem.next;
-          }
-
-          forEach(unmatchedMessages, function(messageCtrl) {
-            messageCtrl.detach();
           });
 
-          if (unmatchedMessages.length !== totalMessages) {
-            $animate.setClass($element, ACTIVE_CLASS, INACTIVE_CLASS);
-          } else {
-            $animate.setClass($element, INACTIVE_CLASS, ACTIVE_CLASS);
+          // strip trailing slashes and set the url (unless this behavior is specifically disabled)
+          if (self.defaults.stripTrailingSlashes) {
+            url = url.replace(/\/+$/, '') || '/';
           }
+
+          // Collapse `/.` if found in the last URL path segment before the query.
+          // E.g. `http://url.com/id/.format?q=x` becomes `http://url.com/id.format?q=x`.
+          url = url.replace(/\/\.(?=\w+($|\?))/, '.');
+          // Replace escaped `/\.` with `/.`.
+          // (If `\.` comes from a param value, it will be encoded as `%5C.`.)
+          config.url = protocolAndIpv6 + url.replace(/\/(\\|%5C)\./, '/.');
+
+
+          // set params - delegate param encoding to $http
+          forEach(params, function(value, key) {
+            if (!self.urlParams[key]) {
+              config.params = config.params || {};
+              config.params[key] = value;
+            }
+          });
+        }
+      };
+
+
+      function resourceFactory(url, paramDefaults, actions, options) {
+        var route = new Route(url, options);
+
+        actions = extend({}, provider.defaults.actions, actions);
+
+        function extractParams(data, actionParams) {
+          var ids = {};
+          actionParams = extend({}, paramDefaults, actionParams);
+          forEach(actionParams, function(value, key) {
+            if (isFunction(value)) { value = value(data); }
+            ids[key] = value && value.charAt && value.charAt(0) === '@' ?
+              lookupDottedPath(data, value.substr(1)) : value;
+          });
+          return ids;
+        }
+
+        function defaultResponseInterceptor(response) {
+          return response.resource;
+        }
+
+        function Resource(value) {
+          shallowClearAndCopy(value || {}, this);
+        }
+
+        Resource.prototype.toJSON = function() {
+          var data = extend({}, this);
+          delete data.$promise;
+          delete data.$resolved;
+          delete data.$cancelRequest;
+          return data;
         };
 
-        $scope.$watchCollection($attrs.ngMessages || $attrs['for'], ctrl.render);
+        forEach(actions, function(action, name) {
+          var hasBody = action.hasBody === true || (action.hasBody !== false && /^(POST|PUT|PATCH)$/i.test(action.method));
+          var numericTimeout = action.timeout;
+          var cancellable = isDefined(action.cancellable) ?
+              action.cancellable : route.defaults.cancellable;
 
-        // If the element is destroyed, proactively destroy all the currently visible messages
-        $element.on('$destroy', function() {
-          forEach(messages, function(item) {
-            item.message.detach();
-          });
-        });
+          if (numericTimeout && !isNumber(numericTimeout)) {
+            $log.debug('ngResource:\n' +
+                       '  Only numeric values are allowed as `timeout`.\n' +
+                       '  Promises are not supported in $resource, because the same value would ' +
+                       'be used for multiple requests. If you are looking for a way to cancel ' +
+                       'requests, you should use the `cancellable` option.');
+            delete action.timeout;
+            numericTimeout = null;
+          }
 
-        this.reRender = function() {
-          if (!renderLater) {
-            renderLater = true;
-            $scope.$evalAsync(function() {
-              if (renderLater && cachedCollection) {
-                ctrl.render(cachedCollection);
+          Resource[name] = function(a1, a2, a3, a4) {
+            var params = {}, data, success, error;
+
+            switch (arguments.length) {
+              case 4:
+                error = a4;
+                success = a3;
+                // falls through
+              case 3:
+              case 2:
+                if (isFunction(a2)) {
+                  if (isFunction(a1)) {
+                    success = a1;
+                    error = a2;
+                    break;
+                  }
+
+                  success = a2;
+                  error = a3;
+                  // falls through
+                } else {
+                  params = a1;
+                  data = a2;
+                  success = a3;
+                  break;
+                }
+                // falls through
+              case 1:
+                if (isFunction(a1)) success = a1;
+                else if (hasBody) data = a1;
+                else params = a1;
+                break;
+              case 0: break;
+              default:
+                throw $resourceMinErr('badargs',
+                  'Expected up to 4 arguments [params, data, success, error], got {0} arguments',
+                  arguments.length);
+            }
+
+            var isInstanceCall = this instanceof Resource;
+            var value = isInstanceCall ? data : (action.isArray ? [] : new Resource(data));
+            var httpConfig = {};
+            var responseInterceptor = action.interceptor && action.interceptor.response ||
+              defaultResponseInterceptor;
+            var responseErrorInterceptor = action.interceptor && action.interceptor.responseError ||
+              undefined;
+            var hasError = !!error;
+            var hasResponseErrorInterceptor = !!responseErrorInterceptor;
+            var timeoutDeferred;
+            var numericTimeoutPromise;
+
+            forEach(action, function(value, key) {
+              switch (key) {
+                default:
+                  httpConfig[key] = copy(value);
+                  break;
+                case 'params':
+                case 'isArray':
+                case 'interceptor':
+                case 'cancellable':
+                  break;
               }
             });
-          }
-        };
 
-        this.register = function(comment, messageCtrl) {
-          var nextKey = latestKey.toString();
-          messages[nextKey] = {
-            message: messageCtrl
-          };
-          insertMessageNode($element[0], comment, nextKey);
-          comment.$$ngMessageNode = nextKey;
-          latestKey++;
+            if (!isInstanceCall && cancellable) {
+              timeoutDeferred = $q.defer();
+              httpConfig.timeout = timeoutDeferred.promise;
 
-          ctrl.reRender();
-        };
-
-        this.deregister = function(comment) {
-          var key = comment.$$ngMessageNode;
-          delete comment.$$ngMessageNode;
-          removeMessageNode($element[0], comment, key);
-          delete messages[key];
-          ctrl.reRender();
-        };
-
-        function findPreviousMessage(parent, comment) {
-          var prevNode = comment;
-          var parentLookup = [];
-
-          while (prevNode && prevNode !== parent) {
-            var prevKey = prevNode.$$ngMessageNode;
-            if (prevKey && prevKey.length) {
-              return messages[prevKey];
+              if (numericTimeout) {
+                numericTimeoutPromise = $timeout(timeoutDeferred.resolve, numericTimeout);
+              }
             }
 
-            // dive deeper into the DOM and examine its children for any ngMessage
-            // comments that may be in an element that appears deeper in the list
-            if (prevNode.childNodes.length && parentLookup.indexOf(prevNode) === -1) {
-              parentLookup.push(prevNode);
-              prevNode = prevNode.childNodes[prevNode.childNodes.length - 1];
-            } else if (prevNode.previousSibling) {
-              prevNode = prevNode.previousSibling;
-            } else {
-              prevNode = prevNode.parentNode;
-              parentLookup.push(prevNode);
-            }
-          }
-        }
+            if (hasBody) httpConfig.data = data;
+            route.setUrlParams(httpConfig,
+              extend({}, extractParams(data, action.params || {}), params),
+              action.url);
 
-        function insertMessageNode(parent, comment, key) {
-          var messageNode = messages[key];
-          if (!ctrl.head) {
-            ctrl.head = messageNode;
-          } else {
-            var match = findPreviousMessage(parent, comment);
-            if (match) {
-              messageNode.next = match.next;
-              match.next = messageNode;
-            } else {
-              messageNode.next = ctrl.head;
-              ctrl.head = messageNode;
-            }
-          }
-        }
+            var promise = $http(httpConfig).then(function(response) {
+              var data = response.data;
 
-        function removeMessageNode(parent, comment, key) {
-          var messageNode = messages[key];
+              if (data) {
+                // Need to convert action.isArray to boolean in case it is undefined
+                if (isArray(data) !== (!!action.isArray)) {
+                  throw $resourceMinErr('badcfg',
+                      'Error in resource configuration for action `{0}`. Expected response to ' +
+                      'contain an {1} but got an {2} (Request: {3} {4})', name, action.isArray ? 'array' : 'object',
+                    isArray(data) ? 'array' : 'object', httpConfig.method, httpConfig.url);
+                }
+                if (action.isArray) {
+                  value.length = 0;
+                  forEach(data, function(item) {
+                    if (typeof item === 'object') {
+                      value.push(new Resource(item));
+                    } else {
+                      // Valid JSON values may be string literals, and these should not be converted
+                      // into objects. These items will not have access to the Resource prototype
+                      // methods, but unfortunately there
+                      value.push(item);
+                    }
+                  });
+                } else {
+                  var promise = value.$promise;     // Save the promise
+                  shallowClearAndCopy(data, value);
+                  value.$promise = promise;         // Restore the promise
+                }
+              }
+              response.resource = value;
 
-          var match = findPreviousMessage(parent, comment);
-          if (match) {
-            match.next = messageNode.next;
-          } else {
-            ctrl.head = messageNode.next;
-          }
-        }
-      }]
-    };
-
-    function isAttrTruthy(scope, attr) {
-     return (isString(attr) && attr.length === 0) || //empty attribute
-            truthy(scope.$eval(attr));
-    }
-
-    function truthy(val) {
-      return isString(val) ? val.length : !!val;
-    }
-  }])
-
-  /**
-   * @ngdoc directive
-   * @name ngMessagesInclude
-   * @restrict AE
-   * @scope
-   *
-   * @description
-   * `ngMessagesInclude` is a directive with the purpose to import existing ngMessage template
-   * code from a remote template and place the downloaded template code into the exact spot
-   * that the ngMessagesInclude directive is placed within the ngMessages container. This allows
-   * for a series of pre-defined messages to be reused and also allows for the developer to
-   * determine what messages are overridden due to the placement of the ngMessagesInclude directive.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-messages-include="remoteTplString">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-messages-include src="expressionValue1">...</ng-messages-include>
-   * </ng-messages>
-   * ```
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @param {string} ngMessagesInclude|src a string value corresponding to the remote template.
-   */
-  .directive('ngMessagesInclude',
-    ['$templateRequest', '$document', '$compile', function($templateRequest, $document, $compile) {
-
-    return {
-      restrict: 'AE',
-      require: '^^ngMessages', // we only require this for validation sake
-      link: function($scope, element, attrs) {
-        var src = attrs.ngMessagesInclude || attrs.src;
-        $templateRequest(src).then(function(html) {
-          if ($scope.$$destroyed) return;
-
-          if (isString(html) && !html.trim()) {
-            // Empty template - nothing to compile
-            replaceElementWithMarker(element, src);
-          } else {
-            // Non-empty template - compile and link
-            $compile(html)($scope, function(contents) {
-              element.after(contents);
-              replaceElementWithMarker(element, src);
+              return response;
             });
-          }
+
+            promise = promise['finally'](function() {
+              value.$resolved = true;
+              if (!isInstanceCall && cancellable) {
+                value.$cancelRequest = noop;
+                $timeout.cancel(numericTimeoutPromise);
+                timeoutDeferred = numericTimeoutPromise = httpConfig.timeout = null;
+              }
+            });
+
+            promise = promise.then(
+              function(response) {
+                var value = responseInterceptor(response);
+                (success || noop)(value, response.headers, response.status, response.statusText);
+                return value;
+              },
+              (hasError || hasResponseErrorInterceptor) ?
+                function(response) {
+                  if (hasError && !hasResponseErrorInterceptor) {
+                    // Avoid `Possibly Unhandled Rejection` error,
+                    // but still fulfill the returned promise with a rejection
+                    promise.catch(noop);
+                  }
+                  if (hasError) error(response);
+                  return hasResponseErrorInterceptor ?
+                    responseErrorInterceptor(response) :
+                    $q.reject(response);
+                } :
+                undefined);
+
+            if (!isInstanceCall) {
+              // we are creating instance / collection
+              // - set the initial promise
+              // - return the instance / collection
+              value.$promise = promise;
+              value.$resolved = false;
+              if (cancellable) value.$cancelRequest = cancelRequest;
+
+              return value;
+            }
+
+            // instance call
+            return promise;
+
+            function cancelRequest(value) {
+              promise.catch(noop);
+              timeoutDeferred.resolve(value);
+            }
+          };
+
+
+          Resource.prototype['$' + name] = function(params, success, error) {
+            if (isFunction(params)) {
+              error = success; success = params; params = {};
+            }
+            var result = Resource[name].call(this, params, this, success, error);
+            return result.$promise || result;
+          };
         });
-      }
-    };
 
-    // Helpers
-    function replaceElementWithMarker(element, src) {
-      // A comment marker is placed for debugging purposes
-      var comment = $compile.$$createComment ?
-          $compile.$$createComment('ngMessagesInclude', src) :
-          $document[0].createComment(' ngMessagesInclude: ' + src + ' ');
-      var marker = jqLite(comment);
-      element.after(marker);
-
-      // Don't pollute the DOM anymore by keeping an empty directive element
-      element.remove();
-    }
-  }])
-
-  /**
-   * @ngdoc directive
-   * @name ngMessage
-   * @restrict AE
-   * @scope
-   *
-   * @description
-   * `ngMessage` is a directive with the purpose to show and hide a particular message.
-   * For `ngMessage` to operate, a parent `ngMessages` directive on a parent DOM element
-   * must be situated since it determines which messages are visible based on the state
-   * of the provided key/value map that `ngMessages` listens on.
-   *
-   * More information about using `ngMessage` can be found in the
-   * {@link module:ngMessages `ngMessages` module documentation}.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression" role="alert">
-   *   <ANY ng-message="stringValue">...</ANY>
-   *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression" role="alert">
-   *   <ng-message when="stringValue">...</ng-message>
-   *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * @param {expression} ngMessage|when a string value corresponding to the message key.
-   */
-  .directive('ngMessage', ngMessageDirectiveFactory())
-
-
-  /**
-   * @ngdoc directive
-   * @name ngMessageExp
-   * @restrict AE
-   * @priority 1
-   * @scope
-   *
-   * @description
-   * `ngMessageExp` is the same as {@link directive:ngMessage `ngMessage`}, but instead of a static
-   * value, it accepts an expression to be evaluated for the message key.
-   *
-   * @usage
-   * ```html
-   * <!-- using attribute directives -->
-   * <ANY ng-messages="expression">
-   *   <ANY ng-message-exp="expressionValue">...</ANY>
-   * </ANY>
-   *
-   * <!-- or by using element directives -->
-   * <ng-messages for="expression">
-   *   <ng-message when-exp="expressionValue">...</ng-message>
-   * </ng-messages>
-   * ```
-   *
-   * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
-   *
-   * @param {expression} ngMessageExp|whenExp an expression value corresponding to the message key.
-   */
-  .directive('ngMessageExp', ngMessageDirectiveFactory());
-
-function ngMessageDirectiveFactory() {
-  return ['$animate', function($animate) {
-    return {
-      restrict: 'AE',
-      transclude: 'element',
-      priority: 1, // must run before ngBind, otherwise the text is set on the comment
-      terminal: true,
-      require: '^^ngMessages',
-      link: function(scope, element, attrs, ngMessagesCtrl, $transclude) {
-        var commentNode = element[0];
-
-        var records;
-        var staticExp = attrs.ngMessage || attrs.when;
-        var dynamicExp = attrs.ngMessageExp || attrs.whenExp;
-        var assignRecords = function(items) {
-          records = items
-              ? (isArray(items)
-                  ? items
-                  : items.split(/[\s,]+/))
-              : null;
-          ngMessagesCtrl.reRender();
+        Resource.bind = function(additionalParamDefaults) {
+          var extendedParamDefaults = extend({}, paramDefaults, additionalParamDefaults);
+          return resourceFactory(url, extendedParamDefaults, actions, options);
         };
 
-        if (dynamicExp) {
-          assignRecords(scope.$eval(dynamicExp));
-          scope.$watchCollection(dynamicExp, assignRecords);
-        } else {
-          assignRecords(staticExp);
-        }
-
-        var currentElement, messageCtrl;
-        ngMessagesCtrl.register(commentNode, messageCtrl = {
-          test: function(name) {
-            return contains(records, name);
-          },
-          attach: function() {
-            if (!currentElement) {
-              $transclude(function(elm, newScope) {
-                $animate.enter(elm, null, element);
-                currentElement = elm;
-
-                // Each time we attach this node to a message we get a new id that we can match
-                // when we are destroying the node later.
-                var $$attachId = currentElement.$$attachId = ngMessagesCtrl.getAttachId();
-
-                // in the event that the element or a parent element is destroyed
-                // by another structural directive then it's time
-                // to deregister the message from the controller
-                currentElement.on('$destroy', function() {
-                  if (currentElement && currentElement.$$attachId === $$attachId) {
-                    ngMessagesCtrl.deregister(commentNode);
-                    messageCtrl.detach();
-                  }
-                  newScope.$destroy();
-                });
-              });
-            }
-          },
-          detach: function() {
-            if (currentElement) {
-              var elm = currentElement;
-              currentElement = null;
-              $animate.leave(elm);
-            }
-          }
-        });
+        return Resource;
       }
-    };
-  }];
 
-  function contains(collection, key) {
-    if (collection) {
-      return isArray(collection)
-          ? collection.indexOf(key) >= 0
-          : collection.hasOwnProperty(key);
-    }
-  }
-}
+      return resourceFactory;
+    }];
+  });
 
 
 })(window, window.angular);
 
-},{}],8:[function(require,module,exports){
-require('./angular-messages');
-module.exports = 'ngMessages';
+},{}],12:[function(require,module,exports){
+require('./angular-resource');
+module.exports = 'ngResource';
 
-},{"./angular-messages":7}],9:[function(require,module,exports){
+},{"./angular-resource":11}],13:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.4.2
@@ -45763,7 +47713,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -79136,32 +81086,742 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],11:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":10}],12:[function(require,module,exports){
+},{"./angular":14}],16:[function(require,module,exports){
+'use strict';
+
+//vendor dependencies
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('./core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _features = require('./features');
+
+var _features2 = _interopRequireDefault(_features);
+
+var _components = require('./components');
+
+var _components2 = _interopRequireDefault(_components);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_angular2.default.module('app', [_core2.default, _features2.default, _components2.default]);
+
+},{"./components":17,"./core":44,"./features":80,"angular":15}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = configuration;
 
-var _routing = require('./configuration/routing');
+var _angular = require('angular');
 
-var _routing2 = _interopRequireDefault(_routing);
+var _angular2 = _interopRequireDefault(_angular);
+
+var _mainToolbar = require('./main-toolbar');
+
+var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
+
+var _mainSidenav = require('./main-sidenav');
+
+var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
+
+var _userProfile = require('./user-profile');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
+var _mainMenu = require('./main-menu');
+
+var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-configuration.$inject = ['$urlRouterProvider', '$stateProvider'];
+//components
+exports.default = _angular2.default.module('app.components', [_mainToolbar2.default, _mainSidenav2.default, _userProfile2.default, _mainMenu2.default]).name;
 
-function configuration($urlRouterProvider, $stateProvider) {
-    (0, _routing2.default)($urlRouterProvider, $stateProvider);
+},{"./main-menu":18,"./main-sidenav":22,"./main-toolbar":26,"./user-profile":30,"angular":15}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+var _mainMenu = require('./main-menu.component');
+
+var _mainMenu2 = _interopRequireDefault(_mainMenu);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.main-menu', [_angularMaterial2.default]).component('mainMenu', _mainMenu2.default).name;
+
+},{"./main-menu.component":19,"angular":15,"angular-material":10,"angular-ui-router":13}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mainMenuTemplate = require('./main-menu.template.html');
+
+var _mainMenuTemplate2 = _interopRequireDefault(_mainMenuTemplate);
+
+var _mainMenu = require('./main-menu.controller');
+
+var _mainMenu2 = _interopRequireDefault(_mainMenu);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _mainMenuTemplate2.default,
+    controller: _mainMenu2.default,
+    bindings: {
+        menu: "<"
+    }
+};
+
+},{"./main-menu.controller":20,"./main-menu.template.html":21}],20:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MainMenuController = function () {
+    function MainMenuController($state) {
+        _classCallCheck(this, MainMenuController);
+
+        this.$state = $state;
+    }
+
+    _createClass(MainMenuController, [{
+        key: 'logout',
+        value: function logout() {
+            this.$state.go('login');
+        }
+    }]);
+
+    return MainMenuController;
+}();
+
+exports.default = MainMenuController;
+
+
+MainMenuController.$inject = ['$state'];
+
+},{}],21:[function(require,module,exports){
+module.exports = "<div layout=\"column\">    \r\n    <md-list class=\"md-dense\">        \r\n        <div ng-repeat=\"item in $ctrl.menu\">\r\n            <a ng-if=\"item.state\" ui-sref=\"{{item.state}}\" ng-class=\"{'active': $ctrl.$state.is(item.state)}\">            \r\n                <md-list-item ng-click=\"null\">                    \r\n                    <span>{{item.name}}</span>\r\n                </md-list-item>            \r\n            </a>\r\n            <md-subheader ng-if=\"!item.state\">                    \r\n                <span>{{item.name}}</span>\r\n            </md-subheader>\r\n            <a ui-sref=\"{{subitem.state}}\" ng-repeat=\"subitem in item.items\" ng-class=\"{'active': $ctrl.$state.is(subitem.state)}\">\r\n                <md-list-item ng-click=\"null\">\r\n                    <span><md-icon md-font-library=\"material-icons\">{{subitem.icon}}</md-icon>\r\n                    {{subitem.name}}</span>\r\n                </md-list-item>\r\n            </a>\r\n            <md-divider></md-divider>\r\n        </div>\r\n        <md-subheader ng-click=\"$ctrl.logout()\">Cuenta</md-subheader>\r\n        <md-list-item ng-click=\"$ctrl.logout()\">\r\n                <span><md-icon md-font-library=\"material-icons\">power_settings_new</md-icon>Cerrar Sesión</span>\r\n        </md-list-item>\r\n        <md-divider></md-divider>\r\n    </md-list>\r\n</div>";
+
+},{}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _mainSidenav = require('./main-sidenav.component');
+
+var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.main-sidenav', [_angularMaterial2.default]).component('mainSidenav', _mainSidenav2.default).name;
+
+},{"./main-sidenav.component":23,"angular":15,"angular-material":10}],23:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mainSidenavTemplate = require('./main-sidenav.template.html');
+
+var _mainSidenavTemplate2 = _interopRequireDefault(_mainSidenavTemplate);
+
+var _mainSidenav = require('./main-sidenav.controller');
+
+var _mainSidenav2 = _interopRequireDefault(_mainSidenav);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _mainSidenavTemplate2.default,
+    controller: _mainSidenav2.default,
+    bindings: {
+        userInfo: '<',
+        menu: '<'
+    }
+};
+
+},{"./main-sidenav.controller":24,"./main-sidenav.template.html":25}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MainSidenavController = function () {
+    function MainSidenavController($scope, $mdMedia, $mdSidenav, constants) {
+        _classCallCheck(this, MainSidenavController);
+
+        this.open = true;
+        this.title = constants.app.title;
+        this.$scope = $scope;
+        this.InitWatchWindowResizing($scope, $mdMedia, $mdSidenav);
+        this.InitListenCloseAndOpenEvent($scope, $mdMedia, $mdSidenav);
+    }
+
+    _createClass(MainSidenavController, [{
+        key: 'InitWatchWindowResizing',
+        value: function InitWatchWindowResizing($scope, $mdMedia, $mdSidenav) {
+            var _this = this;
+
+            $scope.$watch(function () {
+                return $mdMedia('gt-xs');
+            }, function (big) {
+                if (big) {
+                    if ($mdSidenav('main_side_nav').isOpen()) {
+                        $mdSidenav('main_side_nav').toggle();
+                    }
+                    _this.open = true;
+                }
+            });
+        }
+    }, {
+        key: 'InitListenCloseAndOpenEvent',
+        value: function InitListenCloseAndOpenEvent($scope, $mdMedia, $mdSidenav) {
+            var _this2 = this;
+
+            $scope.$on('toogleMainSidenavByButton', function (event, data) {
+                if (!$mdMedia('gt-xs')) {
+                    $mdSidenav('main_side_nav').toggle();
+                } else {
+                    _this2.open = !_this2.open;
+                }
+            });
+            $scope.$on('toogleMainSidenavBySwipe', function (event, data) {
+                if (!$mdMedia('gt-xs')) {
+                    $mdSidenav('main_side_nav').toggle();
+                }
+            });
+            $scope.$on('toogleMainSidenavByStateChange', function (event, data) {
+                if (!$mdMedia('gt-xs') && $mdSidenav('main_side_nav').isOpen()) {
+                    $mdSidenav('main_side_nav').toggle();
+                }
+            });
+        }
+    }]);
+
+    return MainSidenavController;
+}();
+
+exports.default = MainSidenavController;
+
+
+MainSidenavController.$inject = ['$scope', '$mdMedia', '$mdSidenav', 'constants'];
+
+},{}],25:[function(require,module,exports){
+module.exports = "<md-sidenav \r\n    class=\"md-sidenav-left\" \r\n    md-component-id=\"main_side_nav\"\r\n    md-is-locked-open=\"$mdMedia('gt-xs')&&$ctrl.open\" \r\n    layout=\"column\"\r\n    md-whiteframe=\"2\">\r\n    <div layout=\"column\">\r\n        <user-profile user-info=\"$ctrl.userInfo\"></user-profile>\r\n        <main-menu menu=\"$ctrl.menu\"></main-menu>\r\n    </div>    \r\n</md-sidenav>";
+
+},{}],26:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _mainToolbar = require('./main-toolbar.component');
+
+var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.main-toolbar', [_core2.default, _angularMaterial2.default]).component('mainToolbar', _mainToolbar2.default).name;
+
+},{"../../core":44,"./main-toolbar.component":27,"angular":15,"angular-material":10}],27:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _mainToolbarTemplate = require('./main-toolbar.template.html');
+
+var _mainToolbarTemplate2 = _interopRequireDefault(_mainToolbarTemplate);
+
+var _mainToolbar = require('./main-toolbar.controller');
+
+var _mainToolbar2 = _interopRequireDefault(_mainToolbar);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _mainToolbarTemplate2.default,
+    controller: _mainToolbar2.default
+};
+
+},{"./main-toolbar.controller":28,"./main-toolbar.template.html":29}],28:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MainToolbarController = function () {
+    function MainToolbarController($rootScope, constants) {
+        _classCallCheck(this, MainToolbarController);
+
+        this.$rootScope = $rootScope;
+        this.title = constants.app.title;
+    }
+
+    _createClass(MainToolbarController, [{
+        key: 'closeMainSidenav',
+        value: function closeMainSidenav() {
+            this.$rootScope.$broadcast("toogleMainSidenavByButton", {});
+        }
+    }]);
+
+    return MainToolbarController;
+}();
+
+exports.default = MainToolbarController;
+
+
+MainToolbarController.$inject = ['$rootScope', 'constants'];
+
+},{}],29:[function(require,module,exports){
+module.exports = "<md-toolbar md-whiteframe=\"3\">\r\n    <div class=\"column\">\r\n        <div class=\"md-toolbar-tools\" hide-gt-xs layout=\"row\" layout-align=\"center center\">\r\n            <span>{{$ctrl.title}}</span>\r\n        </div>\r\n        <div class=\"md-toolbar-tools\">\r\n            <md-button class=\"md-no-focus\" ng-click=\"$ctrl.closeMainSidenav();\" >   \r\n                <md-icon md-font-library=\"material-icons\">view_headline</md-icon>\r\n            </md-button>\r\n        <span flex></span>    \r\n        </div>\r\n    </div>    \r\n</md-toolbar>";
+
+},{}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _userProfile = require('./user-profile.component');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.components.user-profile', [_angularMaterial2.default]).component('userProfile', _userProfile2.default).name;
+
+},{"./user-profile.component":31,"angular":15,"angular-material":10}],31:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _userProfileTemplate = require('./user-profile.template.html');
+
+var _userProfileTemplate2 = _interopRequireDefault(_userProfileTemplate);
+
+var _userProfile = require('./user-profile.controller');
+
+var _userProfile2 = _interopRequireDefault(_userProfile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _userProfileTemplate2.default,
+    controller: _userProfile2.default,
+    bindings: {
+        userInfo: "<"
+    }
+};
+
+},{"./user-profile.controller":32,"./user-profile.template.html":33}],32:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var UserProfileController = function UserProfileController() {
+    _classCallCheck(this, UserProfileController);
+};
+
+exports.default = UserProfileController;
+
+
+UserProfileController.$inject = [];
+
+},{}],33:[function(require,module,exports){
+module.exports = "<div layout=\"column\">\r\n    <!--<div layout=\"column\">\r\n        <div layout-padding>\r\n            <img src=\"{{$ctrl.userInfo.profilePicture}}\" alt=\"profile picture\" class=\"md-avatar\"/>\r\n        </div>\r\n        <div layout=\"column\" layout-padding>\r\n            <span class=\"md-subtitle\">{{$ctrl.userInfo.username}}</span>\r\n            <span class=\"md-caption\">{{$ctrl.userInfo.email}}</span>        \r\n        </div>\r\n        <br>\r\n    </div>-->\r\n    <img src=\"{{$ctrl.userInfo.profilePicture}}\" alt=\"profile picture\" class=\"md-avatar\"/>\r\n    <md-list>\r\n        <md-list-item class=\"md-2-line\">\r\n            <div class=\"md-list-item-text\" layout=\"column\">\r\n                <span class=\"md-subtitle\">{{$ctrl.userInfo.username}}</span>\r\n                <span class=\"md-caption\">{{$ctrl.userInfo.email}}</span>     \r\n            </div>\r\n        </md-list-item>\r\n    </md-list>\r\n    <!--<md-subheader ng-click=\"$ctrl.logout()\" >Cuenta</md-subheader>\r\n    <md-list class=\"md-dense\">\r\n        <md-list-item ng-click=\"$ctrl.logout()\" >\r\n            <span>Cerrar Sesión</span>\r\n        </md-list-item>\r\n    </md-list>-->\r\n</div>";
+
+},{}],34:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    app: {
+        title: 'S.C.A.E',
+        subtitle: 'Sistema de control de asistencia de estudiantes',
+        home: {
+            content: 'Bienvenido a SCAE!!'
+        }
+    },
+    resources: {
+        remote: {
+            baseUrl: '/data/',
+            authorizationHeader: 'Authorization'
+        }
+    }
+};
+
+},{}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.constants', []).constant('constants', _constants2.default).name;
+
+},{"./constants":34,"angular":15}],36:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = routing;
+function routing($urlRouterProvider, $stateProvider, $mdThemingProvider) {
+
+    $mdThemingProvider.theme('default').primaryPalette('cyan', {
+        'default': '700'
+    }).accentPalette('grey', {
+        'default': '600'
+    }).warnPalette('red', {
+        'default': '400'
+    });
+
+    $urlRouterProvider.otherwise('/');
+
+    $stateProvider.state('login', {
+        url: '/login',
+        template: '<login></login>'
+    }).state('dashboard', {
+        abstract: true,
+        url: '/',
+        template: '<dashboard></dashboard>'
+    }).state('not-found', {
+        url: '/not_found',
+        template: '<h1>404: NOT FOUND</h1>'
+    });
 }
 
-},{"./configuration/routing":18}],13:[function(require,module,exports){
+routing.$inject = ['$urlRouterProvider', '$stateProvider', '$mdThemingProvider'];
+
+},{}],37:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = CookieManagerConfiguration;
+function CookieManagerConfiguration($cookiesProvider) {
+
+    $cookiesProvider.defaults.path = '/';
+}
+
+CookieManagerConfiguration.$inject = ['$cookiesProvider'];
+
+},{}],38:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = CookieManagerRun;
+function CookieManagerRun(CookieManager) {
+    CookieManager.loadName();
+}
+
+CookieManagerRun.$inject = ['CookieManager'];
+
+},{}],39:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CookieManagerService = function () {
+    function CookieManagerService($cookies, $resource, constants) {
+        _classCallCheck(this, CookieManagerService);
+
+        this.$cookies = $cookies;
+        this.$resource = $resource;
+        this.baseUrl = constants.resources.remote.baseUrl;
+    }
+
+    _createClass(CookieManagerService, [{
+        key: 'loadName',
+        value: function loadName() {
+            var _this = this;
+
+            var successCallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
+            var errorCallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
+            this.$resource(this.baseUrl + 'cookie.json', {}, {}).get({}, function (cookie) {
+                console.debug('Loaded cookie name => ' + cookie.name);
+                _this.cookieName = cookie.name;
+                successCallback();
+            }, function (err) {
+                console.error('Cannot load cookie name from server => ' + err.message);
+                errorCallback();
+            });
+        }
+    }, {
+        key: 'get',
+        value: function get(key) {
+            var cookie = $cookies.getObject(this.cookieName);
+            if (!cookie) {
+                return undefined;
+            }
+            return cookie[key];
+        }
+    }, {
+        key: 'set',
+        value: function set(key, value) {
+            var cookie = $cookies.getObject(this.cookieName);
+            if (!cookie) {
+                cookie = {};
+            }
+            cookie[key] = value;
+            $cookies.putObject(this.cookieName, cookie);
+        }
+    }]);
+
+    return CookieManagerService;
+}();
+
+exports.default = CookieManagerService;
+
+
+CookieManagerService.$inject = ['$cookies', '$resource', 'constants'];
+
+},{}],40:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _cookieManager = require('./cookie-manager.config');
+
+var _cookieManager2 = _interopRequireDefault(_cookieManager);
+
+var _cookieManager3 = require('./cookie-manager.service');
+
+var _cookieManager4 = _interopRequireDefault(_cookieManager3);
+
+var _cookieManager5 = require('./cookie-manager.run');
+
+var _cookieManager6 = _interopRequireDefault(_cookieManager5);
+
+var _angularCookies = require('angular-cookies');
+
+var _angularCookies2 = _interopRequireDefault(_angularCookies);
+
+var _angularResource = require('angular-resource');
+
+var _angularResource2 = _interopRequireDefault(_angularResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.helpers.cookie-manager', [_angularCookies2.default, _angularResource2.default]).run(_cookieManager6.default).config(_cookieManager2.default).service('CookieManager', _cookieManager4.default).name;
+
+},{"./cookie-manager.config":37,"./cookie-manager.run":38,"./cookie-manager.service":39,"angular":15,"angular-cookies":6,"angular-resource":12}],41:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CustomizedToast = function () {
+    function CustomizedToast($mdToast) {
+        _classCallCheck(this, CustomizedToast);
+
+        this.$mdToast = $mdToast;
+    }
+
+    _createClass(CustomizedToast, [{
+        key: 'show',
+        value: function show(message, type) {
+            this.$mdToast.show(this.$mdToast.simple().textContent(message).position('bottom right').toastClass('toast-' + type).hideDelay(3000));
+            console.log(this.$mdToast.simple());
+        }
+    }, {
+        key: 'info',
+        value: function info(message) {
+            this.show(message, 'info');
+        }
+    }, {
+        key: 'success',
+        value: function success(message) {
+            this.show(message, 'success');
+        }
+    }, {
+        key: 'warning',
+        value: function warning(message) {
+            this.show(message, 'warning');
+        }
+    }, {
+        key: 'error',
+        value: function error(message) {
+            this.show(message, 'error');
+        }
+    }]);
+
+    return CustomizedToast;
+}();
+
+exports.default = CustomizedToast;
+
+
+CustomizedToast.$inject = ['$mdToast'];
+
+},{}],42:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _customizedToast = require('./customized-toast.service');
+
+var _customizedToast2 = _interopRequireDefault(_customizedToast);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.helpers.positioned-toast', [_angularMaterial2.default]).service('CustomizedToast', _customizedToast2.default).name;
+
+},{"./customized-toast.service":41,"angular":15,"angular-material":10}],43:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _cookieManager = require('./cookie-manager');
+
+var _cookieManager2 = _interopRequireDefault(_cookieManager);
+
+var _customizedToast = require('./customized-toast');
+
+var _customizedToast2 = _interopRequireDefault(_customizedToast);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.helpers', [_cookieManager2.default, _customizedToast2.default]).name;
+
+},{"./cookie-manager":40,"./customized-toast":42,"angular":15}],44:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _angular = require('angular');
 
@@ -79171,35 +81831,35 @@ var _angularUiRouter = require('angular-ui-router');
 
 var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
 
-var _app = require('./app.config');
+var _angularMaterial = require('angular-material');
 
-var _app2 = _interopRequireDefault(_app);
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
 
-var _angularAnimate = require('angular-animate');
+var _core = require('./core.config');
 
-var _angularAnimate2 = _interopRequireDefault(_angularAnimate);
+var _core2 = _interopRequireDefault(_core);
 
-var _angularAria = require('angular-aria');
+var _constants = require('./constants');
 
-var _angularAria2 = _interopRequireDefault(_angularAria);
+var _constants2 = _interopRequireDefault(_constants);
 
-var _angularMessages = require('angular-messages');
+var _helpers = require('./helpers');
 
-var _angularMessages2 = _interopRequireDefault(_angularMessages);
+var _helpers2 = _interopRequireDefault(_helpers);
 
-var _login = require('./components/login/');
+var _utils = require('./utils');
 
-var _login2 = _interopRequireDefault(_login);
+var _utils2 = _interopRequireDefault(_utils);
 
-var _loadingModal = require('./utilities/loading-modal/');
+var _resources = require('./resources');
 
-var _loadingModal2 = _interopRequireDefault(_loadingModal);
+var _resources2 = _interopRequireDefault(_resources);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_angular2.default.module('app-scae', [_angularUiRouter2.default, _loadingModal2.default, _login2.default]).config(_app2.default);
+exports.default = _angular2.default.module('app.core', [_angularUiRouter2.default, _angularMaterial2.default, _constants2.default, _helpers2.default, _utils2.default, _resources2.default]).config(_core2.default).name;
 
-},{"./app.config":12,"./components/login/":14,"./utilities/loading-modal/":19,"angular":11,"angular-animate":2,"angular-aria":4,"angular-messages":8,"angular-ui-router":9}],14:[function(require,module,exports){
+},{"./constants":35,"./core.config":36,"./helpers":43,"./resources":45,"./utils":55,"angular":15,"angular-material":10,"angular-ui-router":13}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79210,81 +81870,102 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _login = require('./login.controller');
+var _test = require('./test');
 
-var _login2 = _interopRequireDefault(_login);
-
-var _login3 = require('./login.component');
-
-var _login4 = _interopRequireDefault(_login3);
+var _test2 = _interopRequireDefault(_test);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var angularMaterial = require('angular-material');
+exports.default = _angular2.default.module('app.core.resources', [_test2.default]).name;
 
-exports.default = _angular2.default.module('components.login', [angularMaterial]).controller(_login2.default.name, _login2.default).component('login', _login4.default).name;
-
-},{"./login.component":15,"./login.controller":16,"angular":11,"angular-material":6}],15:[function(require,module,exports){
+},{"./test":46,"angular":15}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _login = require('./login.controller');
+var _angular = require('angular');
 
-var _login2 = _interopRequireDefault(_login);
+var _angular2 = _interopRequireDefault(_angular);
 
-var _loginTemplate = require('./login.template.html');
+var _testUsersResource = require('./test-users-resource');
 
-var _loginTemplate2 = _interopRequireDefault(_loginTemplate);
+var _testUsersResource2 = _interopRequireDefault(_testUsersResource);
+
+var _testStudentsResource = require('./test-students-resource');
+
+var _testStudentsResource2 = _interopRequireDefault(_testStudentsResource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = {
-    template: _loginTemplate2.default,
-    controller: _login2.default.name
-};
+exports.default = _angular2.default.module('app.core.resources.test', [_testUsersResource2.default, _testStudentsResource2.default]).name;
 
-},{"./login.controller":16,"./login.template.html":17}],16:[function(require,module,exports){
+},{"./test-students-resource":47,"./test-users-resource":49,"angular":15}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularResource = require('angular-resource');
+
+var _angularResource2 = _interopRequireDefault(_angularResource);
+
+var _constants = require('../../../constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _testStudentsResource = require('./test-students-resource.service');
+
+var _testStudentsResource2 = _interopRequireDefault(_testStudentsResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.resources.test.test-students-resource', [_angularResource2.default, _constants2.default]).service('StudentsResource', _testStudentsResource2.default).name;
+
+},{"../../../constants":35,"./test-students-resource.service":48,"angular":15,"angular-resource":12}],48:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var LoginController = function LoginController() {
-    _classCallCheck(this, LoginController);
-};
+var TestStudentsResourceService = function () {
+    function TestStudentsResourceService($resource, constants) {
+        _classCallCheck(this, TestStudentsResourceService);
 
-exports.default = LoginController;
+        this.resources = {
+            crud: $resource(constants.resources.remote.baseUrl + 'students.json', {}, {
+                "get": {
+                    isArray: true,
+                    method: "GET"
+                }
+            })
+        };
+    }
 
+    _createClass(TestStudentsResourceService, [{
+        key: 'get',
+        value: function get(paginator) {
+            return this.resources.crud.get({}, {}).$promise;
+        }
+    }]);
 
-LoginController.$inject = [];
+    return TestStudentsResourceService;
+}();
 
-},{}],17:[function(require,module,exports){
-module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"3\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">S.C.A.E.</h1>\r\n            <h6 class=\"md-subhead\">Sistema de control de asistencia estudiantil</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus>\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                    </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
+exports.default = TestStudentsResourceService;
 
-},{}],18:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = routing;
-function routing($urlRouterProvider, $stateProvider) {
-
-    $urlRouterProvider.otherwise('/login');
-
-    $stateProvider.state('login', {
-        url: '/login',
-        template: '<login></login>'
-    });
-}
-
-},{}],19:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79295,25 +81976,279 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _loadingModal = require('./loading-modal.component');
+var _angularResource = require('angular-resource');
+
+var _angularResource2 = _interopRequireDefault(_angularResource);
+
+var _constants = require('../../../constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _testUsersResource = require('./test-users-resource.service');
+
+var _testUsersResource2 = _interopRequireDefault(_testUsersResource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.resources.test.test-users-resource', [_angularResource2.default, _constants2.default]).service('UsersResource', _testUsersResource2.default).name;
+
+},{"../../../constants":35,"./test-users-resource.service":50,"angular":15,"angular-resource":12}],50:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TestUsersResourceService = function () {
+    function TestUsersResourceService($resource, constants) {
+        _classCallCheck(this, TestUsersResourceService);
+
+        this.resources = {
+            crud: $resource(constants.resources.remote.baseUrl + 'user.json', {}, {
+                "get": {
+                    method: "GET"
+                }
+            })
+        };
+    }
+
+    _createClass(TestUsersResourceService, [{
+        key: 'get',
+        value: function get(sucessCallback, errorCallback) {
+            this.resources.crud.get({}, {}, sucessCallback, errorCallback);
+        }
+    }]);
+
+    return TestUsersResourceService;
+}();
+
+exports.default = TestUsersResourceService;
+
+
+TestUsersResourceService.$inject = ['$resource', 'constants'];
+
+},{}],51:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CrudDialogController = function () {
+    function CrudDialogController($mdDialog, locals) {
+        _classCallCheck(this, CrudDialogController);
+
+        this.$mdDialog = $mdDialog;
+        this.title = locals.title;
+        this.mode = locals.mode;
+        this.model = locals.model;
+    }
+
+    _createClass(CrudDialogController, [{
+        key: 'cancel',
+        value: function cancel() {
+            this.$mdDialog.cancel();
+        }
+    }, {
+        key: 'confirm',
+        value: function confirm() {
+            this.$mdDialog.hide(this.fillModel());
+        }
+    }, {
+        key: 'fillModel',
+        value: function fillModel() {
+            return this.model.reduce(function (previousValue, nextValue) {
+                previousValue[nextValue.name] = nextValue.value;
+                return previousValue;
+            }, {});
+        }
+    }]);
+
+    return CrudDialogController;
+}();
+
+exports.default = CrudDialogController;
+
+
+CrudDialogController.$inject = ['$mdDialog', 'locals'];
+
+},{}],52:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _crudDialogTemplate = require('./crud-dialog.template.html');
+
+var _crudDialogTemplate2 = _interopRequireDefault(_crudDialogTemplate);
+
+var _crudDialog = require('./crud-dialog.controller');
+
+var _crudDialog2 = _interopRequireDefault(_crudDialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CrudDialogService = function () {
+    function CrudDialogService($mdDialog, $mdMedia) {
+        _classCallCheck(this, CrudDialogService);
+
+        this.$mdDialog = $mdDialog;
+        this.$mdMedia = $mdMedia;
+    }
+
+    _createClass(CrudDialogService, [{
+        key: 'add',
+        value: function add(title, model, event) {
+            var _this = this;
+
+            return this.$mdDialog.show({
+                targetEvent: event,
+                template: _crudDialogTemplate2.default,
+                controller: _crudDialog2.default,
+                controllerAs: 'ctrl',
+                fullscreen: true,
+                clickOutsideToClose: false,
+                locals: {
+                    title: title,
+                    mode: 'add',
+                    model: _angular2.default.copy(model)
+                },
+                onShowing: function onShowing(scope, element) {
+                    if (_this.$mdMedia('gt-sm')) {
+                        element.find('md-dialog').css('min-width', '50%');
+                    }
+                }
+            });
+        }
+    }, {
+        key: 'edit',
+        value: function edit(title, data, model, event) {
+            var _this2 = this;
+
+            return this.$mdDialog.show({
+                targetEvent: event,
+                template: _crudDialogTemplate2.default,
+                controller: _crudDialog2.default,
+                controllerAs: 'ctrl',
+                fullscreen: true,
+                clickOutsideToClose: false,
+                locals: {
+                    title: title,
+                    mode: 'edit',
+                    model: model.reduce(function (previousValue, nextValue, index) {
+                        previousValue[index].value = data[nextValue.name];
+                        return previousValue;
+                    }, _angular2.default.copy(model))
+                },
+                onShowing: function onShowing(scope, element) {
+                    if (_this2.$mdMedia('gt-sm')) {
+                        element.find('md-dialog').css('min-width', '50%');
+                    }
+                }
+            });
+        }
+    }]);
+
+    return CrudDialogService;
+}();
+
+exports.default = CrudDialogService;
+
+
+CrudDialogService.$inject = ['$mdDialog', '$mdMedia'];
+
+},{"./crud-dialog.controller":51,"./crud-dialog.template.html":53,"angular":15}],53:[function(require,module,exports){
+module.exports = "<md-dialog aria-label=\"Crud Dialog\">\r\n    <form ng-cloak ng-submit=\"ctrl.confirm()\">\r\n        <md-toolbar>\r\n            <div class=\"md-toolbar-tools\">\r\n                <h2>{{ctrl.title}}</h2>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-dialog-content>\r\n            <div class=\"md-dialog-content\" layout=\"column\">\r\n                <div ng-if=\"ctrl.mode=='add'||ctrl.mode=='edit'\">\r\n                    <div layout=\"row\" ng-repeat=\"prop in ctrl.model\" ng-if=\"prop.show\">\r\n                        <md-input-container flex>\r\n                            <label>{{prop.displayName}}</label>\r\n                            <input type=\"text\" ng-if=\"!prop.isNumeric\" ng-model=\"prop.value\">\r\n                            <input type=\"number\" ng-if=\"prop.isNumeric\" ng-model=\"prop.value\">\r\n                        </md-input-container>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </md-dialog-content>\r\n        <md-dialog-actions>\r\n            <span flex></span>\r\n            <md-button class=\"md-warn md-raised\" ng-click=\"ctrl.cancel()\">\r\n                Cancelar\r\n            </md-button>\r\n            <md-button type=\"submit\" class=\"md-primary md-raised\" ng-click=\"ctrl.confirm()\">\r\n                Aceptar\r\n            </md-button>\r\n        </md-dialog-actions>\r\n    </form>\r\n</md-dialog>";
+
+},{}],54:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _crudDialog = require('./crud-dialog.service');
+
+var _crudDialog2 = _interopRequireDefault(_crudDialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.utils.crud-dialog', [_angularMaterial2.default]).service('CrudDialogService', _crudDialog2.default).name;
+
+},{"./crud-dialog.service":52,"angular":15,"angular-material":10}],55:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _loadingModal = require('./loading-modal');
 
 var _loadingModal2 = _interopRequireDefault(_loadingModal);
 
-var _loadingModal3 = require('./loading-modal.controller');
+var _crudDialog = require('./crud-dialog');
+
+var _crudDialog2 = _interopRequireDefault(_crudDialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.core.utils', [_loadingModal2.default, _crudDialog2.default]).name;
+
+},{"./crud-dialog":54,"./loading-modal":56,"angular":15}],56:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _loadingModal = require('./loading-modal.service');
+
+var _loadingModal2 = _interopRequireDefault(_loadingModal);
+
+var _loadingModal3 = require('./loading-modal.component');
 
 var _loadingModal4 = _interopRequireDefault(_loadingModal3);
-
-var _loadingModal5 = require('./loading-modal.service');
-
-var _loadingModal6 = _interopRequireDefault(_loadingModal5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var angularMaterial = require('angular-material');
 
-exports.default = _angular2.default.module('utilities.loading-modal', [angularMaterial]).controller(_loadingModal4.default.name, _loadingModal4.default).component('loadingModal', _loadingModal2.default).service('loadingModalService', _loadingModal6.default).name;
+exports.default = _angular2.default.module('app.core.utils.loading-modal', [angularMaterial]).component('loadingModal', _loadingModal4.default).service('LoadingModal', _loadingModal2.default).name;
 
-},{"./loading-modal.component":20,"./loading-modal.controller":21,"./loading-modal.service":22,"angular":11,"angular-material":6}],20:[function(require,module,exports){
+},{"./loading-modal.component":57,"./loading-modal.service":59,"angular":15,"angular-material":10}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79332,10 +82267,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
     template: _loadingModalTemplate2.default,
-    controller: _loadingModal2.default.name
+    controller: _loadingModal2.default
 };
 
-},{"./loading-modal.controller":21,"./loading-modal.template.html":23}],21:[function(require,module,exports){
+},{"./loading-modal.controller":58,"./loading-modal.template.html":60}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79353,7 +82288,7 @@ exports.default = LoadingModalController;
 
 LoadingModalController.$inject = [];
 
-},{}],22:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -79375,7 +82310,7 @@ var LoadingModalService = function () {
         key: 'show',
         value: function show() {
             this.$mdDialog.show({
-                template: '<md-dialog aria-label="Loading"><md-dialog-content><loading-modal/></md-dialog-content></md-dialog>',
+                template: '<md-dialog aria-label="Loading"><md-dialog-content>' + '<div class="md-dialog-content"><loading-modal/></div>' + '</md-dialog-content></md-dialog>',
                 parent: angular.element(document.body),
                 clickOutsideToClose: false,
                 bindToController: true,
@@ -79397,7 +82332,597 @@ exports.default = LoadingModalService;
 
 LoadingModalService.$inject = ['$mdDialog'];
 
-},{}],23:[function(require,module,exports){
-module.exports = "<div class=\"md-dialog-content\" layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\" flex=\"50\"></md-progress-circular>   \r\n    <h1 flex=\"50\">Espere...</h1>       \r\n</div>";
+},{}],60:[function(require,module,exports){
+module.exports = "<div layout=\"column\" layout-align=\"center center\" layout-margin>\r\n    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>   \r\n    <h1>Espere...</h1>       \r\n</div>";
 
-},{}]},{},[13]);
+},{}],61:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboardHome = require('./dashboard-home.controller');
+
+var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
+
+var _dashboardHomeTemplate = require('./dashboard-home.template.html');
+
+var _dashboardHomeTemplate2 = _interopRequireDefault(_dashboardHomeTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardHomeTemplate2.default,
+    controller: _dashboardHome2.default
+};
+
+},{"./dashboard-home.controller":62,"./dashboard-home.template.html":63}],62:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardHomeController = function DashboardHomeController(constants) {
+    _classCallCheck(this, DashboardHomeController);
+
+    this.content = constants.app.home.content;
+};
+
+exports.default = DashboardHomeController;
+
+
+DashboardHomeController.$inject = ['constants'];
+
+},{}],63:[function(require,module,exports){
+module.exports = "<div layout=\"row\" layout-align=\"center center\" flex>\r\n    <h1>{{$ctrl.content}}</h1>\r\n</div>\r\n";
+
+},{}],64:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _dashboardHome = require('./dashboard-home.component');
+
+var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features.dashboard-home', [_core2.default]).component('dashboardHome', _dashboardHome2.default).name;
+
+},{"../../core":44,"./dashboard-home.component":61,"angular":15}],65:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboardMaintenanceStudentsTemplate = require('./dashboard-maintenance-students.template.html');
+
+var _dashboardMaintenanceStudentsTemplate2 = _interopRequireDefault(_dashboardMaintenanceStudentsTemplate);
+
+var _dashboardMaintenanceStudents = require('./dashboard-maintenance-students.controller');
+
+var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanceStudents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardMaintenanceStudentsTemplate2.default,
+    controller: _dashboardMaintenanceStudents2.default
+};
+
+},{"./dashboard-maintenance-students.controller":66,"./dashboard-maintenance-students.template.html":67}],66:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardMaintenanceStudentsController = function () {
+    function DashboardMaintenanceStudentsController(CustomizedToast, StudentsResource, CrudDialogService) {
+        _classCallCheck(this, DashboardMaintenanceStudentsController);
+
+        this.studentsResource = StudentsResource;
+        this.customizedToast = CustomizedToast;
+        this.crudDialogService = CrudDialogService;
+        this.setModel();
+        this.initTable();
+        this.initStudents();
+    }
+
+    _createClass(DashboardMaintenanceStudentsController, [{
+        key: 'setModel',
+        value: function setModel() {
+            this.model = [{
+                displayName: 'ID',
+                name: 'id',
+                isNumeric: false,
+                show: false
+            }, {
+                displayName: 'Nombre',
+                name: 'name',
+                isNumeric: false,
+                show: true
+            }, {
+                displayName: 'Código',
+                name: 'code',
+                isNumeric: false,
+                show: true
+            }];
+        }
+    }, {
+        key: 'initTable',
+        value: function initTable() {
+            this.table = {
+                query: {
+                    order: 'id',
+                    limit: 10,
+                    page: 1
+                }
+            };
+        }
+    }, {
+        key: 'initStudents',
+        value: function initStudents() {
+            var _this = this;
+
+            this.students = [];
+            this.studentsResource.get(null).then(function (data) {
+                _this.students = data;
+            }, function (err) {
+                _this.customizedToast.error('Error cargando estudiantes');
+            });
+        }
+    }, {
+        key: 'add',
+        value: function add(event) {
+            this.crudDialogService.add('Añadir estudiante', this.model, event);
+        }
+    }, {
+        key: 'edit',
+        value: function edit(student, event) {
+
+            this.crudDialogService.edit('Editar estudiante', student, this.model, event);
+        }
+    }]);
+
+    return DashboardMaintenanceStudentsController;
+}();
+
+exports.default = DashboardMaintenanceStudentsController;
+
+
+DashboardMaintenanceStudentsController.$inject = ['CustomizedToast', 'StudentsResource', 'CrudDialogService'];
+
+},{}],67:[function(require,module,exports){
+module.exports = "<div layout=\"column\" layout-margin ng-cloak>\r\n    <!--<h1 class=\"md-title\">Mantenimiento Estudiantes</h1>\r\n    <md-card layout-padding>        \r\n        <md-content layout=\"row\" layout-wrap>\r\n            <md-button class=\"md-raised md-primary\">Añadir</md-button>\r\n            <md-button class=\"md-raised md-accent\">Editar</md-button>\r\n            <md-button class=\"md-raised md-warn md-hue-2\">Eliminar</md-button>\r\n            <md-button class=\"md-raised md-warn\">Cursos Inscritos</md-button>\r\n        </md-content>\r\n    </md-card>-->\r\n    <md-card>      \r\n        <md-toolbar class=\"md-table-toolbar md-default\">\r\n            <div class=\"md-toolbar-tools\" layout=\"row\">\r\n                <span>Mantenimiento Estudiantes</span>\r\n                <div flex></div>\r\n                <md-button class=\"md-icon-button md-primary md-hue-2\" ng-click=\"$ctrl.add($event)\">\r\n                    <md-tooltip md-direction=\"bottom\">Añadir</md-tooltip>\r\n                    <md-icon md-font-library=\"material-icons\" class=\"md-green\">person_add</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </md-toolbar>\r\n        <md-table-container layout-padding>\r\n            <table md-table md-row-select=\"false\" ng-model=\"$ctrl.selected\">\r\n                <thead md-head md-order=\"$ctrl.table.query.order\">\r\n                    <tr md-row>\r\n                        <th md-column>OPERACIONES</th>\r\n                        <th md-column \r\n                            ng-repeat=\"header in $ctrl.model\"  \r\n                            md-order-by=\"{{header.name}}\"\r\n                            md-numeric=\"header.isNumeric\"\r\n                            ng-show=\"header.show\">\r\n                            {{header.displayName | uppercase}}                            \r\n                        </th>\r\n                    </tr>\r\n                </thead>\r\n                <tbody md-body>\r\n                    <tr md-row md-select=\"student\" md-auto-select ng-repeat=\"student in $ctrl.students | orderBy: $ctrl.table.query.order\">\r\n                        <td md-cell>\r\n                            <div layout=\"row\">\r\n                                <md-button class=\"md-icon-button md-primary\" ng-click=\"$ctrl.edit(student,$event)\">\r\n                                    <md-tooltip md-direction=\"bottom\">Editar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-blue\">mode_edit</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-accent md-hue-2\">\r\n                                    <md-tooltip md-direction=\"bottom\">Cursos</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\">school</md-icon>\r\n                                </md-button>\r\n                                <md-button class=\"md-icon-button md-warn\">\r\n                                    <md-tooltip md-direction=\"bottom\" >Eliminar</md-tooltip>\r\n                                    <md-icon md-font-library=\"material-icons\" class=\"md-red\">delete</md-icon>\r\n                                </md-button>\r\n                            </div>\r\n                        </td>\r\n                        <td md-cell ng-repeat=\"field in $ctrl.model\" ng-show=\"field.show\">\r\n                            {{student[field.name]}}\r\n                        </td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </md-table-container>\r\n    </md-card>    \r\n</div>";
+
+},{}],68:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularMaterial = require('angular-material');
+
+var _angularMaterial2 = _interopRequireDefault(_angularMaterial);
+
+var _angularMaterialDataTable = require('angular-material-data-table');
+
+var _angularMaterialDataTable2 = _interopRequireDefault(_angularMaterialDataTable);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _dashboardMaintenanceStudents = require('./dashboard-maintenance-students.component');
+
+var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanceStudents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features.dashboard-maintenance-students', [_angularMaterial2.default, _angularMaterialDataTable2.default]).component('dashboardMaintenanceStudents', _dashboardMaintenanceStudents2.default).name;
+
+},{"../../core":44,"./dashboard-maintenance-students.component":65,"angular":15,"angular-material":10,"angular-material-data-table":8}],69:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboardMaintenanceTemplate = require('./dashboard-maintenance.template.html');
+
+var _dashboardMaintenanceTemplate2 = _interopRequireDefault(_dashboardMaintenanceTemplate);
+
+var _dashboardMaintenance = require('./dashboard-maintenance.controller');
+
+var _dashboardMaintenance2 = _interopRequireDefault(_dashboardMaintenance);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardMaintenanceTemplate2.default,
+    controller: _dashboardMaintenance2.default
+};
+
+},{"./dashboard-maintenance.controller":71,"./dashboard-maintenance.template.html":72}],70:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = config;
+function config($urlRouterProvider, $stateProvider) {
+    $stateProvider.state('dashboard.maintenance.students', {
+        url: '/alumnos',
+        template: '<dashboard-maintenance-students/>'
+    }).state('dashboard.maintenance.teachers', {
+        url: '/profesores',
+        template: '<h1>Profesores!</h1>'
+    }).state('dashboard.maintenance.subjects', {
+        url: '/cursos',
+        template: '<h1>Cursos!</h1>'
+    });
+}
+
+config.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+},{}],71:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardMaintenanceController = function DashboardMaintenanceController() {
+    _classCallCheck(this, DashboardMaintenanceController);
+};
+
+exports.default = DashboardMaintenanceController;
+
+
+DashboardMaintenanceController.$inject = [];
+
+},{}],72:[function(require,module,exports){
+module.exports = "<ui-view></ui-view>";
+
+},{}],73:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+var _dashboardMaintenance = require('./dashboard-maintenance.config');
+
+var _dashboardMaintenance2 = _interopRequireDefault(_dashboardMaintenance);
+
+var _dashboardMaintenance3 = require('./dashboard-maintenance.component');
+
+var _dashboardMaintenance4 = _interopRequireDefault(_dashboardMaintenance3);
+
+var _dashboardMaintenanceStudents = require('../dashboard-maintenance-students');
+
+var _dashboardMaintenanceStudents2 = _interopRequireDefault(_dashboardMaintenanceStudents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features.dashboard-maintenance', [_angularUiRouter2.default, _dashboardMaintenanceStudents2.default]).config(_dashboardMaintenance2.default).component('dashboardMaintenance', _dashboardMaintenance4.default).name;
+
+},{"../dashboard-maintenance-students":68,"./dashboard-maintenance.component":69,"./dashboard-maintenance.config":70,"angular":15,"angular-ui-router":13}],74:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _dashboard = require('./dashboard.controller');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _dashboardTemplate = require('./dashboard.template.html');
+
+var _dashboardTemplate2 = _interopRequireDefault(_dashboardTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _dashboardTemplate2.default,
+    controller: _dashboard2.default
+};
+
+},{"./dashboard.controller":76,"./dashboard.template.html":78}],75:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = config;
+function config($urlRouterProvider, $stateProvider) {
+
+    $stateProvider.state('dashboard.home', {
+        url: '',
+        template: '<dashboard-home flex layout="column" layout-padding/>'
+    }).state('dashboard.maintenance', {
+        url: 'mantenimiento',
+        abstract: true,
+        template: '<dashboard-maintenance/>'
+    }).state('dashboard.reports', {
+        url: 'reportes',
+        abstract: true,
+        template: '<h1>Reportes!</h1><ui-view/>'
+    }).state('dashboard.reports.generate', {
+        url: '/generar',
+        template: '<h1>Genera reporte!</h1>'
+    }).state('dashboard.security', {
+        url: 'seguridad',
+        abstract: true,
+        template: '<h1>seguridad!</h1><ui-view/>'
+    }).state('dashboard.security.users', {
+        url: '/usuarios',
+        template: '<h1>Usuarios!</h1>'
+    }).state('dashboard.security.profiles', {
+        url: '/perfiles',
+        template: '<h1>Perfiles!</h1>'
+    });
+}
+
+config.$inject = ['$urlRouterProvider', '$stateProvider'];
+
+},{}],76:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DashboardController = function () {
+    function DashboardController($rootScope, UsersResourceService, CustomizedToast) {
+        var _this = this;
+
+        _classCallCheck(this, DashboardController);
+
+        this.$rootScope = $rootScope;
+        UsersResourceService.get(function (data) {
+            _this.userInfo = data.info;
+            _this.menu = data.menu;
+        }, function (err) {
+            CustomizedToast.error('No se pudo cargar la información del usuario');
+            console.log(err);
+        });
+    }
+
+    _createClass(DashboardController, [{
+        key: 'OnSwipeView',
+        value: function OnSwipeView() {
+            this.$rootScope.$broadcast("toogleMainSidenavBySwipe", {});
+        }
+    }]);
+
+    return DashboardController;
+}();
+
+exports.default = DashboardController;
+
+
+DashboardController.$inject = ['$rootScope', 'UsersResource', 'CustomizedToast'];
+
+},{}],77:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = run;
+function run($rootScope) {
+    $rootScope.$on('$stateChangeStart', function (e, toState, toParams, fromState, fromParams) {
+        $rootScope.$broadcast('toogleMainSidenavByStateChange', {});
+    });
+}
+
+run.$inject = ['$rootScope'];
+
+},{}],78:[function(require,module,exports){
+module.exports = "<div layout=\"row\">    \r\n    <main-sidenav user-info=\"$ctrl.userInfo\" menu=\"$ctrl.menu\"></main-sidenav>\r\n    <div layout=\"column\" flex  md-swipe-right=\"$ctrl.OnSwipeView()\">            \r\n        <main-toolbar></main-toolbar>            \r\n        <ui-view layout=\"column\" flex=\"grow\"></ui-view>\r\n    </div>        \r\n</div>";
+
+},{}],79:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _components = require('../../components');
+
+var _components2 = _interopRequireDefault(_components);
+
+var _dashboard = require('./dashboard.run');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+var _dashboard3 = require('./dashboard.config');
+
+var _dashboard4 = _interopRequireDefault(_dashboard3);
+
+var _dashboard5 = require('./dashboard.component');
+
+var _dashboard6 = _interopRequireDefault(_dashboard5);
+
+var _dashboardHome = require('../dashboard-home');
+
+var _dashboardHome2 = _interopRequireDefault(_dashboardHome);
+
+var _dashboardMaintenance = require('../dashboard-maintenance');
+
+var _dashboardMaintenance2 = _interopRequireDefault(_dashboardMaintenance);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features.dashboard', [_core2.default, _components2.default, _dashboardHome2.default, _dashboardMaintenance2.default]).config(_dashboard4.default).run(_dashboard2.default).component('dashboard', _dashboard6.default).name;
+
+},{"../../components":17,"../../core":44,"../dashboard-home":64,"../dashboard-maintenance":73,"./dashboard.component":74,"./dashboard.config":75,"./dashboard.run":77,"angular":15}],80:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _components = require('../components');
+
+var _components2 = _interopRequireDefault(_components);
+
+var _login = require('./login');
+
+var _login2 = _interopRequireDefault(_login);
+
+var _dashboard = require('./dashboard');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _angular2.default.module('app.features', [_core2.default, _components2.default, _dashboard2.default, _login2.default]).name;
+
+},{"../components":17,"../core":44,"./dashboard":79,"./login":81,"angular":15}],81:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _core = require('../../core');
+
+var _core2 = _interopRequireDefault(_core);
+
+var _login = require('./login.component');
+
+var _login2 = _interopRequireDefault(_login);
+
+var _angularUiRouter = require('angular-ui-router');
+
+var _angularUiRouter2 = _interopRequireDefault(_angularUiRouter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var angularMaterial = require('angular-material');
+
+exports.default = _angular2.default.module('app.features.login', [_core2.default, angularMaterial, _angularUiRouter2.default]).component('login', _login2.default).name;
+
+},{"../../core":44,"./login.component":82,"angular":15,"angular-material":10,"angular-ui-router":13}],82:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _login = require('./login.controller');
+
+var _login2 = _interopRequireDefault(_login);
+
+var _loginTemplate = require('./login.template.html');
+
+var _loginTemplate2 = _interopRequireDefault(_loginTemplate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    template: _loginTemplate2.default,
+    controller: _login2.default
+};
+
+},{"./login.controller":83,"./login.template.html":84}],83:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LoginController = function () {
+    function LoginController(constants, $state) {
+        _classCallCheck(this, LoginController);
+
+        this.title = constants.app.title;
+        this.subtitle = constants.app.subtitle;
+        this.$state = $state;
+    }
+
+    _createClass(LoginController, [{
+        key: 'login',
+        value: function login() {
+            this.$state.go('dashboard.home');
+        }
+    }]);
+
+    return LoginController;
+}();
+
+exports.default = LoginController;
+
+
+LoginController.$inject = ['constants', '$state'];
+
+},{}],84:[function(require,module,exports){
+module.exports = "<div layout=\"row\" layout-align=\"center center\">\r\n    <md-content md-whiteframe=\"4\" layout-gt-xs=\"row\" layout-xs=\"column\" layout-margin layout-padding \r\n    layout-align=\"center center\"\r\n    layout-align-xs=\"center stretch\">\r\n        <div layout=\"column\" flex=\"auto\" layout-align=\"center stretch\">\r\n            <h1 class=\"md-display-4\">{{$ctrl.title}}</h1>\r\n            <h6 class=\"md-subhead\">{{$ctrl.subtitle}}</h6>\r\n        </div>        \r\n        <form flex-gt-xs=\"50\" layout=\"column\" ng-submit=\"$ctrl.login()\">\r\n            <div layout=\"column\">\r\n                <md-input-container>\r\n                    <label>Usuario: </label>\r\n                    <md-icon md-font-library=\"material-icons\">account_box</md-icon>\r\n                    <input type=\"text\" md-autofocus tabindex=\"1\">\r\n                </md-input-container>\r\n                <md-input-container>\r\n                    <label>Contraseña: </label>\r\n                    <md-icon md-font-library=\"material-icons\">lock</md-icon>\r\n                    <input type=\"password\" tabindex=\"1\">\r\n                </md-input-container>            \r\n            </div>            \r\n            <div layout=\"row\" layout-align=\"center center\">\r\n                <md-button type=\"submit\" class=\"md-raised md-primary\">\r\n                    Ingresar\r\n                    <md-icon md-font-library=\"material-icons\">chevron_right</md-icon>\r\n                </md-button>\r\n            </div>\r\n        </form>\r\n    </md-content>\r\n</div>";
+
+},{}]},{},[16]);

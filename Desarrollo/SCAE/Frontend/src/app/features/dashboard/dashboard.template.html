@@ -1,0 +1,7 @@
+<div layout="row">    
+    <main-sidenav user-info="$ctrl.userInfo" menu="$ctrl.menu"></main-sidenav>
+    <div layout="column" flex  md-swipe-right="$ctrl.OnSwipeView()">            
+        <main-toolbar></main-toolbar>            
+        <ui-view layout="column" flex="grow"></ui-view>
+    </div>        
+</div>

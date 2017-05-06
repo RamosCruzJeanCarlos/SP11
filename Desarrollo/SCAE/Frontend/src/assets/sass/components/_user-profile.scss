@@ -1,0 +1,22 @@
+user-profile{
+    &>div{
+        background-image: url("/build/profile_background.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        img{
+            border-radius: 50%;
+            width: 22%;
+            height: auto; 
+            margin: 8 8 0 8;
+        }
+        &>md-list{            
+            .md-subtitle,.md-caption{
+                color: white;
+            }
+        }
+        &>md-list{
+            color : $main-sidenav-content-text-color;
+        }
+    }
+}

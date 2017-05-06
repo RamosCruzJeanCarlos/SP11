@@ -1,0 +1,10 @@
+dashboard{
+    &>div{
+        height: 100%;
+    }
+    main-sidenav+div{
+        &>md-toolbar{
+            text-align: center; 
+        }
+    }
+}

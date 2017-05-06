@@ -1,18 +1,13 @@
 'use strict';
 
-import angular          from 'angular';
-import uirouter         from 'angular-ui-router';
-import configuration    from './app.config';
-import angularAnimate   from 'angular-animate';
-import angularAria      from 'angular-aria';
-import angularMessages  from 'angular-messages';
-import login            from './components/login/';
-import loadingModal     from './utilities/loading-modal/';
+//vendor dependencies
+import angular from 'angular';
+import core from './core';
+import features from './features';
+import components from './components';
 
-
-angular.module('app-scae',[
-    uirouter,  
-    loadingModal,
-    login,      
-])
-.config(configuration);
+angular.module('app',[
+    core,
+    features,
+    components
+]);
