@@ -9,5 +9,5 @@ var angularMaterial = require('angular-material');
 export default angular
     .module('app.core.utils.loading-modal',[angularMaterial])
     .component('loadingModal',loadingModalComponent)
-    .service(loadingModalService.name,loadingModalService)    
+    .service('LoadingModal',loadingModalService)    
     .name;

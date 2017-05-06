@@ -5,26 +5,16 @@ export default function config($urlRouterProvider,$stateProvider){
     $stateProvider
     .state('dashboard.home',{
         url:'',
-        template:'<home></home>'
+        template:'<dashboard-home flex layout="column" layout-padding/>'
     })
     .state('dashboard.maintenance',{
         url:'mantenimiento',
-        template:'<h1>Mantenimiento</h1><ui-view/>'
-    })
-    .state('dashboard.maintenance.students',{
-        url:'/alumnos',
-        template:'<h1>Alumnos!</h1>'
-    })
-    .state('dashboard.maintenance.teachers',{
-        url:'/profesores',
-        template:'<h1>Profesores!</h1>'
-    })
-    .state('dashboard.maintenance.subjects',{
-        url:'/cursos',
-        template:'<h1>Cursos!</h1>'
-    })
+        abstract: true,
+        template:'<dashboard-maintenance/>'
+    })    
     .state('dashboard.reports',{
         url:'reportes',
+        abstract: true,
         template:'<h1>Reportes!</h1><ui-view/>'
     })
     .state('dashboard.reports.generate',{
@@ -33,6 +23,7 @@ export default function config($urlRouterProvider,$stateProvider){
     })
     .state('dashboard.security',{
         url:'seguridad',
+        abstract: true,
         template:'<h1>seguridad!</h1><ui-view/>'
     })
     .state('dashboard.security.users',{

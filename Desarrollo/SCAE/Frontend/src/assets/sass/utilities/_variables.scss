@@ -23,4 +23,10 @@ $main-menu-active-color : white;
 $main-menu-active-background-color : #BDBDBD;
 $main-menu-active-font-style : italic;
 
+//md-toast
+$md-toast-info-background-color : darken(skyblue,25%);
+$md-toast-error-background-color : desaturate(red,40%);
+$md-toast-warning-background-color : desaturate(orange,10%);
+$md-toast-success-background-color : saturate(green,40%);
+
 

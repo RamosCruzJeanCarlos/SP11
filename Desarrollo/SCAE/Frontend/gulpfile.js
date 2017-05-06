@@ -8,12 +8,15 @@ var streamify   = require('gulp-streamify');
 var flatten     = require('gulp-flatten');
 var gls         = require('gulp-live-server');
 var stringify   = require('stringify');
+var rename      = require('gulp-rename');
+var path        = require('path');
+var gulpExtRep  = require('gulp-ext-replace');
+var gulpIf      = require('gulp-if');
 try{
-var sass        = require('gulp-sass');
+    var sass    = require('gulp-sass');
 }catch(exception){
     console.log(exception.message);
 }
-var rename      = require('gulp-rename');
 
 var config = {
     client : {
@@ -34,7 +37,8 @@ var config = {
 var vendors = {
     styles : {
         src: [
-        './node_modules/angular-material/angular-material.scss'
+        './node_modules/angular-material/angular-material.scss',
+        './node_modules/angular-material-data-table/dist/md-data-table.css'
         ],
         dest : './src/assets/sass/vendors/'
     }
@@ -54,6 +58,9 @@ gulp.task('build-scripts',function(){
 
 gulp.task('copy-vendors-styles',function(){
     return gulp.src(vendors.styles.src)
+    .pipe(gulpIf((file)=>{
+        return path.extname(file.path) == '.css';
+    },gulpExtRep('.scss')))
     .pipe(flatten())
     .pipe(gulp.dest(vendors.styles.dest));
 })

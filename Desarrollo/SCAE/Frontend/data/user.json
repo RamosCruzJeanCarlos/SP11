@@ -4,6 +4,7 @@
         "profilePicture" : "build/profile_img.jpg",
         "email" : "dinjo_joestar@hotmail.com"
     },
+
     "menu" : [
         {
             "name" : "Inicio",
@@ -11,7 +12,6 @@
         },
         {
             "name" : "Mantenimiento",
-            "state" : "dashboard.maintenance",
             "items" : [
                 {
                     "name" : "Alumnos",
@@ -33,7 +33,6 @@
         },
         {
             "name" : "Reportes",
-            "state" : "dashboard.reports",
             "items" : [
                 {
                     "name" : "Generar Reporte",
@@ -44,7 +43,6 @@
         },
         {
             "name" : "Seguridad",
-            "state" : "dashboard.security",
             "items" : [
                 {
                     "name" : "Usuarios",

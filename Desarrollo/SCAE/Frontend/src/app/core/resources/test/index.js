@@ -1,8 +1,9 @@
 'use strict';
 
 import angular from 'angular';
-import testUserResource from './test-user-resource';
+import testUsersResource from './test-users-resource';
+import testStudentsResource from './test-students-resource';
 
 export default angular
-    .module('app.core.resources.test',[testUserResource])
+    .module('app.core.resources.test',[testUsersResource,testStudentsResource])
     .name;

@@ -1,0 +1,31 @@
+<md-dialog aria-label="Crud Dialog">
+    <form ng-cloak ng-submit="ctrl.confirm()">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{ctrl.title}}</h2>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content" layout="column">
+                <div ng-if="ctrl.mode=='add'||ctrl.mode=='edit'">
+                    <div layout="row" ng-repeat="prop in ctrl.model" ng-if="prop.show">
+                        <md-input-container flex>
+                            <label>{{prop.displayName}}</label>
+                            <input type="text" ng-if="!prop.isNumeric" ng-model="prop.value">
+                            <input type="number" ng-if="prop.isNumeric" ng-model="prop.value">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions>
+            <span flex></span>
+            <md-button class="md-warn md-raised" ng-click="ctrl.cancel()">
+                Cancelar
+            </md-button>
+            <md-button type="submit" class="md-primary md-raised" ng-click="ctrl.confirm()">
+                Aceptar
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

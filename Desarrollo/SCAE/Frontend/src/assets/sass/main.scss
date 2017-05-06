@@ -6,11 +6,17 @@
 
 @import "vendors/angular-material.scss";
 
+@import "vendors/md-data-table.scss";
+
 @import "components/_main-sidenav.scss";
 
 @import "components/_user-profile.scss";
 
 @import "components/_main-menu.scss";
+
+@import "components/_md-toast.scss";
+
+@import "components/_md-table.scss";
 
 @import "pages/_login.scss";
 

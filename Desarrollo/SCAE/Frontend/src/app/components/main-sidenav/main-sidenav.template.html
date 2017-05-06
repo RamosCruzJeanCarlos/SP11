@@ -4,9 +4,8 @@
     md-is-locked-open="$mdMedia('gt-xs')&&$ctrl.open" 
     layout="column"
     md-whiteframe="2">
-    <md-content layout="column">
+    <div layout="column">
         <user-profile user-info="$ctrl.userInfo"></user-profile>
-        <md-subheader class="md-no-sticky">Navegación</md-subheader>
         <main-menu menu="$ctrl.menu"></main-menu>
-    </md-content>    
+    </div>    
 </md-sidenav>

@@ -1,15 +1,27 @@
 <div layout="column">
-    <div layout-padding>
-        <img src="{{$ctrl.userInfo.profilePicture}}" alt="profile picture" class="md-avatar"/>
-    </div>
-    <div layout="column" layout-padding>
-        <span class="md-subtitle">{{$ctrl.userInfo.username}}</span>
-        <span class="md-caption">{{$ctrl.userInfo.email}}</span>        
-    </div>
-    <br>
+    <!--<div layout="column">
+        <div layout-padding>
+            <img src="{{$ctrl.userInfo.profilePicture}}" alt="profile picture" class="md-avatar"/>
+        </div>
+        <div layout="column" layout-padding>
+            <span class="md-subtitle">{{$ctrl.userInfo.username}}</span>
+            <span class="md-caption">{{$ctrl.userInfo.email}}</span>        
+        </div>
+        <br>
+    </div>-->
+    <img src="{{$ctrl.userInfo.profilePicture}}" alt="profile picture" class="md-avatar"/>
+    <md-list>
+        <md-list-item class="md-2-line">
+            <div class="md-list-item-text" layout="column">
+                <span class="md-subtitle">{{$ctrl.userInfo.username}}</span>
+                <span class="md-caption">{{$ctrl.userInfo.email}}</span>     
+            </div>
+        </md-list-item>
+    </md-list>
+    <!--<md-subheader ng-click="$ctrl.logout()" >Cuenta</md-subheader>
+    <md-list class="md-dense">
+        <md-list-item ng-click="$ctrl.logout()" >
+            <span>Cerrar Sesión</span>
+        </md-list-item>
+    </md-list>-->
 </div>
-<md-list class="md-dense">
-    <md-list-item ng-click="$ctrl.logout()" >
-        <span>Cerrar Sesión</span>
-    </md-list-item>
-</md-list>

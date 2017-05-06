@@ -2,12 +2,14 @@
 
 import angular from 'angular';
 import cookieManagerConfiguration from './cookie-manager.config';
-import cookieManagerService from './cookie-manager.service';
+import CookieManagerService from './cookie-manager.service';
+import cookieManagerRun from './cookie-manager.run';
 import angularCookies from 'angular-cookies';
 import angularResource from 'angular-resource';
 
 export default angular
     .module('app.core.helpers.cookie-manager',[angularCookies,angularResource])
+    .run(cookieManagerRun)
     .config(cookieManagerConfiguration)
-    .service(cookieManagerService.name,cookieManagerService)    
+    .service('CookieManager',CookieManagerService)    
     .name;

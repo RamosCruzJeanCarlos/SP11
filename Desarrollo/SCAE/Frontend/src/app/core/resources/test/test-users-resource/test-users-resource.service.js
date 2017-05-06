@@ -1,6 +1,6 @@
 'use strict';
 
-export default class TestUserResourceService{
+export default class TestUsersResourceService{
     constructor($resource,constants){
         this.resources = {
             crud : $resource(constants.resources.remote.baseUrl+'user.json',{},{
@@ -14,3 +14,5 @@ export default class TestUserResourceService{
         this.resources.crud.get({},{},sucessCallback,errorCallback);
     }
 }
+
+TestUsersResourceService.$inject = ['$resource','constants'];
