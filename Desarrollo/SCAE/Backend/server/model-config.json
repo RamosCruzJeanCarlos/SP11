@@ -35,5 +35,17 @@
   "Role": {
     "dataSource": "mongodb",
     "public": false
+  },
+  "user":{
+    "dataSource": "mongodb",
+    "public": true
+  },
+  "role":{
+    "dataSource": "mongodb",
+    "public": true
+  },
+  "roleMapping":{
+    "dataSource": "mongodb",
+    "public": false
   }
 }
