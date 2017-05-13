@@ -1,6 +1,6 @@
 {
-  "name": "user",
-  "base": "User",
+  "name": "student",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -9,53 +9,42 @@
     "DisableAllMethods": {
       "expose": [
         "find",
-        "findById",
-        "login",
-        "logout"
+        "createStudent"
       ]
     }
   },
   "properties": {
-    "username":{
-      "type": "string",
-      "required": false
-    },
     "firstName": {
       "type": "string",
       "required": true
     },
-    "lastName":{
+    "lastName": {
       "type": "string",
       "required": true
     },
-    "picture":{
-      "type": "object",
-      "default": {}
+    "dni":{
+      "type": "string",
+      "required": true
+    },
+    "code":{
+      "type": "string",
+      "required": true
     },
     "email": {
       "type": "string",
       "required": true
     },
-    "password": {
-      "type":"string",
+    "picture": {
+      "type": "object",
       "required": true
-    },
-    "isDelegate":{
-      "type": "boolean",
-      "default": false
     }
   },
   "validations": [],
   "relations": {
-    "role":{
-      "type": "hasOne",
-      "model": "roleMapping",
-      "foreignKey": "principalId"
-    },
-    "accessTokens":{
+    "users":{
       "type": "hasMany",
-      "model": "accessToken",
-      "foreignKey": "userId"
+      "model": "roleMapping",
+      "foreignKey": "roleId"
     }
   },
   "acls": [
@@ -68,21 +57,11 @@
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": [
-        "loginWeb",
-        "logout"
-      ]
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "ADMIN",
       "permission": "ALLOW",
       "property": [
         "find",
-        "findByI"
+        "createStudent"
       ]
     }
   ],
