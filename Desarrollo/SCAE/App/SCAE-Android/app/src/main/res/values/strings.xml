@@ -10,6 +10,15 @@
     //Login
     <string name="forget_pass1">Te olvidaste la clave?</string>
     <string name="forget_pass2">Recupérala aquí!</string>
+    
+    //Menu
+    <string name="perfil">Perfil</string>
+    <string name="register_assistance">Marcar Asistencias</string>
+    <string name="syncronizate">Sincronizar</string>
+    <string name="enable_disable_delegate">Habilitar/Deshabilitar delegado</string>
+    <string name="report_assistance">Reporte de Asistencias</string>
+    <string name="about_course">Acerca del Curso</string>
+    <string name="close_session">Cerrar Sesión</string>
 
 
 </resources>

@@ -36,7 +36,6 @@ public class BaseActivity extends AppCompatActivity {
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTypeface(Util_Fonts.setFontBold(this));
         textView.setTextColor(Color.BLACK);
         snackbar.show();
     }
