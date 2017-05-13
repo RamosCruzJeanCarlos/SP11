@@ -1,0 +1,36 @@
+{
+  "name": "role",
+  "base": "Role",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "DisableAllMethods": {
+      "expose": [
+        "find"
+      ]
+    }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "users":{
+      "type": "hasMany",
+      "model": "roleMapping",
+      "foreignKey": "roleId"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"/>
+
+    <item
+        android:id="@+id/menu_perfil"
+        android:icon="@drawable/ic_perfil"
+        android:title="@string/perfil"/>
+
+    <item
+        android:id="@+id/menu_assistance"
+        android:icon="@drawable/ic_assistances"
+        android:title="@string/register_assistance"/>
+
+    <item
+        android:id="@+id/menu_synch"
+        android:icon="@drawable/ic_synch"
+        android:title="@string/syncronizate"/>
+
+    <item
+        android:id="@+id/menu_about_course"
+        android:icon="@drawable/ic_course"
+        android:title="@string/about_course"/>
+
+    <item
+        android:id="@+id/menu_close_session"
+        android:icon="@drawable/ic_close_session"
+        android:title="@string/close_session"/>
+</menu>
