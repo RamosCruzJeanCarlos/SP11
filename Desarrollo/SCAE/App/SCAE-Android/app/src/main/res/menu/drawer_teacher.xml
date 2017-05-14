@@ -9,11 +9,6 @@
         android:title="@string/perfil"/>
 
     <item
-        android:id="@+id/menu_assistance"
-        android:icon="@drawable/ic_assistances"
-        android:title="@string/register_assistance"/>
-
-    <item
         android:id="@+id/menu_synch"
         android:icon="@drawable/ic_synch"
         android:title="@string/syncronizate"/>

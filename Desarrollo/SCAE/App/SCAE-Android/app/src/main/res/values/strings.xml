@@ -6,6 +6,9 @@
     <string name="password">Contraseña</string>
     <string name="login">INGRESAR</string>
     <string name="menu">MENÚ</string>
+    <string name="confirm">Confirmar</string>
+    <string name="app_teacher_name">SCAE Teacher</string>
+    <string name="app_student_name">SCAE Student</string>
 
     //Login
     <string name="forget_pass1">Te olvidaste la clave?</string>
@@ -19,6 +22,14 @@
     <string name="report_assistance">Reporte de Asistencias</string>
     <string name="about_course">Acerca del Curso</string>
     <string name="close_session">Cerrar Sesión</string>
+    <string name="teacher_example">Jean Carlos, Ramos Cruz</string>
+    <string name="student_example">Dinjo Josafat, Vara Huayta</string>
 
+    //Courses
+    <string name="select_course">Seleccione el curso al que accederá</string>
+    <string name="no_courses">No tiene cursos a su cargo</string>
+    <string name="course_example">Tesis 1</string>
+    <string name="course_schedule">Miércoles-Viernes</string>
+    
 
 </resources>
