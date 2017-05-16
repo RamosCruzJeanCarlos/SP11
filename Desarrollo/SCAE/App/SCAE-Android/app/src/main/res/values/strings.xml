@@ -4,7 +4,8 @@
     //General
     <string name="user">Usuario</string>
     <string name="password">Contraseña</string>
-    <string name="login">INGRESAR</string>
+    <string name="login">Ingresar</string>
+    <string name="register">Registrar</string>
     <string name="menu">MENÚ</string>
     <string name="confirm">Confirmar</string>
     <string name="app_teacher_name">SCAE Teacher</string>

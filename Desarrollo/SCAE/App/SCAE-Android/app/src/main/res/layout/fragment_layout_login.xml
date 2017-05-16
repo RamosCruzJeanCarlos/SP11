@@ -70,12 +70,14 @@
             <Button
                 android:id="@+id/btn_login"
                 style="@style/btn_default"
+                android:textAllCaps="true"
                 android:text="@string/login"/>
 
             <Button
                 android:id="@+id/btn_register"
                 style="@style/btn_default"
-                android:text="@string/login"/>
+                android:textAllCaps="true"
+                android:text="@string/register"/>
 
         </LinearLayout>
 
