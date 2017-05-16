@@ -42,5 +42,6 @@ ext{
     retrofitVersion = '2.2.0'
     zxingVersion = '1.9.1'
     calligraphyVersion = '2.2.0'
-
+    eventBusVersion = '3.0.0'
+    interceptorVersion = '3.3.0'
 }
