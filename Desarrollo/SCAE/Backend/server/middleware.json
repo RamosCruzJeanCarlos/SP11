@@ -40,7 +40,16 @@
       ]
     }
   },
-  "files": {},
+  "files": {
+    "loopback#static": [
+      {
+        "paths": [
+          "/storage/profile"
+        ],
+        "params": "$!../storage/profile"
+      }
+    ]
+  },
   "final": {
     "loopback#urlNotFound": {}
   },
