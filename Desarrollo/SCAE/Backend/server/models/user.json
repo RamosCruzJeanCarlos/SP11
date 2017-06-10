@@ -69,7 +69,7 @@
             "principalId": "$everyone",
             "permission": "ALLOW",
             "property": [
-                "loginWeb",
+                "login",
                 "logout"
             ]
         },
@@ -80,7 +80,7 @@
             "permission": "ALLOW",
             "property": [
                 "find",
-                "findByI"
+                "findById"
             ]
         }
     ],

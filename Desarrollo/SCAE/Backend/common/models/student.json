@@ -42,13 +42,7 @@
         }
     },
     "validations": [],
-    "relations": {
-        "users": {
-            "type": "hasMany",
-            "model": "roleMapping",
-            "foreignKey": "roleId"
-        }
-    },
+    "relations": {},
     "acls": [{
             "accessType": "*",
             "principalType": "ROLE",
@@ -62,7 +56,9 @@
             "permission": "ALLOW",
             "property": [
                 "find",
-                "createStudent"
+                "createStudent",
+                "updateAttributes",
+                "deleteById"
             ]
         }
     ],
