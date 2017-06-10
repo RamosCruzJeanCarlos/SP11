@@ -1,69 +1,70 @@
 {
-  "name": "student",
-  "base": "PersistedModel",
-  "idInjection": true,
-  "options": {
-    "validateUpsert": true
-  },
-  "mixins": {
-    "DisableAllMethods": {
-      "expose": [
-        "find",
-        "createStudent"
-      ]
-    }
-  },
-  "properties": {
-    "firstName": {
-      "type": "string",
-      "required": true
+    "name": "student",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+        "validateUpsert": true
     },
-    "lastName": {
-      "type": "string",
-      "required": true
+    "mixins": {
+        "DisableAllMethods": {
+            "expose": [
+                "find",
+                "createStudent",
+                "updateAttributes",
+                "deleteById"
+            ]
+        }
     },
-    "dni":{
-      "type": "string",
-      "required": true
+    "properties": {
+        "firstName": {
+            "type": "string",
+            "required": true
+        },
+        "lastName": {
+            "type": "string",
+            "required": true
+        },
+        "dni": {
+            "type": "string",
+            "required": true
+        },
+        "code": {
+            "type": "string",
+            "required": true
+        },
+        "email": {
+            "type": "string",
+            "required": true
+        },
+        "picture": {
+            "type": "object",
+            "required": true
+        }
     },
-    "code":{
-      "type": "string",
-      "required": true
+    "validations": [],
+    "relations": {
+        "users": {
+            "type": "hasMany",
+            "model": "roleMapping",
+            "foreignKey": "roleId"
+        }
     },
-    "email": {
-      "type": "string",
-      "required": true
-    },
-    "picture": {
-      "type": "object",
-      "required": true
-    }
-  },
-  "validations": [],
-  "relations": {
-    "users":{
-      "type": "hasMany",
-      "model": "roleMapping",
-      "foreignKey": "roleId"
-    }
-  },
-  "acls": [
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "DENY"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "ADMIN",
-      "permission": "ALLOW",
-      "property": [
-        "find",
-        "createStudent"
-      ]
-    }
-  ],
-  "methods": {}
+    "acls": [{
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY"
+        },
+        {
+            "accessType": "EXECUTE",
+            "principalType": "ROLE",
+            "principalId": "ADMIN",
+            "permission": "ALLOW",
+            "property": [
+                "find",
+                "createStudent"
+            ]
+        }
+    ],
+    "methods": {}
 }

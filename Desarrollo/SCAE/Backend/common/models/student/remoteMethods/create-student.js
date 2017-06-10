@@ -1,87 +1,53 @@
 'use strict';
-var Util = require('../../../../helpers/util.js');
-var Hooks = require('../../../../helpers/hooks.js');
-var Files = require('../../../../helpers/files.js');
+var Util = require('../../../../helpers/util');
 
 module.exports = function(Student) {
-    Student.beforeRemote('createStudent', Hooks.beforeRemoteFormData);
-    Student.createStudent = (
-        firstName, lastName, code, email, dni, picture, next
-    ) => {
-        console.log("hola");
+    Student.createStudent = function(data, next) {
         Student.findOrCreate({
             where: {
-                code: code,
-                email: email
+                or: [{
+                        code: data.code
+                    },
+                    {
+                        dni: data.dni
+                    },
+                    {
+                        email: data.email
+                    }
+                ]
             }
         }, {
-            firstName: firstName,
-            lastName: lastName,
-            code: code,
-            email: email,
-            dni: dni
-        }).then(student => {
-            if (!student[1]) return next(Util.error({ status: 409, msg: 'studiante ya esta registrado' }));
-            if (!picture) {
-                student[0].picture = {
-                    relativePath: 'profile/user.png',
-                    url: Student.app.get('media') + '/' + 'profile/user.png'
-                }
-                student[0].save();
-                return next(null, student[0]);
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dni: data.dni,
+            email: data.email,
+            picture: data.picture || "http://104.236.213.208:3000/storage/profile/user.png",
+            code: data.code
+        }).then(user => {
+            if (!user[1]) {
+                return next(Util.error({ status: 422, msg: 'studiante esta registrado' }));
             }
-            Files.save(picture, 'profile').then((relativePath) => {
-                student[0].picture = {
-                    relativePath: relativePath,
-                    url: User.app.get('media') + '/' + relativePath
-                };
-                student[0].save();
-                next(null, student[0]);
-            }).catch(reject);
+            next(null, user[0]);
         }).catch(next);
     }
     Student.remoteMethod(
         'createStudent', {
             description: 'crear estudiante',
             accepts: [{
-                    arg: 'firstName',
-                    type: 'string',
-                    required: true
-                },
-                {
-                    arg: 'lastName',
-                    type: 'string',
-                    required: true
-                },
-                {
-                    arg: 'code',
-                    type: 'string',
-                    required: true
-                },
-                {
-                    arg: 'email',
-                    type: 'string',
-                    required: true
-                },
-                {
-                    arg: 'dni',
-                    type: 'string',
-                    required: true
-                },
-                {
-                    arg: 'picture',
-                    type: "object"
-                }
-            ],
+                arg: 'data',
+                type: 'student',
+                http: { source: 'body' },
+                description: "no es necesario enviar id, y userid, picture"
+            }],
             returns: {
                 arg: '',
                 type: 'object',
                 root: true
             },
             http: {
-                path: '/',
+                path: '/create',
                 verb: 'post'
             }
         }
-    );
+    )
 }
