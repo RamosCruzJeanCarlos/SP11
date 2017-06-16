@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
         //Butterknife Dependency
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -37,11 +37,13 @@ ext{
     supportLibraryVersion = '25.3.1'
     butterknifeVersion = '8.5.1'
     saripaarVersion = '2.0.3'
-    guavaVersion = '21.0'
+    guavaVersion = '19.0'
     glideVersion = '3.7.0'
-    retrofitVersion = '2.2.0'
-    zxingVersion = '1.9.1'
+    retrofitVersion = '2.1.0'
     calligraphyVersion = '2.2.0'
     eventBusVersion = '3.0.0'
     interceptorVersion = '3.3.0'
+    circleImageVersion = '2.1.0'
+    dateTimePicker = '3.2.2'
+    zxingVersion = '1.9.1'
 }

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -36,8 +37,8 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
 
     //Butterknife (Inyecciones)
+    apt "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterknifeVersion"
 
     //Saripaar (Validaciones)
     compile "com.mobsandgeeks:android-saripaar:$rootProject.saripaarVersion"
@@ -52,6 +53,21 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
 
+    //Caligraphy (Fuente de texto)
+    compile "uk.co.chrisjenx:calligraphy:$rootProject.calligraphyVersion"
+
+    //Communication Between Activities, Fragments, and Services
+    compile "org.greenrobot:eventbus:$rootProject.eventBusVersion"
+
+    //Interceptor
+    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.interceptorVersion"
+
+    //Circle Image View
+    compile "de.hdodenhof:circleimageview:$rootProject.circleImageVersion"
+
+    //Date Time Picker
+    compile "com.wdullaer:materialdatetimepicker:$rootProject.dateTimePicker"
+
     //QR Scanner
     compile "me.dm7.barcodescanner:zxing:$rootProject.zxingVersion"
 
@@ -61,6 +77,5 @@ dependencies {
     //Communication Between Activities, Fragments, and Services
     compile "org.greenrobot:eventbus:$rootProject.eventBusVersion"
 
-    //Interceptor
-    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.interceptorVersion"
+
 }
