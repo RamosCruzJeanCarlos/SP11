@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="120dp"
-    android:orientation="vertical">
+    android:layout_width="match_parent" android:layout_height="165dp"
+    android:orientation="vertical" android:background="@drawable/cover">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
-            android:id="@+id/front_cover"
-            android:fitsSystemWindows="true"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:id="@+id/img_fondo"
             android:drawingCacheQuality="low"
-            android:background="@color/colorPrimaryDark"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -20,70 +17,64 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_gravity="center_vertical"
-            >
+            android:layout_gravity="center_vertical">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+                android:padding="15dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <RelativeLayout
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
                         android:background="@drawable/border_img_view_white">
 
-                        <ImageView
-                            android:id="@+id/img_profile"
-                            android:layout_width="76dp"
-                            android:layout_height="76dp"
-                            android:layout_marginTop="2dp"
-                            android:layout_marginLeft="2dp"
-                            android:background="@drawable/teacher"/>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/header_view_img_profile"
+                            android:layout_width="85dp"
+                            android:layout_height="85dp"
+                            android:layout_marginLeft="1.5dp"
+                            android:layout_marginTop="1.5dp"
+                            android:src="@drawable/teacher"/>
 
                     </RelativeLayout>
 
 
                     <TextView
+                        android:id="@+id/header_view_teacher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="0dp"
                         android:text="@string/app_teacher_name"
                         android:textSize="20dp"
                         android:textStyle="bold"
                         android:textColor="@color/white_color"
-                        android:shadowColor="@color/primary_text"
+                        android:shadowColor="@color/gray"
                         android:shadowDx="3"
                         android:shadowDy="3"
                         android:shadowRadius="10"/>
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/tv_username"
+                        android:id="@+id/tv_name_teacher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
                         android:text="@string/teacher_example"
                         android:textColor="@color/white_color"
                         android:textStyle="bold"
                         android:textSize="15dp"
-                        android:shadowColor="@color/primary_text"
+                        android:shadowColor="@color/gray"
                         android:shadowDx="5"
                         android:shadowDy="5"
                         android:shadowRadius="10"/>
