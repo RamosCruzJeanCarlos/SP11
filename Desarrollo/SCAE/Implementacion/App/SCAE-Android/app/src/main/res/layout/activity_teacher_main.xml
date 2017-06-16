@@ -54,9 +54,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:id="@+id/navigation_view"
-            app:itemIconTint="@color/white_color"
-            app:itemTextColor="@color/white_color"
-            android:background="@color/colorAccent"
+            app:itemIconTint="@drawable/drawer_list_selector"
+            app:itemTextColor="@drawable/drawer_list_selector"
+            android:background="@color/white_color"
             app:headerLayout="@layout/header_view_teacher"
             app:menu="@menu/drawer_teacher">
 

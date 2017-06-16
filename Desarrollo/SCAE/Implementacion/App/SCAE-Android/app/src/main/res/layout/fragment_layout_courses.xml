@@ -7,7 +7,7 @@
         android:id="@+id/ll_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/black_elegant"
         android:orientation="vertical">
 
         <LinearLayout
@@ -41,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="0dp"
+            android:layout_margin="5dp"
             android:layout_weight="1">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_courses"

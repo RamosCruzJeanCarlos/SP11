@@ -40,5 +40,7 @@
 
     //Take Assistance
     <string name="date_test">20/05/2017</string>
+    <string name="qr">QR</string>
+    <string name="manual">Manual</string>
 
 </resources>
