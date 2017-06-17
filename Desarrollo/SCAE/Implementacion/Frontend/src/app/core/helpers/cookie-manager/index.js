@@ -11,5 +11,5 @@ export default angular
     .module('app.core.helpers.cookie-manager',[angularCookies,angularResource])
     .run(cookieManagerRun)
     .config(cookieManagerConfiguration)
-    .service('CookieManager',CookieManagerService)    
+    .service('cookieManager',CookieManagerService)    
     .name;

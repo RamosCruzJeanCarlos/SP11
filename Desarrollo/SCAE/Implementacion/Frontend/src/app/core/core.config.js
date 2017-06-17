@@ -13,7 +13,7 @@ export default function routing($urlRouterProvider,$stateProvider,$mdThemingProv
         'default' : '400'
     });
 
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/login');
 
     $stateProvider
     .state('login',{

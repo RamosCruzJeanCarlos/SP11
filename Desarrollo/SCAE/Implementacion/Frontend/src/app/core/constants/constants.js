@@ -10,6 +10,10 @@ export default {
         remote : {
             baseUrl : '/data/',
             authorizationHeader : 'Authorization'
+        },
+        prod: {
+            baseUrl: 'http://104.236.213.208:3000/api/',
+            authorizationHeader: 'Token'
         }
     }
 }

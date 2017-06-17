@@ -2,7 +2,8 @@
 
 import angular from 'angular';
 import testResources from'./test';
+import remoteResources from './remote';
 
 export default angular
-    .module('app.core.resources',[testResources])
+    .module('app.core.resources',[testResources,remoteResources])
     .name;

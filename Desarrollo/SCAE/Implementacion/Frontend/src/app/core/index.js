@@ -8,8 +8,9 @@ import constants from './constants';
 import helpers from './helpers';
 import utils from './utils';
 import resources from './resources';
+import services from './services';
 
 export default angular
-    .module('app.core',[uirouter,angularMaterial,constants,helpers,utils,resources])
+    .module('app.core',[uirouter,angularMaterial,constants,helpers,utils,resources,services])
     .config(configuration)
     .name;
