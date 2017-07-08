@@ -1,0 +1,60 @@
+{
+    "info" : {
+        "username" : "Dinjo_Joestar",
+        "profilePicture" : "build/profile_img.jpg",
+        "email" : "dinjo_joestar@hotmail.com"
+    },
+
+    "menu" : [
+        {
+            "name" : "Inicio",
+            "state" : "dashboard.home"
+        },
+        {
+            "name" : "Mantenimiento",
+            "items" : [
+                {
+                    "name" : "Alumnos",
+                    "icon" : "accessibility",
+                    "state" : "dashboard.maintenance.students"
+                },
+                {
+                    "name" : "Profesores",
+                    "icon" : "accessibility",
+                    "state" : "dashboard.maintenance.teachers"
+                },
+                {
+                    "name" : "Cursos",
+                    "icon" : "class",
+                    "state" : "dashboard.maintenance.subjects"
+                    
+                }
+            ]
+        },
+        {
+            "name" : "Reportes",
+            "items" : [
+                {
+                    "name" : "Generar Reporte",
+                    "icon" : "settings",
+                    "state" : "dashboard.reports.generate"
+                }
+            ]
+        },
+        {
+            "name" : "Seguridad",
+            "items" : [
+                {
+                    "name" : "Usuarios",
+                    "icon" : "perm_identity",
+                    "state" : "dashboard.security.users"
+                },
+                {
+                    "name" : "Perfiles",
+                    "icon" : "supervisor_account",
+                    "state" : "dashboard.security.profiles"
+                }
+            ]
+        }
+    ]
+}

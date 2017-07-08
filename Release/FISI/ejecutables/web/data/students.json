@@ -1,0 +1,27 @@
+[
+    {
+        "id" : 1,
+        "name" : "Josafat Vara Huayta",
+        "code" : "13200129"
+    },
+    {
+        "id" : 2,
+        "name" : "Florian Cochachin Malqui",
+        "code" : "13200129"
+    },
+    {
+        "id" : 3,
+        "name" : "Juan Ramiro Valentín Ramírez",
+        "code" : "13200129"
+    },
+    {
+        "id" : 4,
+        "name" : "Camilo Armas",
+        "code" : "13200129"
+    },
+    {
+        "id" : 5,
+        "name" : "Jean Carlos Ramos Cruz",
+        "code" : "13200129"
+    }
+]
