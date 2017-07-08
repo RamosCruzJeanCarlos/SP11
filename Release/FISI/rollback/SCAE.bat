@@ -1,0 +1,1 @@
+tree %1 /f /a >C:\Users\G62\Desktop\SCAE.txt
