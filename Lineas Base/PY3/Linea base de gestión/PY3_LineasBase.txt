@@ -1,0 +1,1 @@
+Breve guía en la cual se especifica la función de este directorio.
